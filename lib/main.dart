@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:tmdb_flutter_app/features/movies/data/repositories/now_playing_m
 import 'package:tmdb_flutter_app/features/movies/domain/repositories/movies_now_playing.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/now_playing_movies_use_case.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/now_playing_movies_use_case_impl.dart';
+import 'package:tmdb_flutter_app/tmdb_flutter_app.dart';
 
 import 'features/main_home_screen.dart';
 
@@ -49,7 +52,8 @@ void main() {
   FlutterError.onError = (details) =>
       GetIt.I<Talker>().handle(details.exception, details.stack);
 
-  runApp(const MyApp());
+  runZonedGuarded(() => runApp(const TmdbFlutterApp()),
+          (e, st) => GetIt.I<Talker>().handle(e, st));
 }
 
 class MyApp extends StatelessWidget {
