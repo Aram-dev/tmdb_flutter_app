@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'now_playing_dates.dart';
-import 'now_playing_results.dart';
+import 'movies_dates_entity.dart';
+import 'movie.dart';
 
-part 'now_playing_entity.g.dart';
+part 'movies_entity.g.dart';
 
 @JsonSerializable()
-class NowPlayingEntity extends Equatable {
-  const NowPlayingEntity({
+class MoviesEntity extends Equatable {
+  const MoviesEntity({
     required this.dates,
     required this.page,
     required this.results,
@@ -16,9 +16,9 @@ class NowPlayingEntity extends Equatable {
     required this.totalResults,
   });
 
-  final NowPlayingDates? dates;
+  final MoviesDates? dates;
   final int? page;
-  final List<NowPlayingResults>? results;
+  final List<Movie>? results;
   @JsonKey(name: "total_pages")
   final int? totalPages;
   @JsonKey(name: "total_results")

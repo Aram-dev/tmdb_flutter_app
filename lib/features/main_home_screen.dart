@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:tmdb_flutter_app/features/movies/presentation/screens/movies_screen.dart';
+import 'package:tmdb_flutter_app/features/search/presentation/screens/search_screen.dart';
 import 'home/presentation/screens/home_screen.dart';
 import 'actors/presentation/screens/actors_screen.dart';
-import 'profile/presentation/screens/profile_screen.dart';
 
 @RoutePage()
 class MainHomeScreen extends StatefulWidget {
@@ -19,7 +19,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   final List<Widget> widgetOptions = const [
     HomeScreen(),
     MoviesScreen(),
-    ProfileScreen(),
+    SearchScreen(),
     ActorsScreen(),
   ];
 
@@ -49,7 +49,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             icon: Icon(Icons.local_movies_outlined),
             label: 'Movies',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
           BottomNavigationBarItem(
             icon: Icon(Icons.recent_actors),
             label: 'Actors',

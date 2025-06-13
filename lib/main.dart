@@ -7,13 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger.dart';
-import 'package:tmdb_flutter_app/features/movies/data/repositories/now_playing_movies_repository_impl.dart';
-import 'package:tmdb_flutter_app/features/movies/domain/repositories/movies_now_playing.dart';
-import 'package:tmdb_flutter_app/features/movies/domain/usecases/now_playing_movies_use_case.dart';
-import 'package:tmdb_flutter_app/features/movies/domain/usecases/now_playing_movies_use_case_impl.dart';
 import 'package:tmdb_flutter_app/tmdb_flutter_app.dart';
 
 import 'features/main_home_screen.dart';
+import 'features/movies/data/repositories/movie_repository_impl.dart';
+import 'features/movies/domain/repositories/movie_repository.dart';
+import 'features/movies/domain/usecases/usecases.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +20,13 @@ void main() {
   GetIt.I.registerSingleton(talker);
   GetIt.I<Talker>().debug('Talker initialized');
 
-  final dio = Dio();
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: 'https://api.themoviedb.org/3',
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+    ),
+  );
   dio.interceptors.add(
     TalkerDioLogger(
       settings: TalkerDioLoggerSettings(
@@ -39,13 +44,37 @@ void main() {
     ),
   );
 
-  GetIt.I.registerLazySingleton<NowPlayingMoviesRepository>(
-    () => NowPlayingMoviesRepositoryImpl(dio: dio),
+  GetIt.I.registerLazySingleton<MovieRepository>(
+    () => MovieRepositoryImpl(dio: dio),
+  );
+
+  GetIt.I.registerLazySingleton<TrendingMoviesUseCase>(
+    () => TrendingMoviesUseCaseImpl(
+      repository: GetIt.I.get<MovieRepository>(),
+    ),
   );
 
   GetIt.I.registerLazySingleton<NowPlayingMoviesUseCase>(
     () => NowPlayingMoviesUseCaseImpl(
-      repository: GetIt.I.get<NowPlayingMoviesRepository>(),
+      repository: GetIt.I.get<MovieRepository>(),
+    ),
+  );
+
+  GetIt.I.registerLazySingleton<PopularMoviesUseCase>(
+    () => PopularMoviesUseCaseImpl(
+      repository: GetIt.I.get<MovieRepository>(),
+    ),
+  );
+
+  GetIt.I.registerLazySingleton<UpcomingMoviesUseCase>(
+    () => UpcomingMoviesUseCaseImpl(
+      repository: GetIt.I.get<MovieRepository>(),
+    ),
+  );
+
+  GetIt.I.registerLazySingleton<TopRatedMoviesUseCase>(
+    () => TopRatedMoviesUseCaseImpl(
+      repository: GetIt.I.get<MovieRepository>(),
     ),
   );
 

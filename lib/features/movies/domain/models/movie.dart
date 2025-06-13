@@ -3,11 +3,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'now_playing_results.g.dart';
+part 'movie.g.dart';
 
 @JsonSerializable()
-class NowPlayingResults extends Equatable {
-  const NowPlayingResults({
+class Movie extends Equatable {
+  const Movie({
     required this.adult,
     required this.backdropPath,
     required this.genreIds,
@@ -65,8 +65,8 @@ class NowPlayingResults extends Equatable {
     voteCount,
   ];
 
-  factory NowPlayingResults.fromJson(Map<String, dynamic> json) =>
-      _$NowPlayingResultsFromJson(json);
+  factory Movie.fromJson(Map<String, dynamic> json) =>
+      _$MovieFromJson(json);
 
-  Map<String, dynamic> toJson() => _$NowPlayingResultsToJson(this);
+  Map<String, dynamic> toJson() => _$MovieToJson(this);
 }

@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'now_playing_results.dart';
+part of 'movie.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-NowPlayingResults _$NowPlayingResultsFromJson(Map<String, dynamic> json) =>
-    NowPlayingResults(
+Movie _$MovieFromJson(Map<String, dynamic> json) =>
+    Movie(
       adult: json['adult'] as bool?,
       backdropPath: json['backdrop_path'] as String?,
       genreIds: (json['genre_ids'] as List<dynamic>?)
@@ -26,7 +26,7 @@ NowPlayingResults _$NowPlayingResultsFromJson(Map<String, dynamic> json) =>
       voteCount: (json['vote_count'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$NowPlayingResultsToJson(NowPlayingResults instance) =>
+Map<String, dynamic> _$MovieToJson(Movie instance) =>
     <String, dynamic>{
       'adult': instance.adult,
       'backdrop_path': instance.backdropPath,
