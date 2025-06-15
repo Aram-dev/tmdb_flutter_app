@@ -82,7 +82,10 @@ class _MoviesScreenState extends State<MoviesScreen> {
                                 const Spacer(),
                                 ToggleButtons(
                                   borderRadius: BorderRadius.circular(20),
-                                  constraints: BoxConstraints(minHeight: 22, minWidth: 64),
+                                  constraints: BoxConstraints(
+                                    minHeight: 22,
+                                    minWidth: 64,
+                                  ),
                                   borderColor: Colors.grey,
                                   selectedBorderColor: Colors.blue,
                                   selectedColor: Colors.white,
@@ -96,7 +99,9 @@ class _MoviesScreenState extends State<MoviesScreen> {
                                     final selectedWindow = index == 0
                                         ? 'day'
                                         : 'week';
-                                    state.currentWindow = selectedWindow;
+
+                                    if (selectedWindow == state.currentWindow) return;
+
                                     _trendingMoviesBloc.add(
                                       LoadTrendingMovies(
                                         selectedWindow: selectedWindow,
@@ -108,13 +113,19 @@ class _MoviesScreenState extends State<MoviesScreen> {
                                       padding: EdgeInsets.symmetric(
                                         horizontal: 8,
                                       ),
-                                      child: Text("Today", style: TextStyle(fontSize: 10)),
+                                      child: Text(
+                                        "Today",
+                                        style: TextStyle(fontSize: 10),
+                                      ),
                                     ),
                                     Padding(
                                       padding: EdgeInsets.symmetric(
                                         horizontal: 8,
                                       ),
-                                      child: Text("This Week", style: TextStyle(fontSize: 10)),
+                                      child: Text(
+                                        "This Week",
+                                        style: TextStyle(fontSize: 10),
+                                      ),
                                     ),
                                   ],
                                 ),
