@@ -38,7 +38,7 @@ class NowPlayingMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
       emit(
         NowPlayingMoviesLoaded(
           nowPlayingMovies: nowPlayingMovies,
-          isExpanded: true,
+          isExpanded: false,
         ),
       );
     } catch (e, st) {

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -32,7 +31,7 @@ class UpcomingMoviesBloc
       }
       final upcomingMovies = await upcomingMoviesUseCase
           .getUpcomingMovies(1, 'bc0abeeb117c70b4a31a9b439dd7e981', 'US', 'us-US');
-      emit(UpcomingMoviesLoaded(upcomingMovies: upcomingMovies, isExpanded: true));
+      emit(UpcomingMoviesLoaded(upcomingMovies: upcomingMovies, isExpanded: false));
     } catch (e, st) {
       emit(UpcomingMoviesLoadingFailure(exception: e));
       GetIt.I<Talker>().handle(e, st);

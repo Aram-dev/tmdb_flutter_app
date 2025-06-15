@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/presentation/screens/movies_screen.dart';
 import 'package:tmdb_flutter_app/features/search/presentation/screens/search_screen.dart';
 import 'home/presentation/screens/home_screen.dart';
@@ -32,7 +34,22 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('')),
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        title: Text('Movies'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => TalkerScreen(talker: GetIt.I<Talker>()),
+                ),
+              );
+            },
+            icon: Icon(Icons.document_scanner_outlined),
+          ),
+        ],
+      ),
       body: widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: true,

@@ -31,7 +31,7 @@ class PopularMoviesBloc
       }
       final popularMovies = await popularMoviesUseCase
           .getPopularMovies(1, 'bc0abeeb117c70b4a31a9b439dd7e981', 'US', 'us-US');
-      emit(PopularMoviesLoaded(popularMovies: popularMovies, isExpanded: true));
+      emit(PopularMoviesLoaded(popularMovies: popularMovies, isExpanded: false));
     } catch (e, st) {
       emit(PopularMoviesLoadingFailure(exception: e));
       GetIt.I<Talker>().handle(e, st);
