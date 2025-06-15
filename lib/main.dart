@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +17,12 @@ import 'features/movies/domain/repositories/movie_repository.dart';
 import 'features/movies/domain/usecases/usecases.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+  // Enables debug paint to see view shapes
+  debugPaintSizeEnabled = false;
+
+  // Optional: Set 'true' to make zone mismatch fatal during dev/debug
+  BindingBase.debugZoneErrorsAreFatal = false;
+
   final talker = TalkerFlutter.init();
   GetIt.I.registerSingleton(talker);
   GetIt.I<Talker>().debug('Talker initialized');
@@ -49,40 +56,33 @@ void main() {
   );
 
   GetIt.I.registerLazySingleton<TrendingMoviesUseCase>(
-    () => TrendingMoviesUseCaseImpl(
-      repository: GetIt.I.get<MovieRepository>(),
-    ),
+    () => TrendingMoviesUseCaseImpl(repository: GetIt.I.get<MovieRepository>()),
   );
 
   GetIt.I.registerLazySingleton<NowPlayingMoviesUseCase>(
-    () => NowPlayingMoviesUseCaseImpl(
-      repository: GetIt.I.get<MovieRepository>(),
-    ),
+    () =>
+        NowPlayingMoviesUseCaseImpl(repository: GetIt.I.get<MovieRepository>()),
   );
 
   GetIt.I.registerLazySingleton<PopularMoviesUseCase>(
-    () => PopularMoviesUseCaseImpl(
-      repository: GetIt.I.get<MovieRepository>(),
-    ),
+    () => PopularMoviesUseCaseImpl(repository: GetIt.I.get<MovieRepository>()),
   );
 
   GetIt.I.registerLazySingleton<UpcomingMoviesUseCase>(
-    () => UpcomingMoviesUseCaseImpl(
-      repository: GetIt.I.get<MovieRepository>(),
-    ),
+    () => UpcomingMoviesUseCaseImpl(repository: GetIt.I.get<MovieRepository>()),
   );
 
   GetIt.I.registerLazySingleton<TopRatedMoviesUseCase>(
-    () => TopRatedMoviesUseCaseImpl(
-      repository: GetIt.I.get<MovieRepository>(),
-    ),
+    () => TopRatedMoviesUseCaseImpl(repository: GetIt.I.get<MovieRepository>()),
   );
 
   FlutterError.onError = (details) =>
       GetIt.I<Talker>().handle(details.exception, details.stack);
 
-  runZonedGuarded(() => runApp(const TmdbFlutterApp()),
-          (e, st) => GetIt.I<Talker>().handle(e, st));
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    runApp(const TmdbFlutterApp());
+  }, (e, st) => GetIt.I<Talker>().handle(e, st));
 }
 
 class MyApp extends StatelessWidget {

@@ -31,7 +31,7 @@ class TopRatedMoviesBloc
       }
       final topRatedMovies = await topRatedMoviesUseCase
           .getTopRatedMovies(1, 'bc0abeeb117c70b4a31a9b439dd7e981', 'US', 'us-US');
-      emit(TopRatedMoviesLoaded(topRatedMovies: topRatedMovies, isExpanded: true));
+      emit(TopRatedMoviesLoaded(topRatedMovies: topRatedMovies, isExpanded: false));
     } catch (e, st) {
       emit(TopRatedMoviesLoadingFailure(exception: e));
       GetIt.I<Talker>().handle(e, st);

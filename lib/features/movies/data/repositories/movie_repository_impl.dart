@@ -19,6 +19,7 @@ class MovieRepositoryImpl extends MovieRepository {
       ) async {
     final String endpoint = '/trending/movie/$timeWindow';
     final params = {
+      'api_key': apiKey,
       'language': language,
     };
     return _fetchMoviesFromApi(endpoint, params);
@@ -84,6 +85,9 @@ class MovieRepositoryImpl extends MovieRepository {
       ) async {
     final String endpoint = '/movie/top_rated';
     final params = {
+      'page': page,
+      'api_key': apiKey,
+      'region': region,
       'language': language,
     };
     return _fetchMoviesFromApi(endpoint, params);
@@ -95,13 +99,13 @@ class MovieRepositoryImpl extends MovieRepository {
     final response = await dio.get(endpoint, queryParameters: queryParams);
 
     final data = response.data as Map<String, dynamic>;
-    final dates = MoviesDates.fromJson(data['dates']);
-    final page = data['page'] as int;
-    final results = (data['results'] as List)
-        .map((json) => Movie.fromJson(json))
+    final dates = data.containsKey('dates') ? MoviesDates.fromJson(data['dates']) : null;
+    final page =  data.containsKey('page') ? data['page'] as int : null ;
+    final results = (data.containsKey('results') ? data['results'] as List : null)
+        ?.map((json) => Movie.fromJson(json))
         .toList();
-    final totalPages = data['total_pages'] as int;
-    final totalResults = data['total_results'] as int;
+    final totalPages = data.containsKey('total_pages') ? data['total_pages'] as int : null;
+    final totalResults = data.containsKey('total_results') ? data['total_results'] as int : null;
 
     final entity = MoviesEntity(
       dates: dates,
