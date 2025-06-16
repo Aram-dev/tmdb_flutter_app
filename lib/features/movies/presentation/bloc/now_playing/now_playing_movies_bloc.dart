@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
 
-import '../base/base.dart';
+import '../common/common.dart';
 
 part 'now_playing_movies_event.dart';
 
@@ -15,7 +15,7 @@ class NowPlayingMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
   NowPlayingMoviesBloc(this.nowPlayingMoviesUseCase)
     : super(NowPlayingMoviesInitial()) {
     on<LoadNowPlayingMovies>(_load);
-    on<ToggleNowPlayingSection>(_onToggleSection);
+    on<ToggleSection>(_onToggleSection);
   }
 
   final NowPlayingMoviesUseCase nowPlayingMoviesUseCase;
@@ -50,7 +50,7 @@ class NowPlayingMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
   }
 
   Future<void> _onToggleSection(
-    ToggleNowPlayingSection event,
+      ToggleSection event,
     Emitter<MoviesState> emit,
   ) async {
     if (state is NowPlayingMoviesLoaded) {

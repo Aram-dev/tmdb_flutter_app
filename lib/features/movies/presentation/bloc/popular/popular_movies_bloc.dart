@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
 
-import '../base/base.dart';
+import '../common/common.dart';
 
 part 'popular_movies_event.dart';
 
@@ -16,7 +16,7 @@ class PopularMoviesBloc
   PopularMoviesBloc(this.popularMoviesUseCase)
       : super(PopularMoviesInitial()) {
     on<LoadPopularMovies>(_load);
-    on<TogglePopularSection>(_onToggleSection);
+    on<ToggleSection>(_onToggleSection);
   }
 
   final PopularMoviesUseCase popularMoviesUseCase;
@@ -41,7 +41,7 @@ class PopularMoviesBloc
   }
 
   Future<void> _onToggleSection(
-      TogglePopularSection event,
+      ToggleSection event,
       Emitter<MoviesState> emit,
       ) async {
     if (state is PopularMoviesLoaded) {

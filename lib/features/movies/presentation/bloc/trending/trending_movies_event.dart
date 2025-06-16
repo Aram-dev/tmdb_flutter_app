@@ -5,9 +5,8 @@ class LoadTrendingMovies extends MoviesEvent {
     this.completer, required this.selectedWindow
   });
   final Completer? completer;
-  String selectedWindow;
+  final String selectedWindow;
 
   @override
-  // TODO: implement props
   List<Object?> get props => [completer, selectedWindow];
 }

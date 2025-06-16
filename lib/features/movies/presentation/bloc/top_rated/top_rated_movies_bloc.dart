@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
 
-import '../base/base.dart';
+import '../common/common.dart';
 
 part 'top_rated_movies_event.dart';
 
@@ -16,7 +16,7 @@ class TopRatedMoviesBloc
   TopRatedMoviesBloc(this.topRatedMoviesUseCase)
     : super(TopRatedMoviesInitial()) {
     on<LoadTopRatedMovies>(_load);
-    on<ToggleTopRatedSection>(_onToggleSection);
+    on<ToggleSection>(_onToggleSection);
   }
 
   final TopRatedMoviesUseCase topRatedMoviesUseCase;
@@ -41,7 +41,7 @@ class TopRatedMoviesBloc
   }
 
   Future<void> _onToggleSection(
-      ToggleTopRatedSection event,
+      ToggleSection event,
       Emitter<MoviesState> emit,
       ) async {
     if (state is TopRatedMoviesLoaded) {

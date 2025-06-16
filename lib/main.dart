@@ -11,7 +11,6 @@ import 'package:talker_dio_logger/talker_dio_logger.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger.dart';
 import 'package:tmdb_flutter_app/tmdb_flutter_app.dart';
 
-import 'features/main_home_screen.dart';
 import 'features/movies/data/repositories/movie_repository_impl.dart';
 import 'features/movies/domain/repositories/movie_repository.dart';
 import 'features/movies/domain/usecases/usecases.dart';
@@ -81,19 +80,13 @@ void main() {
 
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    runApp(const TmdbFlutterApp());
+    runApp(
+      MaterialApp(
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
+        home: TmdbFlutterApp(),
+      ));
   }, (e, st) => GetIt.I<Talker>().handle(e, st));
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MainHomeScreen(),
-    );
-  }
 }

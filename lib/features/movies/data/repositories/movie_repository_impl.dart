@@ -11,7 +11,7 @@ class MovieRepositoryImpl extends MovieRepository {
   final Dio dio;
 
   @override
-  // Fetch trending movies. `timeWindow` can be "today" or "week".
+  // Fetch trending movies. `timeWindow` can be "day" or "week".
   Future<MoviesEntity> getTrendingMovies(
       String apiKey,
       String language,
