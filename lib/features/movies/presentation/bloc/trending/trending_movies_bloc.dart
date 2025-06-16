@@ -13,7 +13,7 @@ part 'trending_movies_state.dart';
 
 class TrendingMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
   TrendingMoviesBloc(this.trendingMoviesUseCase)
-    : super(TrendingMoviesInitial()) {
+    : super(TrendingMoviesLoading()) {
     on<LoadTrendingMovies>(_load);
   }
 

@@ -103,8 +103,9 @@ class _MoviesScreenState extends State<MoviesScreen> {
                                       final selectedWindow = index == 0
                                           ? 'day'
                                           : 'week';
-                                      if (selectedWindow == state.currentWindow)
+                                      if (selectedWindow == state.currentWindow) {
                                         return;
+                                      }
                                       _trendingMoviesBloc.add(
                                         LoadTrendingMovies(
                                           selectedWindow: selectedWindow,
