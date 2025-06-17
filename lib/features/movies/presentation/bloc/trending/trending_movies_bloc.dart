@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../../domain/usecases/usecases.dart';
-import '../base/base.dart';
+import '../common/common.dart';
 
 part 'trending_movies_event.dart';
 
@@ -13,7 +13,7 @@ part 'trending_movies_state.dart';
 
 class TrendingMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
   TrendingMoviesBloc(this.trendingMoviesUseCase)
-    : super(TrendingMoviesInitial()) {
+    : super(TrendingMoviesLoading()) {
     on<LoadTrendingMovies>(_load);
   }
 

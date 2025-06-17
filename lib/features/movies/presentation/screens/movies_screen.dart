@@ -2,12 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:tmdb_flutter_app/features/movies/domain/models/movie.dart';
 import 'package:tmdb_flutter_app/features/movies/presentation/bloc/top_rated/top_rated_movies_bloc.dart';
+import 'package:tmdb_flutter_app/features/movies/presentation/widgets/movies_section.dart';
 
 import '../../domain/usecases/usecases.dart';
 
 import '../../presentation/bloc/bloc.dart';
-import '../bloc/base/base.dart';
+import '../bloc/common/common.dart';
 import '../widgets/movie_card.dart';
 
 @RoutePage()
@@ -66,7 +68,6 @@ class _MoviesScreenState extends State<MoviesScreen> {
                     bloc: _trendingMoviesBloc,
                     builder: (context, state) {
                       if (state is TrendingMoviesLoaded) {
-                        // Header: title + toggle buttons for Today/This Week
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -80,61 +81,95 @@ class _MoviesScreenState extends State<MoviesScreen> {
                                   ),
                                 ),
                                 const Spacer(),
-                                ToggleButtons(
-                                  borderRadius: BorderRadius.circular(20),
-                                  constraints: BoxConstraints(minHeight: 22, minWidth: 64),
-                                  borderColor: Colors.grey,
-                                  selectedBorderColor: Colors.blue,
-                                  selectedColor: Colors.white,
-                                  fillColor: Colors.blue,
-                                  color: Colors.grey,
-                                  isSelected: [
-                                    state.currentWindow == 'day',
-                                    state.currentWindow == 'week',
-                                  ],
-                                  onPressed: (index) {
-                                    final selectedWindow = index == 0
-                                        ? 'day'
-                                        : 'week';
-                                    state.currentWindow = selectedWindow;
-                                    _trendingMoviesBloc.add(
-                                      LoadTrendingMovies(
-                                        selectedWindow: selectedWindow,
-                                      ),
-                                    );
-                                  },
-                                  children: const [
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                      ),
-                                      child: Text("Today", style: TextStyle(fontSize: 10)),
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  child: ToggleButtons(
+                                    key: ValueKey(state.currentWindow),
+                                    borderRadius: BorderRadius.circular(20),
+                                    constraints: const BoxConstraints(
+                                      minHeight: 22,
+                                      minWidth: 64,
                                     ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 8,
+                                    borderColor: Colors.grey,
+                                    selectedBorderColor: Colors.blue,
+                                    selectedColor: Colors.white,
+                                    fillColor: Colors.blue,
+                                    color: Colors.grey,
+                                    isSelected: [
+                                      state.currentWindow == 'day',
+                                      state.currentWindow == 'week',
+                                    ],
+                                    onPressed: (index) {
+                                      final selectedWindow = index == 0
+                                          ? 'day'
+                                          : 'week';
+                                      if (selectedWindow == state.currentWindow) {
+                                        return;
+                                      }
+                                      _trendingMoviesBloc.add(
+                                        LoadTrendingMovies(
+                                          selectedWindow: selectedWindow,
+                                        ),
+                                      );
+                                    },
+                                    children: const [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                        ),
+                                        child: Text(
+                                          "Today",
+                                          style: TextStyle(fontSize: 10),
+                                        ),
                                       ),
-                                      child: Text("This Week", style: TextStyle(fontSize: 10)),
-                                    ),
-                                  ],
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                        ),
+                                        child: Text(
+                                          "This Week",
+                                          style: TextStyle(fontSize: 10),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 8),
-                            // Horizontal list of trending movies
-                            SizedBox(
-                              height: 220,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: state.trendingMovies.results?.length,
-                                itemBuilder: (context, index) {
-                                  final movie =
-                                      state.trendingMovies.results?[index];
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 12.0),
-                                    child: MovieCard(movie: movie),
-                                  );
-                                },
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 400),
+                              transitionBuilder: (child, animation) =>
+                                  FadeTransition(
+                                    opacity: animation,
+                                    child: SlideTransition(
+                                      position: Tween<Offset>(
+                                        begin: const Offset(0.1, 0),
+                                        end: Offset.zero,
+                                      ).animate(animation),
+                                      child: child,
+                                    ),
+                                  ),
+                              child: SizedBox(
+                                key: ValueKey(
+                                  state.trendingMovies.results?.length,
+                                ),
+                                height: 220,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount:
+                                      state.trendingMovies.results?.length ?? 0,
+                                  itemBuilder: (context, index) {
+                                    final movie =
+                                        state.trendingMovies.results![index];
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                        right: 12.0,
+                                      ),
+                                      child: MovieCard(movie: movie),
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ],
@@ -143,6 +178,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
                       return const SizedBox.shrink();
                     },
                   ),
+
                   const SizedBox(height: 20),
 
                   // Popular Section
@@ -150,7 +186,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
                     bloc: _popularMoviesBloc,
                     builder: (context, state) {
                       bool isExpanded = false;
-                      List movies = <dynamic>[]; // default
+                      List<Movie> movies = []; // default
                       if (state is PopularMoviesLoading) {
                         isExpanded = false;
                         movies = [];
@@ -161,51 +197,14 @@ class _MoviesScreenState extends State<MoviesScreen> {
                             state.popularMovies.results ??
                             List.empty(growable: false);
                       }
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Text(
-                                "Popular",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Spacer(),
-                              IconButton(
-                                icon: Icon(
-                                  isExpanded
-                                      ? Icons.expand_less
-                                      : Icons.expand_more,
-                                ),
-                                onPressed: () {
-                                  _popularMoviesBloc.add(
-                                    TogglePopularSection(),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          // Movies list if expanded
-                          if (isExpanded)
-                            SizedBox(
-                              height: 220,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: movies.length,
-                                itemBuilder: (context, index) {
-                                  final movie = movies[index] as dynamic;
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 12.0),
-                                    child: MovieCard(movie: movie),
-                                  );
-                                },
-                              ),
-                            ),
-                        ],
+
+                      return MoviesSection(
+                        title: "Popular",
+                        state: state,
+                        movies: movies,
+                        isExpanded: isExpanded,
+                        onToggleSection: (event) =>
+                            _popularMoviesBloc.add(event),
                       );
                     },
                   ),
@@ -217,67 +216,24 @@ class _MoviesScreenState extends State<MoviesScreen> {
                     builder: (context, state) {
                       // Always show the header
                       bool isExpanded = false;
-                      List? movies = <dynamic>[]; // default
+                      List<Movie> movies = []; // default
                       if (state is NowPlayingMoviesLoaded) {
                         isExpanded = state.isExpanded;
-                        movies = state.nowPlayingMovies.results;
+                        movies =
+                            state.nowPlayingMovies.results ??
+                            List.empty(growable: false);
                       }
                       if (state is NowPlayingMoviesLoading) {
                         isExpanded = false;
                         movies = [];
                       }
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Header row with title and expand/collapse icon
-                          Row(
-                            children: [
-                              const Text(
-                                "Now Playing",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Spacer(),
-                              IconButton(
-                                icon: Icon(
-                                  isExpanded
-                                      ? Icons.expand_less
-                                      : Icons.expand_more,
-                                ),
-                                onPressed: () {
-                                  _nowPlayingMoviesBloc.add(
-                                    ToggleNowPlayingSection(),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                          // Movies list if expanded
-                          if (isExpanded)
-                            SizedBox(
-                              height: 220,
-                              child: (state is NowPlayingMoviesLoading)
-                                  ? // if loading and expanded, show a loader
-                                    const Center(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: movies?.length,
-                                      itemBuilder: (context, index) {
-                                        final movie = movies?[index] as dynamic;
-                                        return Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 12.0,
-                                          ),
-                                          child: MovieCard(movie: movie),
-                                        );
-                                      },
-                                    ),
-                            ),
-                        ],
+                      return MoviesSection(
+                        title: "Now Playing",
+                        state: state,
+                        movies: movies,
+                        isExpanded: isExpanded,
+                        onToggleSection: (event) =>
+                            _nowPlayingMoviesBloc.add(event),
                       );
                     },
                   ),
@@ -288,64 +244,24 @@ class _MoviesScreenState extends State<MoviesScreen> {
                     bloc: _upcomingMoviesBloc,
                     builder: (context, state) {
                       bool isExpanded = false;
-                      List? movies = <dynamic>[];
+                      List<Movie> movies = [];
                       if (state is UpcomingMoviesLoaded) {
                         isExpanded = state.isExpanded;
-                        movies = state.upcomingMovies.results;
+                        movies =
+                            state.upcomingMovies.results ??
+                            List.empty(growable: false);
                       }
                       if (state is UpcomingMoviesLoading) {
                         isExpanded = false;
-                        movies = [];
+                        movies = List.empty();
                       }
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Text(
-                                "Upcoming",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Spacer(),
-                              IconButton(
-                                icon: Icon(
-                                  isExpanded
-                                      ? Icons.expand_less
-                                      : Icons.expand_more,
-                                ),
-                                onPressed: () {
-                                  _upcomingMoviesBloc.add(
-                                    ToggleUpcomingSection(),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                          if (isExpanded)
-                            SizedBox(
-                              height: 220,
-                              child: (state is UpcomingMoviesLoading)
-                                  ? const Center(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: movies?.length,
-                                      itemBuilder: (context, index) {
-                                        final movie = movies?[index] as dynamic;
-                                        return Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 12.0,
-                                          ),
-                                          child: MovieCard(movie: movie),
-                                        );
-                                      },
-                                    ),
-                            ),
-                        ],
+                      return MoviesSection(
+                        title: "Upcoming",
+                        state: state,
+                        movies: movies,
+                        isExpanded: isExpanded,
+                        onToggleSection: (event) =>
+                            _upcomingMoviesBloc.add(event),
                       );
                     },
                   ),
@@ -356,64 +272,24 @@ class _MoviesScreenState extends State<MoviesScreen> {
                     bloc: _topRatedMoviesBloc,
                     builder: (context, state) {
                       bool isExpanded = false;
-                      List? movies = <dynamic>[];
+                      List<Movie> movies = [];
                       if (state is TopRatedMoviesLoaded) {
                         isExpanded = state.isExpanded;
-                        movies = state.topRatedMovies.results;
+                        movies =
+                            state.topRatedMovies.results ??
+                            List.empty(growable: false);
                       }
                       if (state is TopRatedMoviesLoading) {
                         isExpanded = false;
                         movies = [];
                       }
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Text(
-                                "Top Rated",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Spacer(),
-                              IconButton(
-                                icon: Icon(
-                                  isExpanded
-                                      ? Icons.expand_less
-                                      : Icons.expand_more,
-                                ),
-                                onPressed: () {
-                                  _topRatedMoviesBloc.add(
-                                    ToggleTopRatedSection(),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                          if (isExpanded)
-                            SizedBox(
-                              height: 220,
-                              child: (state is TopRatedMoviesLoading)
-                                  ? const Center(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: movies?.length,
-                                      itemBuilder: (context, index) {
-                                        final movie = movies?[index] as dynamic;
-                                        return Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 12.0,
-                                          ),
-                                          child: MovieCard(movie: movie),
-                                        );
-                                      },
-                                    ),
-                            ),
-                        ],
+                      return MoviesSection(
+                        title: "Top Rated",
+                        state: state,
+                        movies: movies,
+                        isExpanded: isExpanded,
+                        onToggleSection: (event) =>
+                            _topRatedMoviesBloc.add(event),
                       );
                     },
                   ),

@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
 
-import '../base/base.dart';
+import '../common/common.dart';
 
 part 'upcoming_movies_event.dart';
 
@@ -16,7 +16,7 @@ class UpcomingMoviesBloc
   UpcomingMoviesBloc(this.upcomingMoviesUseCase)
     : super(UpcomingMoviesInitial()) {
     on<LoadUpcomingMovies>(_load);
-    on<ToggleUpcomingSection>(_onToggleSection);
+    on<ToggleSection>(_onToggleSection);
   }
 
   final UpcomingMoviesUseCase upcomingMoviesUseCase;
@@ -41,7 +41,7 @@ class UpcomingMoviesBloc
   }
 
   Future<void> _onToggleSection(
-      ToggleUpcomingSection event,
+      ToggleSection event,
       Emitter<MoviesState> emit,
       ) async {
     if (state is UpcomingMoviesLoaded) {

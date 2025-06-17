@@ -7,7 +7,6 @@ class LoadTopRatedMovies extends MoviesEvent {
   final Completer? completer;
 
   @override
-  // TODO: implement props
   List<Object?> get props => [completer];
 }
 
@@ -18,6 +17,5 @@ class ToggleTopRatedSection extends MoviesEvent {
   final Completer? completer;
 
   @override
-  // TODO: implement props
   List<Object?> get props => [completer];
 }

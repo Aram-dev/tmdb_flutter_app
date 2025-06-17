@@ -2,17 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:tmdb_flutter_app/features/movies/presentation/screens/movies_screen.dart';
-import 'package:tmdb_flutter_app/features/search/presentation/screens/search_screen.dart';
-import 'home/presentation/screens/home_screen.dart';
-import 'actors/presentation/screens/actors_screen.dart';
+import 'screens.dart';
 
 @RoutePage()
 class MainHomeScreen extends StatefulWidget {
   const MainHomeScreen({super.key});
 
   @override
-  _MainHomeScreenState createState() => _MainHomeScreenState();
+  State<StatefulWidget> createState() => _MainHomeScreenState();
 }
 
 class _MainHomeScreenState extends State<MainHomeScreen> {
