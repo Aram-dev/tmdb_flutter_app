@@ -82,7 +82,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
                                 ),
                                 const Spacer(),
                                 AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 300),
+                                  duration: const Duration(milliseconds: 100),
                                   child: ToggleButtons(
                                     key: ValueKey(state.currentWindow),
                                     borderRadius: BorderRadius.circular(20),
