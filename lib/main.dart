@@ -9,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger.dart';
+import 'package:tmdb_flutter_app/features/home/data/repositories/home_repository_impl.dart';
+import 'package:tmdb_flutter_app/features/home/domain/repositories/home_epository.dart';
 import 'package:tmdb_flutter_app/tmdb_flutter_app.dart';
 
 import 'features/movies/data/repositories/movie_repository_impl.dart';
@@ -54,6 +56,10 @@ void main() {
     () => MovieRepositoryImpl(dio: dio),
   );
 
+  GetIt.I.registerLazySingleton<HomeRepository>(
+    () => HomeRepositoryImpl(dio: dio),
+  );
+
   GetIt.I.registerLazySingleton<TrendingMoviesUseCase>(
     () => TrendingMoviesUseCaseImpl(repository: GetIt.I.get<MovieRepository>()),
   );
@@ -73,6 +79,10 @@ void main() {
 
   GetIt.I.registerLazySingleton<TopRatedMoviesUseCase>(
     () => TopRatedMoviesUseCaseImpl(repository: GetIt.I.get<MovieRepository>()),
+  );
+
+  GetIt.I.registerLazySingleton<DiscoverContentUseCase>(
+    () => DiscoverContentUseCaseImpl(repository: GetIt.I.get<HomeRepository>()),
   );
 
   FlutterError.onError = (details) =>

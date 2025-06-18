@@ -9,7 +9,7 @@ import 'package:tmdb_flutter_app/features/movies/presentation/widgets/movies_sec
 import '../../domain/usecases/usecases.dart';
 
 import '../../presentation/bloc/bloc.dart';
-import '../bloc/common/common.dart';
+import '../../../common/common.dart';
 import '../widgets/movie_card.dart';
 
 @RoutePage()

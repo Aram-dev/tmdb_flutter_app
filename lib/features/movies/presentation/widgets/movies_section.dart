@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/models/movie.dart';
-import 'package:tmdb_flutter_app/features/movies/presentation/bloc/common/common.dart';
+import 'package:tmdb_flutter_app/features/common/common.dart';
 
 import '../bloc/upcoming/upcoming_movies_bloc.dart';
 import 'movie_card.dart';
 
 class MoviesSection extends StatefulWidget {
-  final String title;
+  final String? title;
   final bool isExpanded;
   final MoviesState state;
   final List<Movie> movies;
@@ -67,39 +67,40 @@ class _MoviesSectionState extends State<MoviesSection>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          child: InkWell(
-            onTap: () => widget.onToggleSection(ToggleSection()),
+        if (widget.title != null)
+          Material(
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(12),
-            splashColor: Color.alphaBlend(
-              colorScheme.primary.withAlpha(31),
-              colorScheme.surface,
-            ),
-            child: Ink(
-              height: 48,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  Text(
-                    widget.title,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
+            child: InkWell(
+              onTap: () => widget.onToggleSection(ToggleSection()),
+              borderRadius: BorderRadius.circular(12),
+              splashColor: Color.alphaBlend(
+                colorScheme.primary.withAlpha(31),
+                colorScheme.surface,
+              ),
+              child: Ink(
+                height: 48,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    Text(
+                      widget.title ?? "",
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  const Spacer(),
-                  AnimatedRotation(
-                    turns: widget.isExpanded ? 0.5 : 0.0,
-                    duration: const Duration(milliseconds: 300),
-                    child: const Icon(Icons.expand_more, color: Colors.white),
-                  ),
-                ],
+                    const Spacer(),
+                    AnimatedRotation(
+                      turns: widget.isExpanded ? 0.5 : 0.0,
+                      duration: const Duration(milliseconds: 300),
+                      child: const Icon(Icons.expand_more, color: Colors.white),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
         SizeTransition(
           sizeFactor: _expandAnimation,
           axisAlignment: -1,
@@ -110,18 +111,18 @@ class _MoviesSectionState extends State<MoviesSection>
               child: widget.state is UpcomingMoviesLoading
                   ? const Center(child: CircularProgressIndicator())
                   : ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: widget.movies.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 12),
-                itemBuilder: (context, index) {
-                  final movie = widget.movies[index];
-                  return MovieCard(movie: movie);
-                }
-              )
-            )
-          )
-        )
-      ]
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.movies.length,
+                      separatorBuilder: (_, _) => const SizedBox(width: 12),
+                      itemBuilder: (context, index) {
+                        final movie = widget.movies[index];
+                        return MovieCard(movie: movie);
+                      },
+                    ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

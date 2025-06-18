@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../../domain/usecases/usecases.dart';
-import '../common/common.dart';
+import '../../../../common/common.dart';
 
 part 'trending_movies_event.dart';
 
