@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../../common/common.dart';
+import '../../../movies/presentation/widgets/discover_data_section.dart';
 import '../../../movies/presentation/widgets/movies_section.dart';
 import '../../domain/usecases/discover_movies/discover_movies_use_case.dart';
 import '../bloc/discover_movies/discover_movies_bloc.dart';
@@ -45,43 +46,49 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      margin: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Free To Watch',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.0),
+      child: Card(
+        elevation: 4,
+        color: Colors.grey,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        margin: const EdgeInsets.fromLTRB(8, 8, 8, 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'Discover',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          TabBar(
-            controller: _tabController,
-            indicatorSize: TabBarIndicatorSize.tab,
-            indicatorColor: Colors.blueAccent,
-            labelColor: Colors.blueAccent,
-            unselectedLabelColor: Colors.grey,
-            tabs: const [
-              Tab(text: 'Movies'),
-              Tab(text: 'TV Shows'),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: BlocBuilder<DiscoverContentBloc, MoviesState>(
+            TabBar(
+              controller: _tabController,
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicatorColor: Colors.blueAccent,
+              labelColor: Colors.blueAccent,
+              unselectedLabelColor: Colors.grey,
+              tabs: const [
+                Tab(text: 'Movies'),
+                Tab(text: 'TV Shows'),
+              ],
+            ),
+            BlocBuilder<DiscoverContentBloc, MoviesState>(
               bloc: _discoverMoviesBloc,
               builder: (context, state) {
                 if (state is DiscoverContentLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return MoviesSection(
+                    title: null,
+                    state: state,
+                    movies: List.empty(),
+                    isExpanded: true,
+                    onToggleSection: (event) => _discoverMoviesBloc.add(event),
+                  );
                 } else if (state is DiscoverContentLoaded) {
                   final movies = state.discoverMovies.results ?? [];
-                  return MoviesSection(
+                  return DiscoverDataSection(
                     title: null,
                     state: state,
                     movies: movies,
@@ -94,8 +101,8 @@ class _HomeScreenState extends State<HomeScreen>
                 return const SizedBox.shrink();
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

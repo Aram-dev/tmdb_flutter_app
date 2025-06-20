@@ -59,8 +59,12 @@ class _MoviesScreenState extends State<MoviesScreen> {
           // resizeToAvoidBottomInset: true,
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(
+                vertical: 8.0,
+                horizontal: 8.0,
+              ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Trending Section
@@ -69,6 +73,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
                     builder: (context, state) {
                       if (state is TrendingMoviesLoaded) {
                         return Column(
+                          mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
@@ -103,7 +108,8 @@ class _MoviesScreenState extends State<MoviesScreen> {
                                       final selectedWindow = index == 0
                                           ? 'day'
                                           : 'week';
-                                      if (selectedWindow == state.currentWindow) {
+                                      if (selectedWindow ==
+                                          state.currentWindow) {
                                         return;
                                       }
                                       _trendingMoviesBloc.add(
@@ -150,25 +156,23 @@ class _MoviesScreenState extends State<MoviesScreen> {
                                       child: child,
                                     ),
                                   ),
-                              child: SizedBox(
-                                key: ValueKey(
-                                  state.trendingMovies.results?.length,
-                                ),
-                                height: 220,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount:
-                                      state.trendingMovies.results?.length ?? 0,
-                                  itemBuilder: (context, index) {
-                                    final movie =
-                                        state.trendingMovies.results![index];
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                        right: 12.0,
-                                      ),
-                                      child: MovieCard(movie: movie),
-                                    );
-                                  },
+
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: state.trendingMovies.results!
+                                      .map(
+                                        (movie) => Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 12.0,
+                                          ),
+                                          child: MovieCard(
+                                            movie: movie,
+                                          ), // your MovieCard as you wrote above
+                                        ),
+                                      )
+                                      .toList(),
                                 ),
                               ),
                             ),

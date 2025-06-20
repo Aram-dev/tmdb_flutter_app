@@ -31,73 +31,83 @@ class MovieCard extends StatelessWidget {
         // Navigate to details screen with the selected movie
         // context.router.push(MovieDetailsRoute(movie: movie));
       },
-      child: Card(
-        elevation: 6,
-        color: Colors.brown,
-        margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: SizedBox(
-          width: 130,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (posterUrl != null)
-                Image.network(
-                  posterUrl,
-                  width: double.infinity,
-                  height: 160,
-                  fit: BoxFit.cover,
-                )
-              else
-                Container(
-                  width: double.infinity,
-                  height: 160,
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.image_not_supported, size: 40),
-                ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      movie?.title ?? 'Untitled',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: Card(
+          elevation: 2,
+          color: Colors.brown,
+          // margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: SizedBox(
+            width: 120,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (posterUrl != null)
+                  AspectRatio(
+                    aspectRatio: 2 / 3,
+                    // Common movie poster ratio (width:height)
+                    child: Image.network(
+                      posterUrl,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                else
+                  Container(
+                    width: double.infinity,
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.image_not_supported, size: 40),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        movie?.title ?? 'Untitled',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        const Icon(Icons.star, color: Colors.orange, size: 14),
-                        const SizedBox(width: 4),
-                        Text(
-                          rating,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.star,
+                            color: Colors.orange,
+                            size: 14,
                           ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          year,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
+                          const SizedBox(width: 4),
+                          Text(
+                            rating,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          const Spacer(),
+                          Text(
+                            year,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

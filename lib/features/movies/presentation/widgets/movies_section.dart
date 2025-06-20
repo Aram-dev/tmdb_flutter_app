@@ -64,65 +64,79 @@ class _MoviesSectionState extends State<MoviesSection>
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (widget.title != null)
-          Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            child: InkWell(
-              onTap: () => widget.onToggleSection(ToggleSection()),
-              borderRadius: BorderRadius.circular(12),
-              splashColor: Color.alphaBlend(
-                colorScheme.primary.withAlpha(31),
-                colorScheme.surface,
-              ),
-              child: Ink(
-                height: 48,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    Text(
-                      widget.title ?? "",
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
+    return Card(
+      elevation: 4,
+      color: Colors.grey,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.title != null)
+            Material(
+              color: Colors.transparent,
+              // borderRadius: BorderRadius.circular(12),
+              child: InkWell(
+                onTap: () => widget.onToggleSection(ToggleSection()),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(14), bottom: Radius.zero),
+                splashColor: Color.alphaBlend(
+                  colorScheme.primary.withAlpha(31),
+                  colorScheme.surface,
+                ),
+                child: Ink(
+                  height: 48,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    children: [
+                      Text(
+                        widget.title ?? "",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    AnimatedRotation(
-                      turns: widget.isExpanded ? 0.5 : 0.0,
-                      duration: const Duration(milliseconds: 300),
-                      child: const Icon(Icons.expand_more, color: Colors.white),
-                    ),
-                  ],
+                      const Spacer(),
+                      AnimatedRotation(
+                        turns: widget.isExpanded ? 0.5 : 0.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: const Icon(
+                          Icons.expand_more,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        SizeTransition(
-          sizeFactor: _expandAnimation,
-          axisAlignment: -1,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 12.0),
-            child: SizedBox(
-              height: 220,
-              child: widget.state is UpcomingMoviesLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: widget.movies.length,
-                      separatorBuilder: (_, _) => const SizedBox(width: 12),
-                      itemBuilder: (context, index) {
-                        final movie = widget.movies[index];
-                        return MovieCard(movie: movie);
-                      },
+          SizeTransition(
+            sizeFactor: _expandAnimation,
+            axisAlignment: -1,
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // <<< THIS IS IMPORTANT
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 6.0),
+                  child:
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: widget.movies
+                          .map((movie) => Padding(
+                        padding: const EdgeInsets.only(right: 12.0),
+                        child: MovieCard(movie: movie),
+                      ))
+                          .toList(),
                     ),
+                  ),
+                )
+              ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
