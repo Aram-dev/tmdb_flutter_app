@@ -10,15 +10,15 @@ part 'discover_movies_event.dart';
 
 part 'discover_movies_state.dart';
 
-class DiscoverContentBloc extends Bloc<MoviesEvent, MoviesState> {
-  DiscoverContentBloc(this.discoverMoviesUseCase) : super(DiscoverMoviesInitial()) {
+class DiscoverContentBloc extends Bloc<UiEvent, UiState> {
+  DiscoverContentBloc(this.discoverMoviesUseCase) : super(DiscoverContentLoading()) {
     on<LoadDiscoverContent>(_load);
     on<ToggleSection>(_onToggleSection);
   }
 
   final DiscoverContentUseCase discoverMoviesUseCase;
 
-  Future<void> _load(LoadDiscoverContent event, Emitter<MoviesState> emit) async {
+  Future<void> _load(LoadDiscoverContent event, Emitter<UiState> emit) async {
     try {
       if (state is! DiscoverContentLoaded) {
         emit(DiscoverContentLoading());
@@ -42,7 +42,7 @@ class DiscoverContentBloc extends Bloc<MoviesEvent, MoviesState> {
 
   Future<void> _onToggleSection(
     ToggleSection event,
-    Emitter<MoviesState> emit,
+    Emitter<UiState> emit,
   ) async {
     if (state is DiscoverContentLoaded) {
       final currentState = state as DiscoverContentLoaded;

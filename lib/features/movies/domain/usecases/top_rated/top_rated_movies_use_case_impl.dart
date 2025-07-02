@@ -9,7 +9,7 @@ class TopRatedMoviesUseCaseImpl extends TopRatedMoviesUseCase {
   final MovieRepository repository;
 
   @override
-  Future<MoviesEntity> getTopRatedMovies(
+  Future<MovieTvShowEntity> getTopRatedMovies(
     int page,
     String apiKey,
     String region,

@@ -13,7 +13,7 @@ class HomeRepositoryImpl extends HomeRepository {
   final Dio dio;
 
   @override
-  Future<MoviesEntity> getDiscoverContent(
+  Future<MovieTvShowEntity> getDiscoverContent(
     int page,
     String apiKey,
     String language,
@@ -41,7 +41,7 @@ class HomeRepositoryImpl extends HomeRepository {
     return _fetchMoviesFromApi(endpoint, params);
   }
 
-  Future<MoviesEntity> _fetchMoviesFromApi(
+  Future<MovieTvShowEntity> _fetchMoviesFromApi(
     String endpoint,
     Map<String, Object?> queryParams,
   ) async {
@@ -63,7 +63,7 @@ class HomeRepositoryImpl extends HomeRepository {
         ? data['total_results'] as int
         : null;
 
-    final entity = MoviesEntity(
+    final entity = MovieTvShowEntity(
       dates: dates,
       page: page,
       results: results,

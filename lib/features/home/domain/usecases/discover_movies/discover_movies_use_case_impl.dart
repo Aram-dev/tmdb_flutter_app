@@ -8,7 +8,7 @@ class DiscoverContentUseCaseImpl extends DiscoverContentUseCase {
   final HomeRepository repository;
 
   @override
-  Future<MoviesEntity> getDiscoverContent({
+  Future<MovieTvShowEntity> getDiscoverContent({
     required int page,
     required String apiKey,
     required String language,

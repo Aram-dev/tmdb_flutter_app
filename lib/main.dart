@@ -11,11 +11,16 @@ import 'package:talker_dio_logger/talker_dio_logger.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger.dart';
 import 'package:tmdb_flutter_app/features/home/data/repositories/home_repository_impl.dart';
 import 'package:tmdb_flutter_app/features/home/domain/repositories/home_epository.dart';
+import 'package:tmdb_flutter_app/features/tv_shows/data/repositories/tv_shows_repository_impl.dart';
+import 'package:tmdb_flutter_app/features/tv_shows/domain/usecases/airing_today/airing_today_tv_shows_use_case.dart';
 import 'package:tmdb_flutter_app/tmdb_flutter_app.dart';
 
 import 'features/movies/data/repositories/movie_repository_impl.dart';
 import 'features/movies/domain/repositories/movie_repository.dart';
 import 'features/movies/domain/usecases/usecases.dart';
+import 'features/tv_shows/domain/usecases/airing_today/airing_today_tv_shows_use_case_impl.dart';
+import 'features/tv_shows/domain/usecases/usecases.dart';
+import 'features/tv_shows/domain/repositories/tv_shows_repository.dart';
 
 void main() {
   // Enables debug paint to see view shapes
@@ -60,6 +65,10 @@ void main() {
     () => HomeRepositoryImpl(dio: dio),
   );
 
+  GetIt.I.registerLazySingleton<TvShowsRepository>(
+    () => TvShowsRepositoryImpl(dio: dio),
+  );
+
   GetIt.I.registerLazySingleton<TrendingMoviesUseCase>(
     () => TrendingMoviesUseCaseImpl(repository: GetIt.I.get<MovieRepository>()),
   );
@@ -83,6 +92,22 @@ void main() {
 
   GetIt.I.registerLazySingleton<DiscoverContentUseCase>(
     () => DiscoverContentUseCaseImpl(repository: GetIt.I.get<HomeRepository>()),
+  );
+
+  GetIt.I.registerLazySingleton<TopRatedTvShowsUseCase>(
+        () => TopRatedTvShowsUseCaseImpl(repository: GetIt.I.get<TvShowsRepository>()),
+  );
+
+  GetIt.I.registerLazySingleton<PopularTvShowsUseCase>(
+        () => PopularTvShowsUseCaseImpl(repository: GetIt.I.get<TvShowsRepository>()),
+  );
+
+  GetIt.I.registerLazySingleton<TrendingTvShowsUseCase>(
+        () => TrendingTvShowsUseCaseImpl(repository: GetIt.I.get<TvShowsRepository>()),
+  );
+
+  GetIt.I.registerLazySingleton<AiringTodayTvShowsUseCase>(
+        () => AiringTodayTvShowsUseCaseImpl(repository: GetIt.I.get<TvShowsRepository>()),
   );
 
   FlutterError.onError = (details) =>

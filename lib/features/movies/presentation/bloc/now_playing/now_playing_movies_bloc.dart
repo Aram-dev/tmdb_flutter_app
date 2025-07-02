@@ -11,7 +11,7 @@ part 'now_playing_movies_event.dart';
 
 part 'now_playing_movies_state.dart';
 
-class NowPlayingMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
+class NowPlayingMoviesBloc extends Bloc<UiEvent, UiState> {
   NowPlayingMoviesBloc(this.nowPlayingMoviesUseCase)
     : super(NowPlayingMoviesInitial()) {
     on<LoadNowPlayingMovies>(_load);
@@ -22,7 +22,7 @@ class NowPlayingMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
 
   Future<void> _load(
     LoadNowPlayingMovies event,
-    Emitter<MoviesState> emit,
+    Emitter<UiState> emit,
   ) async {
     try {
       if (state is! NowPlayingMoviesLoaded) {
@@ -51,7 +51,7 @@ class NowPlayingMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
 
   Future<void> _onToggleSection(
       ToggleSection event,
-    Emitter<MoviesState> emit,
+    Emitter<UiState> emit,
   ) async {
     if (state is NowPlayingMoviesLoaded) {
       final currentState = state as NowPlayingMoviesLoaded;

@@ -18,6 +18,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   final List<Widget> widgetOptions = const [
     HomeScreen(),
     MoviesScreen(),
+    TvShowsScreen(),
     SearchScreen(),
     ActorsScreen(),
   ];
@@ -52,16 +53,21 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         showSelectedLabels: true,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
-        selectedFontSize: 20,
+        // selectedFontSize: 20,
+        selectedItemColor: Colors.green,
         selectedIconTheme: IconThemeData(color: Colors.green),
-        selectedItemColor: Colors.blueGrey,
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
         unselectedItemColor: Colors.grey,
+        unselectedIconTheme: IconThemeData(color: Colors.grey),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
           BottomNavigationBarItem(
             icon: Icon(Icons.local_movies_outlined),
             label: 'Movies',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.tv),
+            label: 'TV Shows',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
           BottomNavigationBarItem(

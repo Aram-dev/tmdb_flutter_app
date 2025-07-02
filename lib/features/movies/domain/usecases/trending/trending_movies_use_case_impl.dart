@@ -8,7 +8,7 @@ class TrendingMoviesUseCaseImpl extends TrendingMoviesUseCase {
   final MovieRepository repository;
 
   @override
-  Future<MoviesEntity> getTrendingMovies(
+  Future<MovieTvShowEntity> getTrendingMovies(
     String apiKey,
     String language,
     String timeWindow,

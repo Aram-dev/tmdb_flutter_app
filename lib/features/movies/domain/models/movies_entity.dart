@@ -7,8 +7,8 @@ import 'movie.dart';
 part 'movies_entity.g.dart';
 
 @JsonSerializable()
-class MoviesEntity extends Equatable {
-  const MoviesEntity({
+class MovieTvShowEntity extends Equatable {
+  const MovieTvShowEntity({
     required this.dates,
     required this.page,
     required this.results,

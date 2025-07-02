@@ -1,7 +1,7 @@
 import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dart';
 
 abstract class UpcomingMoviesUseCase {
-  Future<MoviesEntity> getUpcomingMovies(
+  Future<MovieTvShowEntity> getUpcomingMovies(
     int page,
     String apiKey,
     String region,

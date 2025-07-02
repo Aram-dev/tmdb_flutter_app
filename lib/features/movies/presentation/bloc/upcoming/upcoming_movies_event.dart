@@ -1,6 +1,6 @@
 part of 'upcoming_movies_bloc.dart';
 
-class LoadUpcomingMovies extends MoviesEvent {
+class LoadUpcomingMovies extends UiEvent {
   LoadUpcomingMovies({
     this.completer
   });
@@ -10,7 +10,7 @@ class LoadUpcomingMovies extends MoviesEvent {
   List<Object?> get props => [completer];
 }
 
-class ToggleUpcomingSection extends MoviesEvent {
+class ToggleUpcomingSection extends UiEvent {
   ToggleUpcomingSection({
     this.completer
   });

@@ -9,7 +9,7 @@ class PopularMoviesUseCaseImpl extends PopularMoviesUseCase {
   final MovieRepository repository;
 
   @override
-  Future<MoviesEntity> getPopularMovies(
+  Future<MovieTvShowEntity> getPopularMovies(
     int page,
     String apiKey,
     String region,

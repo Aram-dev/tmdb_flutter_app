@@ -1,27 +1,27 @@
 part of 'popular_movies_bloc.dart';
 
-class PopularMoviesInitial extends MoviesState {
+class PopularMoviesInitial extends UiState {
   @override
   List<Object?> get props => [];
 }
 
-class PopularMoviesLoading extends MoviesState {
+class PopularMoviesLoading extends UiState {
   @override
   List<Object?> get props => [];
 }
 
-class PopularMoviesLoaded extends MoviesState {
+class PopularMoviesLoaded extends UiState {
   PopularMoviesLoaded({
     required this.popularMovies, required this.isExpanded
   });
-  final MoviesEntity popularMovies;
+  final MovieTvShowEntity popularMovies;
   bool isExpanded = false;
 
   @override
   List<Object?> get props => [popularMovies, isExpanded];
 }
 
-class PopularMoviesLoadingFailure extends MoviesState {
+class PopularMoviesLoadingFailure extends UiState {
   PopularMoviesLoadingFailure({
     required this.exception
   });

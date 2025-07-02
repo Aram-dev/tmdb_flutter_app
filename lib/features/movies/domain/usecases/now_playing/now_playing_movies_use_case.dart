@@ -1,7 +1,7 @@
 import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dart';
 
 abstract class NowPlayingMoviesUseCase {
-  Future<MoviesEntity> getNowPlayingMovies(
+  Future<MovieTvShowEntity> getNowPlayingMovies(
     int page,
     String apiKey,
     String region,

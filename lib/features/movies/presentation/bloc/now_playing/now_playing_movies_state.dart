@@ -1,27 +1,27 @@
 part of 'now_playing_movies_bloc.dart';
 
-class NowPlayingMoviesInitial extends MoviesState {
+class NowPlayingMoviesInitial extends UiState {
   @override
   List<Object?> get props => [];
 }
 
-class NowPlayingMoviesLoading extends MoviesState {
+class NowPlayingMoviesLoading extends UiState {
   @override
   List<Object?> get props => [];
 }
 
-class NowPlayingMoviesLoaded extends MoviesState {
+class NowPlayingMoviesLoaded extends UiState {
   NowPlayingMoviesLoaded({
     required this.nowPlayingMovies, required this.isExpanded
   });
-  final MoviesEntity nowPlayingMovies;
+  final MovieTvShowEntity nowPlayingMovies;
   bool isExpanded = false;
 
   @override
   List<Object?> get props => [nowPlayingMovies, isExpanded];
 }
 
-class NowPlayingMoviesLoadingFailure extends MoviesState {
+class NowPlayingMoviesLoadingFailure extends UiState {
   NowPlayingMoviesLoadingFailure({
     required this.exception
   });

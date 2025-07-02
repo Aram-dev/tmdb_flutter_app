@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/models/movie.dart';
 import 'package:tmdb_flutter_app/features/common/common.dart';
 
-import '../bloc/upcoming/upcoming_movies_bloc.dart';
 import 'movie_card.dart';
 
 class MoviesSection extends StatefulWidget {
   final String? title;
   final bool isExpanded;
-  final MoviesState state;
+  final UiState state;
   final List<Movie> movies;
-  final void Function(MoviesEvent event) onToggleSection;
+  final void Function(UiEvent event) onToggleSection;
 
   const MoviesSection({
     super.key,

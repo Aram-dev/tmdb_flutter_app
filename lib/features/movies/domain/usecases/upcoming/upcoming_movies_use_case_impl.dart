@@ -9,7 +9,7 @@ class UpcomingMoviesUseCaseImpl extends UpcomingMoviesUseCase {
   final MovieRepository repository;
 
   @override
-  Future<MoviesEntity> getUpcomingMovies(
+  Future<MovieTvShowEntity> getUpcomingMovies(
     int page,
     String apiKey,
     String region,

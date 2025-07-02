@@ -1,6 +1,6 @@
 part of 'popular_movies_bloc.dart';
 
-class LoadPopularMovies extends MoviesEvent {
+class LoadPopularMovies extends UiEvent {
   LoadPopularMovies({
     this.completer
   });
@@ -10,7 +10,7 @@ class LoadPopularMovies extends MoviesEvent {
   List<Object?> get props => [completer];
 }
 
-class TogglePopularSection extends MoviesEvent {
+class TogglePopularSection extends UiEvent {
   TogglePopularSection({
     this.completer
   });

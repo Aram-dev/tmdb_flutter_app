@@ -12,7 +12,7 @@ class MovieRepositoryImpl extends MovieRepository {
 
   @override
   // Fetch trending movies. `timeWindow` can be "day" or "week".
-  Future<MoviesEntity> getTrendingMovies(
+  Future<MovieTvShowEntity> getTrendingMovies(
       String apiKey,
       String language,
       String timeWindow,
@@ -26,7 +26,7 @@ class MovieRepositoryImpl extends MovieRepository {
   }
 
   @override
-  Future<MoviesEntity> getPopularMovies(
+  Future<MovieTvShowEntity> getPopularMovies(
     int page,
     String apiKey,
     String region,
@@ -43,7 +43,7 @@ class MovieRepositoryImpl extends MovieRepository {
   }
 
   @override
-  Future<MoviesEntity> getNowPlayingMovies(
+  Future<MovieTvShowEntity> getNowPlayingMovies(
     int page,
     String apiKey,
     String region,
@@ -60,7 +60,7 @@ class MovieRepositoryImpl extends MovieRepository {
   }
 
   @override
-  Future<MoviesEntity> getUpcomingMovies(
+  Future<MovieTvShowEntity> getUpcomingMovies(
       int page,
       String apiKey,
       String region,
@@ -77,7 +77,7 @@ class MovieRepositoryImpl extends MovieRepository {
   }
 
   @override
-  Future<MoviesEntity> getTopRatedMovies(
+  Future<MovieTvShowEntity> getTopRatedMovies(
       int page,
       String apiKey,
       String region,
@@ -93,7 +93,7 @@ class MovieRepositoryImpl extends MovieRepository {
     return _fetchMoviesFromApi(endpoint, params);
   }
 
-  Future<MoviesEntity> _fetchMoviesFromApi(
+  Future<MovieTvShowEntity> _fetchMoviesFromApi(
     String endpoint,
     Map<String, Object> queryParams) async {
     final response = await dio.get(endpoint, queryParameters: queryParams);
@@ -107,7 +107,7 @@ class MovieRepositoryImpl extends MovieRepository {
     final totalPages = data.containsKey('total_pages') ? data['total_pages'] as int : null;
     final totalResults = data.containsKey('total_results') ? data['total_results'] as int : null;
 
-    final entity = MoviesEntity(
+    final entity = MovieTvShowEntity(
       dates: dates,
       page: page,
       results: results,

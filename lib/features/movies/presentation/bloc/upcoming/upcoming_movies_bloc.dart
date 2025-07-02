@@ -12,7 +12,7 @@ part 'upcoming_movies_event.dart';
 part 'upcoming_movies_state.dart';
 
 class UpcomingMoviesBloc
-    extends Bloc<MoviesEvent, MoviesState> {
+    extends Bloc<UiEvent, UiState> {
   UpcomingMoviesBloc(this.upcomingMoviesUseCase)
     : super(UpcomingMoviesInitial()) {
     on<LoadUpcomingMovies>(_load);
@@ -23,7 +23,7 @@ class UpcomingMoviesBloc
 
   Future<void> _load(
     LoadUpcomingMovies event,
-    Emitter<MoviesState> emit,
+    Emitter<UiState> emit,
   ) async {
     try {
       if (state is! UpcomingMoviesLoaded) {
@@ -42,7 +42,7 @@ class UpcomingMoviesBloc
 
   Future<void> _onToggleSection(
       ToggleSection event,
-      Emitter<MoviesState> emit,
+      Emitter<UiState> emit,
       ) async {
     if (state is UpcomingMoviesLoaded) {
       final currentState = state as UpcomingMoviesLoaded;

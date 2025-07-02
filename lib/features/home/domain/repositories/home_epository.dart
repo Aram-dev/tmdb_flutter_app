@@ -1,7 +1,7 @@
 import '../../../movies/domain/models/movies_entity.dart';
 
 abstract class HomeRepository {
-  Future<MoviesEntity> getDiscoverContent(
+  Future<MovieTvShowEntity> getDiscoverContent(
     int page,
     String apiKey,
     String language,

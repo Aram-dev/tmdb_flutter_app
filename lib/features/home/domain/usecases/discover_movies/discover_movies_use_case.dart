@@ -1,7 +1,7 @@
 import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dart';
 
 abstract class DiscoverContentUseCase {
-  Future<MoviesEntity> getDiscoverContent({
+  Future<MovieTvShowEntity> getDiscoverContent({
     required int page,
     required String apiKey,
     required String language,

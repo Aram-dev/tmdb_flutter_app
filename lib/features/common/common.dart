@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 
-abstract class MoviesEvent extends Equatable {}
+abstract class UiEvent extends Equatable {}
 
-abstract class MoviesState extends Equatable {}
+abstract class UiState extends Equatable {}
 
-class ToggleSection extends MoviesEvent {
+class ToggleSection extends UiEvent {
   ToggleSection({
     this.completer
   });

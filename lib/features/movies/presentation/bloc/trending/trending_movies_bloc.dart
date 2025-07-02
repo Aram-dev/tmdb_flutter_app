@@ -11,7 +11,7 @@ part 'trending_movies_event.dart';
 
 part 'trending_movies_state.dart';
 
-class TrendingMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
+class TrendingMoviesBloc extends Bloc<UiEvent, UiState> {
   TrendingMoviesBloc(this.trendingMoviesUseCase)
     : super(TrendingMoviesLoading()) {
     on<LoadTrendingMovies>(_load);
@@ -21,7 +21,7 @@ class TrendingMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
 
   Future<void> _load(
     LoadTrendingMovies event,
-    Emitter<MoviesState> emit,
+    Emitter<UiState> emit,
   ) async {
     try {
       if (state is! TrendingMoviesLoaded) {
@@ -30,12 +30,12 @@ class TrendingMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
       final trendingMovies = await trendingMoviesUseCase.getTrendingMovies(
         'bc0abeeb117c70b4a31a9b439dd7e981',
         'us-US',
-        event.selectedWindow,
+        event.selectedPeriod,
       );
       emit(
         TrendingMoviesLoaded(
           trendingMovies: trendingMovies,
-          currentWindow: event.selectedWindow,
+          currentWindow: event.selectedPeriod,
           isExpanded: true,
         ),
       );

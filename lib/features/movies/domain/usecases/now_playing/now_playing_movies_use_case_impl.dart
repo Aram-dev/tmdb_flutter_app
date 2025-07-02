@@ -9,7 +9,7 @@ class NowPlayingMoviesUseCaseImpl extends NowPlayingMoviesUseCase {
   final MovieRepository repository;
 
   @override
-  Future<MoviesEntity> getNowPlayingMovies(
+  Future<MovieTvShowEntity> getNowPlayingMovies(
     int page,
     String apiKey,
     String region,

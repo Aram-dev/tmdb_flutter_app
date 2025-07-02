@@ -6,8 +6,8 @@ part of 'movies_entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-MoviesEntity _$MoviesEntityFromJson(Map<String, dynamic> json) =>
-    MoviesEntity(
+MovieTvShowEntity _$MovieTvShowEntityFromJson(Map<String, dynamic> json) =>
+    MovieTvShowEntity(
       dates: json['dates'] == null
           ? null
           : MoviesDates.fromJson(json['dates'] as Map<String, dynamic>),
@@ -19,7 +19,7 @@ MoviesEntity _$MoviesEntityFromJson(Map<String, dynamic> json) =>
       totalResults: (json['total_results'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$MoviesEntityToJson(MoviesEntity instance) =>
+Map<String, dynamic> _$MovieTvShowEntityToJson(MovieTvShowEntity instance) =>
     <String, dynamic>{
       'dates': instance.dates,
       'page': instance.page,

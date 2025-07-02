@@ -1,27 +1,27 @@
 part of 'discover_movies_bloc.dart';
 
-class DiscoverMoviesInitial extends MoviesState {
+class DiscoverMoviesInitial extends UiState {
   @override
   List<Object?> get props => [];
 }
 
-class DiscoverContentLoading extends MoviesState {
+class DiscoverContentLoading extends UiState {
   @override
   List<Object?> get props => [];
 }
 
-class DiscoverContentLoaded extends MoviesState {
+class DiscoverContentLoaded extends UiState {
   DiscoverContentLoaded({
     required this.discoverMovies, required this.isExpanded
   });
-  final MoviesEntity discoverMovies;
+  final MovieTvShowEntity discoverMovies;
   bool isExpanded = false;
 
   @override
   List<Object?> get props => [discoverMovies, isExpanded];
 }
 
-class DiscoverContentLoadingFailure extends MoviesState {
+class DiscoverContentLoadingFailure extends UiState {
   DiscoverContentLoadingFailure({
     required this.exception
   });

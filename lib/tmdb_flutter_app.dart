@@ -34,5 +34,4 @@ class _TmdbFlutterAppState extends State<TmdbFlutterApp> {
       ),
     );
   }
-
 }

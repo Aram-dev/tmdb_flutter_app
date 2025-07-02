@@ -1,6 +1,6 @@
 part of 'now_playing_movies_bloc.dart';
 
-class LoadNowPlayingMovies extends MoviesEvent {
+class LoadNowPlayingMovies extends UiEvent {
   LoadNowPlayingMovies({
     this.completer
   });
@@ -10,7 +10,7 @@ class LoadNowPlayingMovies extends MoviesEvent {
   List<Object?> get props => [completer];
 }
 
-class ToggleNowPlayingSection extends MoviesEvent {
+class ToggleNowPlayingSection extends UiEvent {
   ToggleNowPlayingSection({
     this.completer
   });

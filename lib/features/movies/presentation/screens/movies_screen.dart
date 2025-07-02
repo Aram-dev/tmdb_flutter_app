@@ -10,7 +10,7 @@ import '../../domain/usecases/usecases.dart';
 
 import '../../presentation/bloc/bloc.dart';
 import '../../../common/common.dart';
-import '../widgets/movie_card.dart';
+import '../widgets/trending_movies_section.dart';
 
 @RoutePage()
 class MoviesScreen extends StatefulWidget {
@@ -37,7 +37,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
 
   @override
   void initState() {
-    _trendingMoviesBloc.add(LoadTrendingMovies(selectedWindow: 'day'));
+    _trendingMoviesBloc.add(LoadTrendingMovies(selectedPeriod: 'day', contentTypeId: 'movie'));
     _popularMoviesBloc.add(LoadPopularMovies());
     _nowPlayingMoviesBloc.add(LoadNowPlayingMovies());
     _upcomingMoviesBloc.add(LoadUpcomingMovies());
@@ -46,263 +46,165 @@ class _MoviesScreenState extends State<MoviesScreen> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => BlocBuilder<TrendingMoviesBloc, MoviesState>(
-    bloc: _trendingMoviesBloc,
-    builder: (context, state) {
-      if (state is TrendingMoviesLoading) {
-        // Show a placeholder while loading
-        return Center(child: CircularProgressIndicator());
-      } else {
-        return Scaffold(
-          // resizeToAvoidBottomInset: true,
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 8.0,
+  Widget build(BuildContext context) =>
+      BlocBuilder<TrendingMoviesBloc, UiState>(
+        bloc: _trendingMoviesBloc,
+        builder: (context, state) {
+          if (state is TrendingMoviesLoading) {
+            // Show a placeholder while loading
+            return Center(child: CircularProgressIndicator());
+          } else {
+            return Scaffold(
+              // resizeToAvoidBottomInset: true,
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 8.0,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Trending Section
+                      BlocBuilder<TrendingMoviesBloc, UiState>(
+                        bloc: _trendingMoviesBloc,
+                        builder: (context, state) {
+                          if (state is TrendingMoviesLoaded) {
+                            return TrendingMoviesSection(
+                              title: "Trending",
+                              currentWindow: state.currentWindow,
+                              movies:
+                                  state.trendingMovies.results ??
+                                  List.empty(growable: false),
+                              onPeriodChange: (event) =>
+                                  _trendingMoviesBloc.add(event),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Popular Section
+                      BlocBuilder<PopularMoviesBloc, UiState>(
+                        bloc: _popularMoviesBloc,
+                        builder: (context, state) {
+                          bool isExpanded = false;
+                          List<Movie> movies = []; // default
+                          if (state is PopularMoviesLoading) {
+                            isExpanded = false;
+                            movies = [];
+                          }
+                          if (state is PopularMoviesLoaded) {
+                            isExpanded = state.isExpanded;
+                            movies =
+                                state.popularMovies.results ??
+                                List.empty(growable: false);
+                          }
+
+                          return MoviesSection(
+                            title: "Popular",
+                            state: state,
+                            movies: movies,
+                            isExpanded: isExpanded,
+                            onToggleSection: (event) =>
+                                _popularMoviesBloc.add(event),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Now Playing Section (Collapsible)
+                      BlocBuilder<NowPlayingMoviesBloc, UiState>(
+                        bloc: _nowPlayingMoviesBloc,
+                        builder: (context, state) {
+                          // Always show the header
+                          bool isExpanded = false;
+                          List<Movie> movies = []; // default
+                          if (state is NowPlayingMoviesLoaded) {
+                            isExpanded = state.isExpanded;
+                            movies =
+                                state.nowPlayingMovies.results ??
+                                List.empty(growable: false);
+                          }
+                          if (state is NowPlayingMoviesLoading) {
+                            isExpanded = false;
+                            movies = [];
+                          }
+                          return MoviesSection(
+                            title: "Now Playing",
+                            state: state,
+                            movies: movies,
+                            isExpanded: isExpanded,
+                            onToggleSection: (event) =>
+                                _nowPlayingMoviesBloc.add(event),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Upcoming Section (Collapsible)
+                      BlocBuilder<UpcomingMoviesBloc, UiState>(
+                        bloc: _upcomingMoviesBloc,
+                        builder: (context, state) {
+                          bool isExpanded = false;
+                          List<Movie> movies = [];
+                          if (state is UpcomingMoviesLoaded) {
+                            isExpanded = state.isExpanded;
+                            movies =
+                                state.upcomingMovies.results ??
+                                List.empty(growable: false);
+                          }
+                          if (state is UpcomingMoviesLoading) {
+                            isExpanded = false;
+                            movies = List.empty();
+                          }
+                          return MoviesSection(
+                            title: "Upcoming",
+                            state: state,
+                            movies: movies,
+                            isExpanded: isExpanded,
+                            onToggleSection: (event) =>
+                                _upcomingMoviesBloc.add(event),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Top Rated Section (Collapsible)
+                      BlocBuilder<TopRatedMoviesBloc, UiState>(
+                        bloc: _topRatedMoviesBloc,
+                        builder: (context, state) {
+                          bool isExpanded = false;
+                          List<Movie> movies = [];
+                          if (state is TopRatedMoviesLoaded) {
+                            isExpanded = state.isExpanded;
+                            movies =
+                                state.topRatedMovies.results ??
+                                List.empty(growable: false);
+                          }
+                          if (state is TopRatedMoviesLoading) {
+                            isExpanded = false;
+                            movies = [];
+                          }
+                          return MoviesSection(
+                            title: "Top Rated",
+                            state: state,
+                            movies: movies,
+                            isExpanded: isExpanded,
+                            onToggleSection: (event) =>
+                                _topRatedMoviesBloc.add(event),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Trending Section
-                  BlocBuilder<TrendingMoviesBloc, MoviesState>(
-                    bloc: _trendingMoviesBloc,
-                    builder: (context, state) {
-                      if (state is TrendingMoviesLoaded) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                const Text(
-                                  "Trending",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const Spacer(),
-                                AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 100),
-                                  child: ToggleButtons(
-                                    key: ValueKey(state.currentWindow),
-                                    borderRadius: BorderRadius.circular(20),
-                                    constraints: const BoxConstraints(
-                                      minHeight: 22,
-                                      minWidth: 64,
-                                    ),
-                                    borderColor: Colors.grey,
-                                    selectedBorderColor: Colors.blue,
-                                    selectedColor: Colors.white,
-                                    fillColor: Colors.blue,
-                                    color: Colors.grey,
-                                    isSelected: [
-                                      state.currentWindow == 'day',
-                                      state.currentWindow == 'week',
-                                    ],
-                                    onPressed: (index) {
-                                      final selectedWindow = index == 0
-                                          ? 'day'
-                                          : 'week';
-                                      if (selectedWindow ==
-                                          state.currentWindow) {
-                                        return;
-                                      }
-                                      _trendingMoviesBloc.add(
-                                        LoadTrendingMovies(
-                                          selectedWindow: selectedWindow,
-                                        ),
-                                      );
-                                    },
-                                    children: const [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                        ),
-                                        child: Text(
-                                          "Today",
-                                          style: TextStyle(fontSize: 10),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                        ),
-                                        child: Text(
-                                          "This Week",
-                                          style: TextStyle(fontSize: 10),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 400),
-                              transitionBuilder: (child, animation) =>
-                                  FadeTransition(
-                                    opacity: animation,
-                                    child: SlideTransition(
-                                      position: Tween<Offset>(
-                                        begin: const Offset(0.1, 0),
-                                        end: Offset.zero,
-                                      ).animate(animation),
-                                      child: child,
-                                    ),
-                                  ),
-
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: state.trendingMovies.results!
-                                      .map(
-                                        (movie) => Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 12.0,
-                                          ),
-                                          child: MovieCard(
-                                            movie: movie,
-                                          ), // your MovieCard as you wrote above
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Popular Section
-                  BlocBuilder<PopularMoviesBloc, MoviesState>(
-                    bloc: _popularMoviesBloc,
-                    builder: (context, state) {
-                      bool isExpanded = false;
-                      List<Movie> movies = []; // default
-                      if (state is PopularMoviesLoading) {
-                        isExpanded = false;
-                        movies = [];
-                      }
-                      if (state is PopularMoviesLoaded) {
-                        isExpanded = state.isExpanded;
-                        movies =
-                            state.popularMovies.results ??
-                            List.empty(growable: false);
-                      }
-
-                      return MoviesSection(
-                        title: "Popular",
-                        state: state,
-                        movies: movies,
-                        isExpanded: isExpanded,
-                        onToggleSection: (event) =>
-                            _popularMoviesBloc.add(event),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Now Playing Section (Collapsible)
-                  BlocBuilder<NowPlayingMoviesBloc, MoviesState>(
-                    bloc: _nowPlayingMoviesBloc,
-                    builder: (context, state) {
-                      // Always show the header
-                      bool isExpanded = false;
-                      List<Movie> movies = []; // default
-                      if (state is NowPlayingMoviesLoaded) {
-                        isExpanded = state.isExpanded;
-                        movies =
-                            state.nowPlayingMovies.results ??
-                            List.empty(growable: false);
-                      }
-                      if (state is NowPlayingMoviesLoading) {
-                        isExpanded = false;
-                        movies = [];
-                      }
-                      return MoviesSection(
-                        title: "Now Playing",
-                        state: state,
-                        movies: movies,
-                        isExpanded: isExpanded,
-                        onToggleSection: (event) =>
-                            _nowPlayingMoviesBloc.add(event),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Upcoming Section (Collapsible)
-                  BlocBuilder<UpcomingMoviesBloc, MoviesState>(
-                    bloc: _upcomingMoviesBloc,
-                    builder: (context, state) {
-                      bool isExpanded = false;
-                      List<Movie> movies = [];
-                      if (state is UpcomingMoviesLoaded) {
-                        isExpanded = state.isExpanded;
-                        movies =
-                            state.upcomingMovies.results ??
-                            List.empty(growable: false);
-                      }
-                      if (state is UpcomingMoviesLoading) {
-                        isExpanded = false;
-                        movies = List.empty();
-                      }
-                      return MoviesSection(
-                        title: "Upcoming",
-                        state: state,
-                        movies: movies,
-                        isExpanded: isExpanded,
-                        onToggleSection: (event) =>
-                            _upcomingMoviesBloc.add(event),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Top Rated Section (Collapsible)
-                  BlocBuilder<TopRatedMoviesBloc, MoviesState>(
-                    bloc: _topRatedMoviesBloc,
-                    builder: (context, state) {
-                      bool isExpanded = false;
-                      List<Movie> movies = [];
-                      if (state is TopRatedMoviesLoaded) {
-                        isExpanded = state.isExpanded;
-                        movies =
-                            state.topRatedMovies.results ??
-                            List.empty(growable: false);
-                      }
-                      if (state is TopRatedMoviesLoading) {
-                        isExpanded = false;
-                        movies = [];
-                      }
-                      return MoviesSection(
-                        title: "Top Rated",
-                        state: state,
-                        movies: movies,
-                        isExpanded: isExpanded,
-                        onToggleSection: (event) =>
-                            _topRatedMoviesBloc.add(event),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }
-    },
-  );
+            );
+          }
+        },
+      );
 }

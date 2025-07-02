@@ -2,34 +2,34 @@ import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dar
 
 abstract class MovieRepository {
 
-  Future<MoviesEntity> getTrendingMovies(
+  Future<MovieTvShowEntity> getTrendingMovies(
       String apiKey,
       String language,
       String timeWindow,
       );
 
-  Future<MoviesEntity> getPopularMovies(
+  Future<MovieTvShowEntity> getPopularMovies(
     int page,
     String apiKey,
     String region,
     String language,
   );
 
-  Future<MoviesEntity> getNowPlayingMovies(
+  Future<MovieTvShowEntity> getNowPlayingMovies(
     int page,
     String apiKey,
     String region,
     String language,
   );
 
-  Future<MoviesEntity> getUpcomingMovies(
+  Future<MovieTvShowEntity> getUpcomingMovies(
       int page,
       String apiKey,
       String region,
       String language,
       );
 
-  Future<MoviesEntity> getTopRatedMovies(
+  Future<MovieTvShowEntity> getTopRatedMovies(
       int page,
       String apiKey,
       String region,

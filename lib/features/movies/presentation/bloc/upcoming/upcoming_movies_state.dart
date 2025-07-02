@@ -1,27 +1,27 @@
 part of 'upcoming_movies_bloc.dart';
 
-class UpcomingMoviesInitial extends MoviesState {
+class UpcomingMoviesInitial extends UiState {
   @override
   List<Object?> get props => [];
 }
 
-class UpcomingMoviesLoading extends MoviesState {
+class UpcomingMoviesLoading extends UiState {
   @override
   List<Object?> get props => [];
 }
 
-class UpcomingMoviesLoaded extends MoviesState {
+class UpcomingMoviesLoaded extends UiState {
   UpcomingMoviesLoaded({
     required this.upcomingMovies, required this.isExpanded
   });
-  final MoviesEntity upcomingMovies;
+  final MovieTvShowEntity upcomingMovies;
   bool isExpanded = false;
 
   @override
   List<Object?> get props => [upcomingMovies, isExpanded];
 }
 
-class UpcomingMoviesLoadingFailure extends MoviesState {
+class UpcomingMoviesLoadingFailure extends UiState {
   UpcomingMoviesLoadingFailure({
     required this.exception
   });

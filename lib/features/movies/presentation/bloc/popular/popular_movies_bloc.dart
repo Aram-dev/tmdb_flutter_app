@@ -10,7 +10,7 @@ part 'popular_movies_event.dart';
 
 part 'popular_movies_state.dart';
 
-class PopularMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
+class PopularMoviesBloc extends Bloc<UiEvent, UiState> {
   PopularMoviesBloc(this.popularMoviesUseCase) : super(PopularMoviesInitial()) {
     on<LoadPopularMovies>(_load);
     on<ToggleSection>(_onToggleSection);
@@ -18,7 +18,7 @@ class PopularMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
 
   final PopularMoviesUseCase popularMoviesUseCase;
 
-  Future<void> _load(LoadPopularMovies event, Emitter<MoviesState> emit) async {
+  Future<void> _load(LoadPopularMovies event, Emitter<UiState> emit) async {
     try {
       if (state is! PopularMoviesLoaded) {
         emit(PopularMoviesLoading());
@@ -42,7 +42,7 @@ class PopularMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
 
   Future<void> _onToggleSection(
     ToggleSection event,
-    Emitter<MoviesState> emit,
+    Emitter<UiState> emit,
   ) async {
     if (state is PopularMoviesLoaded) {
       final currentState = state as PopularMoviesLoaded;

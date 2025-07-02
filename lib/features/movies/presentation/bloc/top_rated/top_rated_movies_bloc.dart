@@ -12,7 +12,7 @@ part 'top_rated_movies_event.dart';
 part 'top_rated_movies_state.dart';
 
 class TopRatedMoviesBloc
-    extends Bloc<MoviesEvent, MoviesState> {
+    extends Bloc<UiEvent, UiState> {
   TopRatedMoviesBloc(this.topRatedMoviesUseCase)
     : super(TopRatedMoviesInitial()) {
     on<LoadTopRatedMovies>(_load);
@@ -23,7 +23,7 @@ class TopRatedMoviesBloc
 
   Future<void> _load(
     LoadTopRatedMovies event,
-    Emitter<MoviesState> emit,
+    Emitter<UiState> emit,
   ) async {
     try {
       if (state is! TopRatedMoviesLoaded) {
@@ -42,7 +42,7 @@ class TopRatedMoviesBloc
 
   Future<void> _onToggleSection(
       ToggleSection event,
-      Emitter<MoviesState> emit,
+      Emitter<UiState> emit,
       ) async {
     if (state is TopRatedMoviesLoaded) {
       final currentState = state as TopRatedMoviesLoaded;

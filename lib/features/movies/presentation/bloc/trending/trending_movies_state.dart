@@ -1,28 +1,28 @@
 part of 'trending_movies_bloc.dart';
 
-class TrendingMoviesInitial extends MoviesState {
+class TrendingMoviesInitial extends UiState {
   @override
   List<Object?> get props => [];
 }
 
-class TrendingMoviesLoading extends MoviesState {
+class TrendingMoviesLoading extends UiState {
   @override
   List<Object?> get props => [];
 }
 
-class TrendingMoviesLoaded extends MoviesState {
+class TrendingMoviesLoaded extends UiState {
   TrendingMoviesLoaded({
     required this.trendingMovies, required this.currentWindow, required this.isExpanded
   });
-  final MoviesEntity trendingMovies;
-  String currentWindow;
-  bool isExpanded = false;
+  final MovieTvShowEntity trendingMovies;
+  final String currentWindow;
+  final bool isExpanded;
 
   @override
   List<Object?> get props => [trendingMovies, currentWindow, isExpanded];
 }
 
-class TrendingMoviesLoadingFailure extends MoviesState {
+class TrendingMoviesLoadingFailure extends UiState {
   TrendingMoviesLoadingFailure({
     required this.exception
   });

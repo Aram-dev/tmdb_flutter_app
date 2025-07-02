@@ -1,6 +1,6 @@
 part of 'discover_movies_bloc.dart';
 
-class LoadDiscoverContent extends MoviesEvent {
+class LoadDiscoverContent extends UiEvent {
   LoadDiscoverContent({
     this.completer,
     required this.category
@@ -12,7 +12,7 @@ class LoadDiscoverContent extends MoviesEvent {
   List<Object?> get props => [completer, category];
 }
 
-class ToggleDiscoverSection extends MoviesEvent {
+class ToggleDiscoverSection extends UiEvent {
   ToggleDiscoverSection({
     this.completer
   });

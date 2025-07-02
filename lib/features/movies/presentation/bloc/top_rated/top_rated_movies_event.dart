@@ -1,6 +1,6 @@
 part of 'top_rated_movies_bloc.dart';
 
-class LoadTopRatedMovies extends MoviesEvent {
+class LoadTopRatedMovies extends UiEvent {
   LoadTopRatedMovies({
     this.completer
   });
@@ -10,7 +10,7 @@ class LoadTopRatedMovies extends MoviesEvent {
   List<Object?> get props => [completer];
 }
 
-class ToggleTopRatedSection extends MoviesEvent {
+class ToggleTopRatedSection extends UiEvent {
   ToggleTopRatedSection({
     this.completer
   });
