@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -39,6 +40,12 @@ class TrendingMoviesBloc extends Bloc<UiEvent, UiState> {
           isExpanded: true,
         ),
       );
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError) {
+        emit(ConnectionFailure(exception: e));
+      } else {
+        emit(TrendingMoviesLoadingFailure(exception: e));
+      }
     } catch (e, st) {
       emit(TrendingMoviesLoadingFailure(exception: e));
       GetIt.I<Talker>().handle(e, st);

@@ -15,6 +15,7 @@ import 'package:tmdb_flutter_app/features/tv_shows/data/repositories/tv_shows_re
 import 'package:tmdb_flutter_app/features/tv_shows/domain/usecases/airing_today/airing_today_tv_shows_use_case.dart';
 import 'package:tmdb_flutter_app/tmdb_flutter_app.dart';
 
+import 'core/connection/internet_connection_checker.dart';
 import 'features/movies/data/repositories/movie_repository_impl.dart';
 import 'features/movies/domain/repositories/movie_repository.dart';
 import 'features/movies/domain/usecases/usecases.dart';
@@ -40,14 +41,15 @@ void main() {
       receiveTimeout: const Duration(seconds: 10),
     ),
   );
-  dio.interceptors.add(
+  dio.interceptors.addAll([
+    ConnectionInterceptor(),
     TalkerDioLogger(
       settings: TalkerDioLoggerSettings(
         printRequestData: true,
         printResponseData: true,
       ),
     ),
-  );
+  ]);
 
   Bloc.observer = TalkerBlocObserver(
     talker: talker,

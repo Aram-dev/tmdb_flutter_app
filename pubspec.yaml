@@ -45,8 +45,10 @@ dependencies:
   hive_flutter: ^1.1.0
   talker_flutter: ^4.8.3
   json_annotation: ^4.9.0
-  talker_dio_logger: ^4.8.3
-  talker_bloc_logger: ^4.8.3
+  connectivity_plus: ^6.1.4
+  talker_dio_logger: ^4.9.2
+  talker_bloc_logger: ^4.9.2
+  internet_connection_checker: ^3.0.1
 
 dev_dependencies:
   flutter_test:

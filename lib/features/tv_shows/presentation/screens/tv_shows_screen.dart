@@ -2,11 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:tmdb_flutter_app/features/movies/presentation/widgets/movies_section.dart';
 import 'package:tmdb_flutter_app/features/tv_shows/presentation/bloc/airing_today/airing_today_tv_shows_bloc.dart';
+import 'package:tmdb_flutter_app/features/tv_shows/presentation/widgets/tv_shows_screen_content.dart';
 
-import '../../../movies/presentation/widgets/trending_tv_shows_section.dart';
-import '../../domain/usecases/airing_today/airing_today_tv_shows_use_case.dart';
+import '../../../../core/connection/no_internet_dialog.dart';
 import '../../domain/usecases/usecases.dart';
 
 import '../../../common/common.dart';
@@ -23,159 +22,64 @@ class TvShowsScreen extends StatefulWidget {
 }
 
 class _TvShowsScreenState extends State<TvShowsScreen> {
-  final _trendingTvShowsBloc = TrendingTvShowsBloc(
-    GetIt.I<TrendingTvShowsUseCase>(),
-  );
-  final _popularTvShowsBloc = PopularTvShowsBloc(
-    GetIt.I<PopularTvShowsUseCase>(),
-  );
-  final _topRatedTvShowsBloc = TopRatedTvShowsBloc(
-    GetIt.I<TopRatedTvShowsUseCase>(),
-  );
-  final _airingTodayTvShowsBloc = AiringTodayTvShowsBloc(
-    GetIt.I<AiringTodayTvShowsUseCase>(),
-  );
+  bool _dialogShown = false;
 
   @override
-  void initState() {
-    _trendingTvShowsBloc.add(LoadTrendingTvShows(selectedPeriod: 'day'));
-    _popularTvShowsBloc.add(LoadPopularTvShows());
-    _topRatedTvShowsBloc.add(LoadTopRatedTvShows());
-    _airingTodayTvShowsBloc.add(LoadAiringTodayTvShows());
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<TrendingTvShowsBloc, UiState>(
-        bloc: _trendingTvShowsBloc,
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<TrendingTvShowsBloc>(
+          create: (context) =>
+              TrendingTvShowsBloc(GetIt.I<TrendingTvShowsUseCase>())
+                ..add(LoadTrendingTvShows(selectedPeriod: 'day')),
+        ),
+        BlocProvider<PopularTvShowsBloc>(
+          create: (context) =>
+          PopularTvShowsBloc(GetIt.I<PopularTvShowsUseCase>())
+                ..add(LoadPopularTvShows()),
+        ),
+        BlocProvider<TopRatedTvShowsBloc>(
+          create: (context) =>
+          TopRatedTvShowsBloc(GetIt.I<TopRatedTvShowsUseCase>())
+                ..add(LoadTopRatedTvShows()),
+        ),
+        BlocProvider<AiringTodayTvShowsBloc>(
+          create: (context) =>
+          AiringTodayTvShowsBloc(GetIt.I<AiringTodayTvShowsUseCase>())
+                ..add(LoadAiringTodayTvShows()),
+        )
+      ],
+      child: BlocBuilder<TrendingTvShowsBloc, UiState>(
         builder: (context, state) {
           if (state is TrendingTvShowsLoading) {
-            // Show a placeholder while loading
-            return Center(child: CircularProgressIndicator());
+            _dialogShown = false; // Reset when loading starts
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is TrendingTvShowsLoaded) {
+            _dialogShown = false; // Reset when loading starts
+            return const TvShowsScreenContent();
+          } else if (state is ConnectionFailure) {
+            if (!_dialogShown) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                showNoInternetDialog(
+                  context,
+                  onRetry: () {
+                    // Optional: Add your retry logic here!
+                    context.read<TrendingTvShowsBloc>().add(
+                      LoadTrendingTvShows(selectedPeriod: 'day'),
+                    );
+                  },
+                );
+              });
+              _dialogShown = true;
+            }
+            return const SizedBox.shrink();
           } else {
-            return Scaffold(
-              // resizeToAvoidBottomInset: true,
-              body: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8.0,
-                    horizontal: 8.0,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Trending Section
-                      BlocBuilder<TrendingTvShowsBloc, UiState>(
-                        bloc: _trendingTvShowsBloc,
-                        builder: (context, state) {
-                          if (state is TrendingTvShowsLoaded) {
-                            return TrendingTvShowsSection(
-                              title: "Trending",
-                              currentWindow: state.currentWindow,
-                              tvShows:
-                                  state.trendingContent.results ??
-                                  List.empty(growable: false),
-                              onPeriodChange: (event) =>
-                                  _trendingTvShowsBloc.add(event),
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Popular Section
-                      BlocBuilder<PopularTvShowsBloc, UiState>(
-                        bloc: _popularTvShowsBloc,
-                        builder: (context, state) {
-                          bool isExpanded = false;
-                          List<Movie> movies = []; // default
-                          if (state is PopularTvShowsLoading) {
-                            isExpanded = false;
-                            movies = [];
-                          }
-                          if (state is PopularTvShowsLoaded) {
-                            isExpanded = state.isExpanded;
-                            movies =
-                                state.popularTvShows.results ??
-                                List.empty(growable: false);
-                          }
-
-                          return MoviesSection(
-                            title: "Popular",
-                            state: state,
-                            movies: movies,
-                            isExpanded: isExpanded,
-                            onToggleSection: (event) =>
-                                _popularTvShowsBloc.add(event),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Top Rated Section (Collapsible)
-                      BlocBuilder<TopRatedTvShowsBloc, UiState>(
-                        bloc: _topRatedTvShowsBloc,
-                        builder: (context, state) {
-                          bool isExpanded = false;
-                          List<Movie> movies = [];
-                          if (state is TopRatedTvShowsLoaded) {
-                            isExpanded = state.isExpanded;
-                            movies =
-                                state.topRatedTvShows.results ??
-                                List.empty(growable: false);
-                          }
-                          if (state is TopRatedTvShowsLoading) {
-                            isExpanded = false;
-                            movies = [];
-                          }
-                          return MoviesSection(
-                            title: "Top Rated",
-                            state: state,
-                            movies: movies,
-                            isExpanded: isExpanded,
-                            onToggleSection: (event) =>
-                                _topRatedTvShowsBloc.add(event),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Top Rated Section (Collapsible)
-                      BlocBuilder<AiringTodayTvShowsBloc, UiState>(
-                        bloc: _airingTodayTvShowsBloc,
-                        builder: (context, state) {
-                          bool isExpanded = false;
-                          List<Movie> movies = [];
-                          if (state is AiringTodayTvShowsLoaded) {
-                            isExpanded = state.isExpanded;
-                            movies =
-                                state.airingTodayTvShows.results ??
-                                    List.empty(growable: false);
-                          }
-                          if (state is TopRatedTvShowsLoading) {
-                            isExpanded = false;
-                            movies = [];
-                          }
-                          return MoviesSection(
-                            title: "Airing Today",
-                            state: state,
-                            movies: movies,
-                            isExpanded: isExpanded,
-                            onToggleSection: (event) =>
-                                _airingTodayTvShowsBloc.add(event),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+            return const Center(
+              child: Text('Something went wrong. Please try again.'),
             );
           }
         },
-      );
+      ),
+    );
+  }
 }

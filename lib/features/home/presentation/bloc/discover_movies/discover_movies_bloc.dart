@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -32,6 +33,12 @@ class DiscoverContentBloc extends Bloc<UiEvent, UiState> {
       emit(
         DiscoverContentLoaded(discoverMovies: discoverContent, isExpanded: false),
       );
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError) {
+        emit(ConnectionFailure(exception: e));
+      } else {
+        emit(DiscoverContentLoadingFailure(exception: e));
+      }
     } catch (e, st) {
       emit(DiscoverContentLoadingFailure(exception: e));
       GetIt.I<Talker>().handle(e, st);
