@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
@@ -20,6 +21,7 @@ class TopRatedMoviesBloc
   }
 
   final TopRatedMoviesUseCase topRatedMoviesUseCase;
+  String apiKey = dotenv.env['PERSONAL_TMDB_API_KEY']!;
 
   Future<void> _load(
     LoadTopRatedMovies event,
@@ -30,7 +32,7 @@ class TopRatedMoviesBloc
         emit(TopRatedMoviesLoading());
       }
       final topRatedMovies = await topRatedMoviesUseCase
-          .getTopRatedMovies(1, 'bc0abeeb117c70b4a31a9b439dd7e981', 'US', 'us-US');
+          .getTopRatedMovies(1, apiKey, 'US', 'us-US');
       emit(TopRatedMoviesLoaded(topRatedMovies: topRatedMovies, isExpanded: false));
     } catch (e, st) {
       emit(TopRatedMoviesLoadingFailure(exception: e));

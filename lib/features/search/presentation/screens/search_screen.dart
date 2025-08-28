@@ -10,6 +10,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderStateMixin {
+  final int _bottomIndex = 1;
   late TabController _tabController;
   final TextEditingController _searchCtrl = TextEditingController();
 
@@ -49,18 +50,16 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
             ),
           ),
           // Tabs (Search, Find by ID)
-          Container(
-            child: TabBar(
-              controller: _tabController,
-              labelColor: Color(0xFF92B9F5),
-              unselectedLabelColor: Colors.blueGrey[100],
-              indicatorColor: Color(0xFF92B9F5),
-              indicatorWeight: 3,
-              tabs: [
-                Tab(text: 'Search'),
-                Tab(text: 'Find by ID'),
-              ],
-            ),
+          TabBar(
+            controller: _tabController,
+            labelColor: Color(0xFF92B9F5),
+            unselectedLabelColor: Colors.blueGrey[100],
+            indicatorColor: Color(0xFF92B9F5),
+            indicatorWeight: 3,
+            tabs: [
+              Tab(text: 'Search'),
+              Tab(text: 'Find by ID'),
+            ],
           ),
           // Search Field
           Padding(

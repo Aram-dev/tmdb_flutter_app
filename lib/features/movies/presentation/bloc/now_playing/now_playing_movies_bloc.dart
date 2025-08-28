@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
@@ -19,6 +20,7 @@ class NowPlayingMoviesBloc extends Bloc<UiEvent, UiState> {
   }
 
   final NowPlayingMoviesUseCase nowPlayingMoviesUseCase;
+  String apiKey = dotenv.env['PERSONAL_TMDB_API_KEY']!;
 
   Future<void> _load(
     LoadNowPlayingMovies event,
@@ -28,10 +30,11 @@ class NowPlayingMoviesBloc extends Bloc<UiEvent, UiState> {
       if (state is! NowPlayingMoviesLoaded) {
         emit(NowPlayingMoviesLoading());
       }
+
       final nowPlayingMovies = await nowPlayingMoviesUseCase
           .getNowPlayingMovies(
             1,
-            'bc0abeeb117c70b4a31a9b439dd7e981',
+            apiKey,
             'US',
             'us-US',
           );

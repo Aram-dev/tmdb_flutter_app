@@ -1,22 +1,23 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'movie.g.dart';
+part 'actors_list_result_known_for.g.dart';
 
 @JsonSerializable()
-class Movie extends Equatable {
-  const Movie({
+class ActorsListResultsKnownFor extends Equatable {
+  const ActorsListResultsKnownFor({
     required this.adult,
     required this.backdropPath,
-    required this.genreIds,
     required this.id,
-    required this.originalLanguage,
+    required this.title,
     required this.originalTitle,
     required this.overview,
-    required this.popularity,
     required this.posterPath,
+    required this.mediaType,
+    required this.originalLanguage,
+    required this.genreIds,
+    required this.popularity,
     required this.releaseDate,
-    required this.title,
     required this.video,
     required this.voteAverage,
     required this.voteCount,
@@ -25,46 +26,49 @@ class Movie extends Equatable {
   final bool? adult;
   @JsonKey(name: "backdrop_path")
   final String? backdropPath;
-  @JsonKey(name: "genre_ids")
-  final List<int>? genreIds;
   final int? id;
-  @JsonKey(name: "original_language")
-  final String? originalLanguage;
+  final String? title;
   @JsonKey(name: "original_title")
   final String? originalTitle;
   final String? overview;
-  final double? popularity;
   @JsonKey(name: "poster_path")
   final String? posterPath;
+  @JsonKey(name: "media_type")
+  final String? mediaType;
+  @JsonKey(name: "original_language")
+  final String? originalLanguage;
+  @JsonKey(name: "genre_ids")
+  final List<int>? genreIds;
+  final double? popularity;
   @JsonKey(name: "release_date")
   final String? releaseDate;
-  final String? title;
   final bool? video;
   @JsonKey(name: "vote_average")
   final double? voteAverage;
   @JsonKey(name: "vote_count")
   final int? voteCount;
 
+  factory ActorsListResultsKnownFor.fromJson(Map<String, dynamic> json) =>
+      _$ActorsListResultsKnownForFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ActorsListResultsKnownForToJson(this);
+
   @override
   List<Object?> get props => [
     adult,
     backdropPath,
-    genreIds,
     id,
-    originalLanguage,
+    title,
     originalTitle,
     overview,
-    popularity,
     posterPath,
+    mediaType,
+    originalLanguage,
+    genreIds,
+    popularity,
     releaseDate,
-    title,
     video,
     voteAverage,
     voteCount,
   ];
-
-  factory Movie.fromJson(Map<String, dynamic> json) =>
-      _$MovieFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MovieToJson(this);
 }

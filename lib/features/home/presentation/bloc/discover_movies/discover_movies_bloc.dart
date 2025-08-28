@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
@@ -24,9 +25,11 @@ class DiscoverContentBloc extends Bloc<UiEvent, UiState> {
       if (state is! DiscoverContentLoaded) {
         emit(DiscoverContentLoading());
       }
+      String apiKey = dotenv.env['PERSONAL_TMDB_API_KEY']!;
+
       final discoverContent = await discoverMoviesUseCase.getDiscoverContent(
         page: 1,
-        apiKey: 'bc0abeeb117c70b4a31a9b439dd7e981',
+        apiKey: apiKey,
         language: 'us-US',
         category: event.category,
       );

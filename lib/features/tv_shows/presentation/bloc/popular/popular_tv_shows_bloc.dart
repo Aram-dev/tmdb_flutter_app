@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../../../../../features/common/common.dart';
@@ -19,6 +20,7 @@ class PopularTvShowsBloc extends Bloc<UiEvent, UiState> {
   }
 
   final PopularTvShowsUseCase popularTvShowsUseCase;
+  String apiKey = dotenv.env['PERSONAL_TMDB_API_KEY']!;
 
   Future<void> _load(LoadPopularTvShows event, Emitter<UiState> emit) async {
     try {
@@ -27,7 +29,7 @@ class PopularTvShowsBloc extends Bloc<UiEvent, UiState> {
       }
       final popularTvShows = await popularTvShowsUseCase.getPopularTvShows(
         1,
-        'bc0abeeb117c70b4a31a9b439dd7e981',
+        apiKey,
         'US',
         'us-US',
       );

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
@@ -17,6 +18,7 @@ class PopularMoviesBloc extends Bloc<UiEvent, UiState> {
   }
 
   final PopularMoviesUseCase popularMoviesUseCase;
+  String apiKey = dotenv.env['PERSONAL_TMDB_API_KEY']!;
 
   Future<void> _load(LoadPopularMovies event, Emitter<UiState> emit) async {
     try {
@@ -25,7 +27,7 @@ class PopularMoviesBloc extends Bloc<UiEvent, UiState> {
       }
       final popularMovies = await popularMoviesUseCase.getPopularMovies(
         1,
-        'bc0abeeb117c70b4a31a9b439dd7e981',
+        apiKey,
         'US',
         'us-US',
       );

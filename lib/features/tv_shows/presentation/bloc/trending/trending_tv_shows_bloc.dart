@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -21,16 +22,15 @@ class TrendingTvShowsBloc extends Bloc<UiEvent, UiState> {
 
   final TrendingTvShowsUseCase trendingTvShowsUseCase;
 
-  Future<void> _load(
-    LoadTrendingTvShows event,
-    Emitter<UiState> emit,
-  ) async {
+  Future<void> _load(LoadTrendingTvShows event, Emitter<UiState> emit) async {
     try {
       if (state is! TrendingTvShowsLoaded) {
         emit(TrendingTvShowsLoading());
       }
+      String apiKey = dotenv.env['PERSONAL_TMDB_API_KEY']!;
+
       final trendingTvShows = await trendingTvShowsUseCase.getTrendingTvShows(
-        'bc0abeeb117c70b4a31a9b439dd7e981',
+        apiKey,
         'us-US',
         event.selectedPeriod,
       );

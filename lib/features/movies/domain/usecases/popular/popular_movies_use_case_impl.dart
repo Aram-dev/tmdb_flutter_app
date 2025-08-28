@@ -1,7 +1,6 @@
 import '../../models/movies_entity.dart';
-import '../../usecases/popular/popular_movies_use_case.dart';
-
 import '../../repositories/movie_repository.dart';
+import '../../usecases/popular/popular_movies_use_case.dart';
 
 class PopularMoviesUseCaseImpl extends PopularMoviesUseCase {
   PopularMoviesUseCaseImpl({required this.repository});

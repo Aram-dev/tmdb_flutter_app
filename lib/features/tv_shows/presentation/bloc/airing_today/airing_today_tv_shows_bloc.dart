@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../../../../../features/common/common.dart';
@@ -20,19 +21,24 @@ class AiringTodayTvShowsBloc extends Bloc<UiEvent, UiState> {
 
   final AiringTodayTvShowsUseCase airingTodayTvShowsUseCase;
 
-  Future<void> _load(LoadAiringTodayTvShows event, Emitter<UiState> emit) async {
+  Future<void> _load(
+    LoadAiringTodayTvShows event,
+    Emitter<UiState> emit,
+  ) async {
     try {
       if (state is! AiringTodayTvShowsLoaded) {
         emit(AiringTodayTvShowsLoading());
       }
-      final airingTodayTvShows = await airingTodayTvShowsUseCase.getAiringTodayTvShows(
-        1,
-        'bc0abeeb117c70b4a31a9b439dd7e981',
-        'US',
-        'us-US',
-      );
+      String apiKey = dotenv.env['PERSONAL_TMDB_API_KEY']!;
+
+      final airingTodayTvShows = await airingTodayTvShowsUseCase
+          .getAiringTodayTvShows(1, apiKey, 'US', 'us-US');
+
       emit(
-        AiringTodayTvShowsLoaded(airingTodayTvShows: airingTodayTvShows, isExpanded: false),
+        AiringTodayTvShowsLoaded(
+          airingTodayTvShows: airingTodayTvShows,
+          isExpanded: false,
+        ),
       );
     } catch (e, st) {
       emit(AiringTodayTvShowsLoadingFailure(exception: e));

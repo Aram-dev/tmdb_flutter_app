@@ -56,6 +56,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
                 ..add(LoadTopRatedMovies()),
         ),
       ],
+
       child: BlocBuilder<TrendingMoviesBloc, UiState>(
         builder: (context, state) {
           if (state is TrendingMoviesLoading) {

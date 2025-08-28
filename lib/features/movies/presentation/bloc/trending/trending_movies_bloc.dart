@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -19,6 +20,7 @@ class TrendingMoviesBloc extends Bloc<UiEvent, UiState> {
   }
 
   final TrendingMoviesUseCase trendingMoviesUseCase;
+  String apiKey = dotenv.env['PERSONAL_TMDB_API_KEY']!;
 
   Future<void> _load(
     LoadTrendingMovies event,
@@ -29,7 +31,7 @@ class TrendingMoviesBloc extends Bloc<UiEvent, UiState> {
         emit(TrendingMoviesLoading());
       }
       final trendingMovies = await trendingMoviesUseCase.getTrendingMovies(
-        'bc0abeeb117c70b4a31a9b439dd7e981',
+        apiKey,
         'us-US',
         event.selectedPeriod,
       );
