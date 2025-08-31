@@ -12,7 +12,7 @@ class InitialShimmers extends StatelessWidget {
         crossAxisCount: 2, // basic while loading
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
-        childAspectRatio: 0.66,
+        childAspectRatio: 3 / 4,
       ),
       itemCount: 6,
       itemBuilder: (_, _) => ShimmerCard(),

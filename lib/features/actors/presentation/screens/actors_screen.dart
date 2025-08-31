@@ -7,7 +7,6 @@ import '../../../common/common.dart';
 import '../../domain/usecases/popular/popular_actors_use_case.dart';
 import '../bloc/popular_actors_bloc.dart';
 import '../widgets/actor_card.dart';
-import '../widgets/initial_shimmer.dart';
 
 @RoutePage()
 class ActorsScreen extends StatefulWidget {
@@ -28,7 +27,8 @@ class _ActorsScreenState extends State<ActorsScreen> {
         builder: (context, state) {
           // Initial / first paint shimmer
           if (state is PopularActorsInitial || state is PopularActorsLoading) {
-            return const InitialShimmers();
+            // return const InitialShimmers();
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (state is PopularActorsLoadingFailure) {

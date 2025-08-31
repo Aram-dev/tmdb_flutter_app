@@ -33,7 +33,6 @@ class _HomeScreenContentState extends State<StatefulWidget>
   @override
   void dispose() {
     _tabController.dispose();
-    context.read<DiscoverContentBloc>().close();
     super.dispose();
   }
 

@@ -25,6 +25,12 @@ import 'features/movies/domain/usecases/usecases.dart';
 import 'features/tv_shows/domain/usecases/usecases.dart';
 import 'features/tv_shows/domain/repositories/tv_shows_repository.dart';
 
+import 'package:dio_http2_adapter/dio_http2_adapter.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart';
+import 'package:path_provider/path_provider.dart';
+
 Future<void> main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -40,22 +46,7 @@ Future<void> main() async {
     di.registerSingleton(talker);
     di<Talker>().debug('Talker initialized');
 
-    final dio = Dio(
-      BaseOptions(
-        baseUrl: 'https://api.themoviedb.org/3',
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-      ),
-    );
-    dio.interceptors.addAll([
-      ConnectionInterceptor(),
-      TalkerDioLogger(
-        settings: TalkerDioLoggerSettings(
-          printRequestData: true,
-          printResponseData: true,
-        ),
-      ),
-    ]);
+    final dio = await buildDio();
 
     Bloc.observer = TalkerBlocObserver(
       talker: talker,
@@ -164,4 +155,69 @@ Future<void> main() async {
       ),
     );
   }, (e, st) => GetIt.I<Talker>().handle(e, st));
+}
+
+Future<Dio> buildDio() async {
+  final dio = Dio(BaseOptions(
+    baseUrl: 'https://api.themoviedb.org/3',
+    connectTimeout: const Duration(seconds: 5),
+    receiveTimeout: const Duration(seconds: 10),
+    sendTimeout: const Duration(seconds: 10),
+    // headers: {'Accept-Encoding': 'gzip'}, // compression
+  ));
+
+  // HTTP/2 + keepAlive connection pooling
+  dio.httpClientAdapter = Http2Adapter(
+    ConnectionManager(idleTimeout: const Duration(seconds: 30)),
+  );
+
+  // Choose cache store: Hive on mobile/desktop, in-memory on web
+  CacheStore store;
+  if (kIsWeb) {
+    store = MemCacheStore();
+  } else {
+    final tmp = await getTemporaryDirectory(); // e.g., /data/user/0/<app>/cache
+    // You must pass a DIRECTORY PATH here, not just a name.
+    store = HiveCacheStore(tmp.path, hiveBoxName: 'dio_cache');
+  }
+
+  // Disk cache (stale-while-revalidate flavor below in repo)
+  final cacheOptions = CacheOptions(
+    store: store,
+    policy: CachePolicy.request, // use cache rules from repo
+    hitCacheOnErrorExcept: [401, 403],
+    maxStale: const Duration(days: 7),
+    priority: CachePriority.high,
+  );
+  dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
+
+  dio.interceptors.addAll([
+    ConnectionInterceptor(),
+    DioCacheInterceptor(options: cacheOptions),
+    TalkerDioLogger(
+      settings: TalkerDioLoggerSettings(
+        printRequestData: true,
+        printResponseData: true,
+      ),
+    ),
+    // Retries with exponential backoff (no retry on 4xx)
+    RetryInterceptor(
+      dio: dio,
+      logPrint: debugPrint,
+      retries: 3,
+      retryDelays: const [
+        Duration(milliseconds: 250),
+        Duration(milliseconds: 500),
+        Duration(seconds: 1),
+      ],
+    )
+  ]);
+
+  // Only log in debug
+  assert(() {
+    dio.interceptors.add(LogInterceptor(requestBody: false, responseBody: false));
+    return true;
+  }());
+
+  return dio;
 }
