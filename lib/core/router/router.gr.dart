@@ -21,6 +21,17 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const ActorsScreen(),
       );
     },
+    ActorDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<ActorDetailsRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: ActorDetailsScreen(
+          key: args.key,
+          actorId: args.actorId,
+          initialActor: args.initialActor,
+        ),
+      );
+    },
     HomeRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -93,6 +104,49 @@ class ActorsRoute extends PageRouteInfo<void> {
   static const String name = 'ActorsRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [ActorDetailsScreen]
+class ActorDetailsRoute extends PageRouteInfo<ActorDetailsRouteArgs> {
+  ActorDetailsRoute({
+    Key? key,
+    required int actorId,
+    ActorsListResults? initialActor,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ActorDetailsRoute.name,
+          args: ActorDetailsRouteArgs(
+            key: key,
+            actorId: actorId,
+            initialActor: initialActor,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ActorDetailsRoute';
+
+  static const PageInfo<ActorDetailsRouteArgs> page =
+      PageInfo<ActorDetailsRouteArgs>(name);
+}
+
+class ActorDetailsRouteArgs {
+  const ActorDetailsRouteArgs({
+    this.key,
+    required this.actorId,
+    this.initialActor,
+  });
+
+  final Key? key;
+
+  final int actorId;
+
+  final ActorsListResults? initialActor;
+
+  @override
+  String toString() {
+    return 'ActorDetailsRouteArgs{key: $key, actorId: $actorId, initialActor: $initialActor}';
+  }
 }
 
 /// generated route for

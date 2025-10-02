@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tmdb_flutter_app/core/router/router.gr.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/models/actors_list_result.dart';
 
+import '../../../../core/router/router.dart';
+
 class ActorCard extends StatelessWidget {
   const ActorCard({super.key, required this.actor});
 
