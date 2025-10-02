@@ -1,5 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/models/actors_list_result.dart';
+
+import '../../../../core/router/router.dart';
 
 class ActorCard extends StatelessWidget {
   const ActorCard({super.key, required this.actor});
@@ -24,7 +27,22 @@ class ActorCard extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        final actorId = actor.id;
+        if (actorId == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Details unavailable for this actor.')),
+          );
+          return;
+        }
+
+        context.router.push(
+          ActorDetailsRoute(
+            actorId: actorId,
+            initialActor: actor,
+          ),
+        );
+      },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(18),
         child: AspectRatio(
