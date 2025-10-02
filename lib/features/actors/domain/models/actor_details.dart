@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import 'actor_credit.dart';
-
 class ActorDetails extends Equatable {
   const ActorDetails({
     required this.id,
@@ -9,27 +7,56 @@ class ActorDetails extends Equatable {
     this.biography,
     this.profilePath,
     this.knownForDepartment,
-    this.placeOfBirth,
     this.birthday,
-    this.deathday,
+    this.placeOfBirth,
+    this.popularity,
     this.homepage,
     this.alsoKnownAs = const [],
-    this.cast = const [],
-    this.crew = const [],
   });
+
+  factory ActorDetails.fromJson(Map<String, dynamic> json) {
+    return ActorDetails(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      name: json['name'] as String?,
+      biography: json['biography'] as String?,
+      profilePath: json['profile_path'] as String?,
+      knownForDepartment: json['known_for_department'] as String?,
+      birthday: json['birthday'] as String?,
+      placeOfBirth: json['place_of_birth'] as String?,
+      popularity: (json['popularity'] as num?)?.toDouble(),
+      homepage: json['homepage'] as String?,
+      alsoKnownAs: (json['also_known_as'] as List?)
+              ?.whereType<String>()
+              .toList() ??
+          const [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'biography': biography,
+      'profile_path': profilePath,
+      'known_for_department': knownForDepartment,
+      'birthday': birthday,
+      'place_of_birth': placeOfBirth,
+      'popularity': popularity,
+      'homepage': homepage,
+      'also_known_as': alsoKnownAs,
+    };
+  }
 
   final int id;
   final String? name;
   final String? biography;
   final String? profilePath;
   final String? knownForDepartment;
-  final String? placeOfBirth;
   final String? birthday;
-  final String? deathday;
+  final String? placeOfBirth;
+  final double? popularity;
   final String? homepage;
   final List<String> alsoKnownAs;
-  final List<ActorCredit> cast;
-  final List<ActorCredit> crew;
 
   @override
   List<Object?> get props => [
@@ -38,12 +65,10 @@ class ActorDetails extends Equatable {
         biography,
         profilePath,
         knownForDepartment,
-        placeOfBirth,
         birthday,
-        deathday,
+        placeOfBirth,
+        popularity,
         homepage,
         alsoKnownAs,
-        cast,
-        crew,
       ];
 }
