@@ -5,7 +5,7 @@ import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dar
 
 import '../../../movies/domain/models/movie.dart';
 import '../../../movies/domain/models/movies_dates_entity.dart';
-import '../../domain/repositories/home_epository.dart';
+import '../../domain/repositories/home_repository.dart';
 
 class HomeRepositoryImpl extends HomeRepository {
   HomeRepositoryImpl({required this.dio});

@@ -12,7 +12,7 @@ import 'package:talker_dio_logger/talker_dio_logger.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/usecases/usecases.dart';
 import 'package:tmdb_flutter_app/features/home/data/repositories/home_repository_impl.dart';
-import 'package:tmdb_flutter_app/features/home/domain/repositories/home_epository.dart';
+import 'package:tmdb_flutter_app/features/home/domain/repositories/home_repository.dart';
 import 'package:tmdb_flutter_app/features/tv_shows/data/repositories/tv_shows_repository_impl.dart';
 import 'package:tmdb_flutter_app/tmdb_flutter_app.dart';
 
@@ -34,7 +34,7 @@ import 'package:path_provider/path_provider.dart';
 Future<void> main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    // Enables debug paint to see view shapes
+    // Disable debug paint overlay (set to true to visualize layout bounds)
     debugPaintSizeEnabled = false;
 
     // Optional: Set 'true' to make zone mismatch fatal during dev/debug
@@ -189,11 +189,11 @@ Future<Dio> buildDio() async {
     maxStale: const Duration(days: 7),
     priority: CachePriority.high,
   );
-  dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
+  final cacheInterceptor = DioCacheInterceptor(options: cacheOptions);
 
   dio.interceptors.addAll([
+    cacheInterceptor,
     ConnectionInterceptor(),
-    DioCacheInterceptor(options: cacheOptions),
     TalkerDioLogger(
       settings: TalkerDioLoggerSettings(
         printRequestData: true,

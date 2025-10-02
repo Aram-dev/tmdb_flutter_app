@@ -1,5 +1,5 @@
 import '../../../../movies/domain/models/movies_entity.dart';
-import '../../repositories/home_epository.dart';
+import '../../repositories/home_repository.dart';
 import 'discover_movies_use_case.dart';
 
 class DiscoverContentUseCaseImpl extends DiscoverContentUseCase {
