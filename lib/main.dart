@@ -133,6 +133,12 @@ Future<void> main() async {
       ),
     );
 
+    di.registerLazySingleton<ActorDetailsUseCase>(
+      () => ActorDetailsUseCaseImpl(
+        repository: di.get<ActorsRepository>(),
+      ),
+    );
+
     FlutterError.onError = (details) =>
         di<Talker>().handle(details.exception, details.stack);
 

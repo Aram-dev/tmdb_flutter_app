@@ -1,4 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:tmdb_flutter_app/core/router/router.gr.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/models/actors_list_result.dart';
 
 class ActorCard extends StatelessWidget {
@@ -24,7 +26,16 @@ class ActorCard extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        final id = actor.id;
+        if (id == null) return;
+        context.router.push(
+          ActorDetailsRoute(
+            actorId: id,
+            actorName: actor.name,
+          ),
+        );
+      },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(18),
         child: AspectRatio(
