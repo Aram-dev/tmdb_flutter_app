@@ -33,19 +33,20 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const MainHomeScreen(),
       );
     },
-    MoviesRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const MoviesScreen(),
-      );
-    },
     MovieDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<MovieDetailsRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: MovieDetailsScreen(
+          key: args.key,
           movie: args.movie,
         ),
+      );
+    },
+    MoviesRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MoviesScreen(),
       );
     },
     ProfileRoute.name: (routeData) {
@@ -112,26 +113,16 @@ class MainHomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [MoviesScreen]
-class MoviesRoute extends PageRouteInfo<void> {
-  const MoviesRoute({List<PageRouteInfo>? children})
-      : super(
-          MoviesRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'MoviesRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
 /// [MovieDetailsScreen]
 class MovieDetailsRoute extends PageRouteInfo<MovieDetailsRouteArgs> {
-  MovieDetailsRoute({required Movie movie, List<PageRouteInfo>? children})
-      : super(
+  MovieDetailsRoute({
+    Key? key,
+    required Movie movie,
+    List<PageRouteInfo>? children,
+  }) : super(
           MovieDetailsRoute.name,
           args: MovieDetailsRouteArgs(
+            key: key,
             movie: movie,
           ),
           initialChildren: children,
@@ -144,14 +135,33 @@ class MovieDetailsRoute extends PageRouteInfo<MovieDetailsRouteArgs> {
 }
 
 class MovieDetailsRouteArgs {
-  const MovieDetailsRouteArgs({required this.movie});
+  const MovieDetailsRouteArgs({
+    this.key,
+    required this.movie,
+  });
+
+  final Key? key;
 
   final Movie movie;
 
   @override
   String toString() {
-    return 'MovieDetailsRouteArgs{movie: $movie}';
+    return 'MovieDetailsRouteArgs{key: $key, movie: $movie}';
   }
+}
+
+/// generated route for
+/// [MoviesScreen]
+class MoviesRoute extends PageRouteInfo<void> {
+  const MoviesRoute({List<PageRouteInfo>? children})
+      : super(
+          MoviesRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MoviesRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

@@ -42,10 +42,7 @@ class MovieDetailsScreen extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   if (backdropUrl != null)
-                    Image.network(
-                      backdropUrl,
-                      fit: BoxFit.cover,
-                    )
+                    Image.network(backdropUrl, fit: BoxFit.cover)
                   else
                     Container(color: Colors.black12),
                   const DecoratedBox(
@@ -53,10 +50,7 @@ class MovieDetailsScreen extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black54,
-                        ],
+                        colors: [Colors.transparent, Colors.black54],
                       ),
                     ),
                   ),
@@ -89,7 +83,7 @@ class MovieDetailsScreen extends StatelessWidget {
                           height: 180,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: theme.colorScheme.surfaceVariant,
+                            color: theme.colorScheme.surfaceContainerHighest,
                           ),
                           child: const Icon(Icons.movie, size: 48),
                         ),
@@ -109,10 +103,22 @@ class MovieDetailsScreen extends StatelessWidget {
                               spacing: 8,
                               runSpacing: 8,
                               children: [
-                                _InfoChip(icon: Icons.calendar_today, label: releaseDate),
-                                _InfoChip(icon: Icons.language, label: language),
-                                _InfoChip(icon: Icons.people, label: 'Votes $voteCount'),
-                                _InfoChip(icon: Icons.trending_up, label: 'Popularity $popularity'),
+                                _InfoChip(
+                                  icon: Icons.calendar_today,
+                                  label: releaseDate,
+                                ),
+                                _InfoChip(
+                                  icon: Icons.language,
+                                  label: language,
+                                ),
+                                _InfoChip(
+                                  icon: Icons.people,
+                                  label: 'Votes $voteCount',
+                                ),
+                                _InfoChip(
+                                  icon: Icons.trending_up,
+                                  label: 'Popularity $popularity',
+                                ),
                               ],
                             ),
                           ],
@@ -138,7 +144,9 @@ class MovieDetailsScreen extends StatelessWidget {
                   const SizedBox(height: 24),
                   Text(
                     'Overview',
-                    style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    style: textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -150,13 +158,21 @@ class MovieDetailsScreen extends StatelessWidget {
                   const SizedBox(height: 24),
                   Text(
                     'Additional Details',
-                    style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    style: textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
-                  _InfoRow(title: 'Original Title', value: movie.originalTitle ?? '–'),
+                  _InfoRow(
+                    title: 'Original Title',
+                    value: movie.originalTitle ?? '–',
+                  ),
                   _InfoRow(title: 'Release Date', value: releaseDate),
                   _InfoRow(title: 'Original Language', value: language),
-                  _InfoRow(title: 'Adult', value: movie.adult == true ? 'Yes' : 'No'),
+                  _InfoRow(
+                    title: 'Adult',
+                    value: movie.adult == true ? 'Yes' : 'No',
+                  ),
                 ],
               ),
             ),
@@ -177,7 +193,11 @@ class _InfoChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Chip(
-      avatar: Icon(icon, size: 18, color: theme.colorScheme.onSecondaryContainer),
+      avatar: Icon(
+        icon,
+        size: 18,
+        color: theme.colorScheme.onSecondaryContainer,
+      ),
       label: Text(label),
       backgroundColor: theme.colorScheme.secondaryContainer,
       labelStyle: theme.textTheme.bodyMedium?.copyWith(
@@ -203,18 +223,10 @@ class _InfoRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 140,
-            child: Text(
-              title,
-              style: textTheme.titleMedium,
-            ),
+            child: Text(title, style: textTheme.titleMedium),
           ),
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              value,
-              style: textTheme.bodyLarge,
-            ),
-          ),
+          Expanded(child: Text(value, style: textTheme.bodyLarge)),
         ],
       ),
     );

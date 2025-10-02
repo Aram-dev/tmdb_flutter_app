@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:tmdb_flutter_app/core/router/router.gr.dart';
 
+import '../../../../core/router/router.dart';
 import '../../domain/models/movie.dart';
 
 class MovieCard extends StatelessWidget {
