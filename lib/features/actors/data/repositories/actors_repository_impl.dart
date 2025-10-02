@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/models/actor_details.dart';
+import 'package:tmdb_flutter_app/features/actors/domain/models/actor_credit.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/models/actors_list_result.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/repositories/actors_repository.dart';
 
@@ -65,20 +66,54 @@ class ActorsRepositoryImpl extends ActorsRepository {
     String apiKey,
     String language,
   ) async {
+    final detailsEndpoint = '/person/$actorId';
+    final creditsEndpoint = '/person/$actorId/combined_credits';
     final params = {
       'api_key': apiKey,
       'language': language,
-      'append_to_response': 'combined_credits',
     };
 
     try {
-      final response = await dio.get(
-        '/person/$actorId',
-        queryParameters: params,
-      );
+      final responses = await Future.wait([
+        dio.get(detailsEndpoint, queryParameters: params),
+        dio.get(creditsEndpoint, queryParameters: params),
+      ]);
 
-      final data = response.data as Map<String, dynamic>;
-      return ActorDetails.fromJson(data);
+      final detailsData =
+          Map<String, dynamic>.from(responses[0].data as Map<String, dynamic>);
+      final creditsData =
+          Map<String, dynamic>.from(responses[1].data as Map<String, dynamic>);
+
+      final castJson = (creditsData['cast'] as List?) ?? const [];
+      final crewJson = (creditsData['crew'] as List?) ?? const [];
+
+      final cast = castJson
+          .whereType<Map<String, dynamic>>()
+          .map(_mapCredit)
+          .toList();
+      final crew = crewJson
+          .whereType<Map<String, dynamic>>()
+          .map(_mapCredit)
+          .toList();
+
+      final alsoKnownAs = ((detailsData['also_known_as'] as List?) ?? const [])
+          .whereType<String>()
+          .toList();
+
+      return ActorDetails(
+        id: (detailsData['id'] as num?)?.toInt() ?? actorId,
+        name: detailsData['name'] as String?,
+        biography: detailsData['biography'] as String?,
+        profilePath: detailsData['profile_path'] as String?,
+        knownForDepartment: detailsData['known_for_department'] as String?,
+        placeOfBirth: detailsData['place_of_birth'] as String?,
+        birthday: detailsData['birthday'] as String?,
+        deathday: detailsData['deathday'] as String?,
+        homepage: detailsData['homepage'] as String?,
+        alsoKnownAs: alsoKnownAs,
+        cast: cast,
+        crew: crew,
+      );
     } on DioException catch (e) {
       final status = e.response?.statusCode;
       final msg = _readableDioMessage(e);
@@ -86,6 +121,24 @@ class ActorsRepositoryImpl extends ActorsRepository {
     } catch (e) {
       throw FetchActorsException(message: e.toString());
     }
+  }
+
+  ActorCredit _mapCredit(Map<String, dynamic> json) {
+    final releaseDate = (json['release_date'] as String?) ??
+        (json['first_air_date'] as String?);
+    return ActorCredit(
+      creditId: json['credit_id'] as String?,
+      id: (json['id'] as num?)?.toInt(),
+      title: json['title'] as String? ?? json['name'] as String?,
+      originalTitle:
+          json['original_title'] as String? ?? json['original_name'] as String?,
+      mediaType: json['media_type'] as String?,
+      character: json['character'] as String?,
+      job: json['job'] as String?,
+      posterPath: json['poster_path'] as String?,
+      releaseDate: releaseDate,
+      voteAverage: (json['vote_average'] as num?)?.toDouble(),
+    );
   }
 
   String _readableDioMessage(DioException e) {

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../features/actors/domain/models/actors_list_result.dart';
 import '../../features/movies/domain/models/movie.dart';
 import '../../features/screens.dart';
 
@@ -14,5 +15,6 @@ class AppRouter extends _$AppRouter {
     AutoRoute(page: MainHomeRoute.page, initial: true),
     AutoRoute(page: MoviesRoute.page),
     AutoRoute(page: MovieDetailsRoute.page),
+    AutoRoute(page: ActorDetailsRoute.page),
   ];
 }

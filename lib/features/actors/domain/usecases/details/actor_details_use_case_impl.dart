@@ -8,11 +8,11 @@ class ActorDetailsUseCaseImpl extends ActorDetailsUseCase {
   final ActorsRepository repository;
 
   @override
-  Future<ActorDetails> getActorDetails(
-    int actorId,
-    String apiKey,
-    String language,
-  ) {
+  Future<ActorDetails> fetchActorDetails({
+    required int actorId,
+    required String apiKey,
+    String language = 'en-US',
+  }) {
     return repository.getActorDetails(actorId, apiKey, language);
   }
 }

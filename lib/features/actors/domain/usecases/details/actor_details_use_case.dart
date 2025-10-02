@@ -1,9 +1,9 @@
 import '../../models/actor_details.dart';
 
 abstract class ActorDetailsUseCase {
-  Future<ActorDetails> getActorDetails(
-    int actorId,
-    String apiKey,
-    String language,
-  );
+  Future<ActorDetails> fetchActorDetails({
+    required int actorId,
+    required String apiKey,
+    String language = 'en-US',
+  });
 }
