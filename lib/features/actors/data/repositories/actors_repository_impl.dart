@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:tmdb_flutter_app/features/actors/domain/models/actor_details.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/models/actors_list_result.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/repositories/actors_repository.dart';
 
@@ -56,6 +57,35 @@ class ActorsRepositoryImpl extends ActorsRepository {
 
 
     // return _fetchActorsFromApi(endpoint, params);
+  }
+
+  @override
+  Future<ActorDetails> getActorDetails(
+    int actorId,
+    String apiKey,
+    String language,
+  ) async {
+    final params = {
+      'api_key': apiKey,
+      'language': language,
+      'append_to_response': 'combined_credits',
+    };
+
+    try {
+      final response = await dio.get(
+        '/person/$actorId',
+        queryParameters: params,
+      );
+
+      final data = response.data as Map<String, dynamic>;
+      return ActorDetails.fromJson(data);
+    } on DioException catch (e) {
+      final status = e.response?.statusCode;
+      final msg = _readableDioMessage(e);
+      throw FetchActorsException(message: msg, statusCode: status);
+    } catch (e) {
+      throw FetchActorsException(message: e.toString());
+    }
   }
 
   String _readableDioMessage(DioException e) {
