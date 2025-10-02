@@ -1,6 +1,10 @@
 part of 'actor_details_bloc.dart';
 
-class LoadActorDetails extends UiEvent {
+abstract class ActorDetailsEvent extends UiEvent {
+  const ActorDetailsEvent();
+}
+
+class LoadActorDetails extends ActorDetailsEvent {
   LoadActorDetails({required this.actorId, this.language});
 
   final int actorId;
