@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dart';
 
 import '../../domain/models/movies_dates_entity.dart';
@@ -22,7 +24,11 @@ class MovieRepositoryImpl extends MovieRepository {
       'api_key': apiKey,
       'language': language,
     };
-    return _fetchMoviesFromApi(endpoint, params);
+    return _fetchMoviesFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(minutes: 30),
+    );
   }
 
   @override
@@ -39,7 +45,11 @@ class MovieRepositoryImpl extends MovieRepository {
       'region': region,
       'language': language,
     };
-    return _fetchMoviesFromApi(endpoint, params);
+    return _fetchMoviesFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(hours: 2),
+    );
   }
 
   @override
@@ -56,7 +66,11 @@ class MovieRepositoryImpl extends MovieRepository {
       'region': region,
       'language': language,
     };
-    return _fetchMoviesFromApi(endpoint, params);
+    return _fetchMoviesFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(minutes: 5),
+    );
   }
 
   @override
@@ -73,7 +87,11 @@ class MovieRepositoryImpl extends MovieRepository {
       'region': region,
       'language': language,
     };
-    return _fetchMoviesFromApi(endpoint, params);
+    return _fetchMoviesFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(hours: 6),
+    );
   }
 
   @override
@@ -90,13 +108,23 @@ class MovieRepositoryImpl extends MovieRepository {
       'region': region,
       'language': language,
     };
-    return _fetchMoviesFromApi(endpoint, params);
+    return _fetchMoviesFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(hours: 12),
+    );
   }
 
   Future<MovieTvShowEntity> _fetchMoviesFromApi(
     String endpoint,
-    Map<String, Object> queryParams) async {
-    final response = await dio.get(endpoint, queryParameters: queryParams);
+    Map<String, Object?> queryParams, {
+    required Duration maxStale,
+  }) async {
+    final response = await dio.get(
+      endpoint,
+      queryParameters: queryParams,
+      options: _cacheOptions(maxStale: maxStale),
+    );
 
     final data = response.data as Map<String, dynamic>;
     final dates = data.containsKey('dates') ? MoviesDates.fromJson(data['dates']) : null;
@@ -116,5 +144,14 @@ class MovieRepositoryImpl extends MovieRepository {
     );
 
     return entity;
+  }
+
+  Options _cacheOptions({required Duration maxStale}) {
+    return GetIt.I<CacheOptions>()
+        .copyWith(
+          policy: CachePolicy.refresh,
+          maxStale: Nullable(maxStale),
+        )
+        .toOptions();
   }
 }

@@ -195,6 +195,11 @@ Future<Dio> buildDio() async {
     maxStale: const Duration(days: 7),
     priority: CachePriority.high,
   );
+  final di = GetIt.I;
+  if (di.isRegistered<CacheOptions>()) {
+    di.unregister<CacheOptions>();
+  }
+  di.registerSingleton<CacheOptions>(cacheOptions);
   final cacheInterceptor = DioCacheInterceptor(options: cacheOptions);
 
   dio.interceptors.addAll([

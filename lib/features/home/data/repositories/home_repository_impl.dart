@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dart';
@@ -38,14 +39,24 @@ class HomeRepositoryImpl extends HomeRepository {
       'include_video': false,
     };
 
-    return _fetchMoviesFromApi(endpoint, params);
+    return _fetchMoviesFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(minutes: 45),
+    );
   }
 
   Future<MovieTvShowEntity> _fetchMoviesFromApi(
     String endpoint,
-    Map<String, Object?> queryParams,
+    Map<String, Object?> queryParams, {
+    required Duration maxStale,
+  }
   ) async {
-    final response = await dio.get(endpoint, queryParameters: queryParams);
+    final response = await dio.get(
+      endpoint,
+      queryParameters: queryParams,
+      options: _cacheOptions(maxStale: maxStale),
+    );
 
     final data = response.data as Map<String, dynamic>;
     final dates = data.containsKey('dates')
@@ -72,5 +83,14 @@ class HomeRepositoryImpl extends HomeRepository {
     );
 
     return entity;
+  }
+
+  Options _cacheOptions({required Duration maxStale}) {
+    return GetIt.I<CacheOptions>()
+        .copyWith(
+          policy: CachePolicy.refresh,
+          maxStale: Nullable(maxStale),
+        )
+        .toOptions();
   }
 }
