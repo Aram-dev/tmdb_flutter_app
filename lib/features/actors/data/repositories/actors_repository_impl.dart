@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/models/actor_details.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/models/actors_list_result.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/repositories/actors_repository.dart';
@@ -19,14 +21,18 @@ class ActorsRepositoryImpl extends ActorsRepository {
     String language,
   ) async {
     final String endpoint = '/person/popular';
-    final params = {
+    final params = <String, dynamic>{
       'api_key': apiKey,
       'language': language,
       'page': page, // caller controls pagination
     };
 
     try {
-      final response = await dio.get(endpoint, queryParameters: params);
+      final response = await dio.get(
+        endpoint,
+        queryParameters: params,
+        options: _cacheOptions(maxStale: const Duration(hours: 1)).toOptions(),
+      );
       final data = response.data as Map<String, dynamic>;
 
       // current page from server, fallback to requested page
@@ -44,7 +50,8 @@ class ActorsRepositoryImpl extends ActorsRepository {
         page: currentPage,
         results: results,
         totalPages: totalPages,
-        totalResults: totalResults, hasMore: false,
+        totalResults: totalResults,
+        hasMore: false,
       );
     } on DioException catch (e) {
       // Map DioException to a domain error or rethrow with context
@@ -66,13 +73,39 @@ class ActorsRepositoryImpl extends ActorsRepository {
     String language,
   ) async {
     final String endpoint = '/person/$actorId';
-    final params = {
+    final params = <String, dynamic>{
       'api_key': apiKey,
       'language': language,
     };
 
     try {
-      final response = await dio.get(endpoint, queryParameters: params);
+      final cacheOptions =
+          _cacheOptions(maxStale: const Duration(hours: 6), allowPostMethod: false);
+      final requestOptions = cacheOptions
+          .toOptions()
+          .compose(dio.options, endpoint, queryParameters: params);
+
+      final store = cacheOptions.store;
+      if (store != null) {
+        final cacheKey = cacheOptions.keyBuilder(requestOptions);
+        final cachedResponse = await store.get(cacheKey);
+        if (cachedResponse != null) {
+          if (cachedResponse.isStaled()) {
+            await store.delete(cacheKey, staleOnly: true);
+          } else {
+            final cachedData = Map<String, dynamic>.from(
+              (cachedResponse.toResponse(requestOptions).data as Map),
+            );
+            return ActorDetails.fromJson(cachedData);
+          }
+        }
+      }
+
+      final response = await dio.get(
+        endpoint,
+        queryParameters: params,
+        options: cacheOptions.toOptions(),
+      );
       final data = response.data as Map<String, dynamic>;
       return ActorDetails.fromJson(data);
     } on DioException catch (e) {
@@ -82,6 +115,17 @@ class ActorsRepositoryImpl extends ActorsRepository {
     } catch (e) {
       throw FetchActorsException(message: e.toString());
     }
+  }
+
+  CacheOptions _cacheOptions({
+    required Duration maxStale,
+    bool allowPostMethod = true,
+  }) {
+    return GetIt.I<CacheOptions>().copyWith(
+      policy: CachePolicy.refresh,
+      maxStale: Nullable(maxStale),
+      allowPostMethod: allowPostMethod,
+    );
   }
 
   String _readableDioMessage(DioException e) {

@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dart';
 
 import '../../../movies/domain/models/movie.dart';
@@ -22,7 +24,11 @@ class TvShowsRepositoryImpl extends TvShowsRepository {
       'api_key': apiKey,
       'language': language,
     };
-    return _fetchTvShowsFromApi(endpoint, params);
+    return _fetchTvShowsFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(minutes: 30),
+    );
   }
 
   @override
@@ -39,7 +45,11 @@ class TvShowsRepositoryImpl extends TvShowsRepository {
       'timezone': timezone,
       'language': language,
     };
-    return _fetchTvShowsFromApi(endpoint, params);
+    return _fetchTvShowsFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(minutes: 5),
+    );
   }
 
   @override
@@ -56,7 +66,11 @@ class TvShowsRepositoryImpl extends TvShowsRepository {
       'region': region,
       'language': language,
     };
-    return _fetchTvShowsFromApi(endpoint, params);
+    return _fetchTvShowsFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(minutes: 15),
+    );
   }
 
   @override
@@ -73,7 +87,11 @@ class TvShowsRepositoryImpl extends TvShowsRepository {
       'region': region,
       'language': language,
     };
-    return _fetchTvShowsFromApi(endpoint, params);
+    return _fetchTvShowsFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(hours: 2),
+    );
   }
 
   @override
@@ -90,13 +108,23 @@ class TvShowsRepositoryImpl extends TvShowsRepository {
       'region': region,
       'language': language,
     };
-    return _fetchTvShowsFromApi(endpoint, params);
+    return _fetchTvShowsFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(hours: 12),
+    );
   }
 
   Future<MovieTvShowEntity> _fetchTvShowsFromApi(
     String endpoint,
-    Map<String, Object> queryParams) async {
-    final response = await dio.get(endpoint, queryParameters: queryParams);
+    Map<String, Object?> queryParams, {
+    required Duration maxStale,
+  }) async {
+    final response = await dio.get(
+      endpoint,
+      queryParameters: queryParams,
+      options: _cacheOptions(maxStale: maxStale),
+    );
 
     final data = response.data as Map<String, dynamic>;
     final dates = data.containsKey('dates') ? MoviesDates.fromJson(data['dates']) : null;
@@ -116,5 +144,14 @@ class TvShowsRepositoryImpl extends TvShowsRepository {
     );
 
     return entity;
+  }
+
+  Options _cacheOptions({required Duration maxStale}) {
+    return GetIt.I<CacheOptions>()
+        .copyWith(
+          policy: CachePolicy.refresh,
+          maxStale: Nullable(maxStale),
+        )
+        .toOptions();
   }
 }
