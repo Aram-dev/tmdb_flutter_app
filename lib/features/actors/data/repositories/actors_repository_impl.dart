@@ -5,10 +5,20 @@ import 'package:tmdb_flutter_app/features/actors/domain/repositories/actors_repo
 
 import '../../domain/models/actors_list_entity.dart';
 
+class _CachedActorDetails {
+  _CachedActorDetails({required this.details, required this.fetchedAt});
+
+  final ActorDetails details;
+  final DateTime fetchedAt;
+}
+
 class ActorsRepositoryImpl extends ActorsRepository {
-  ActorsRepositoryImpl({required this.dio});
+  ActorsRepositoryImpl({required this.dio, Duration cacheTTL = const Duration(minutes: 5)})
+      : _cacheTTL = cacheTTL;
 
   final Dio dio;
+  final Duration _cacheTTL;
+  final Map<int, _CachedActorDetails> _actorDetailsCache = {};
   // int _maxPages = 1;
   // int _currentPage = 1;
 
@@ -65,6 +75,14 @@ class ActorsRepositoryImpl extends ActorsRepository {
     String apiKey,
     String language,
   ) async {
+    final cached = _actorDetailsCache[actorId];
+    if (cached != null) {
+      final isFresh = DateTime.now().difference(cached.fetchedAt) <= _cacheTTL;
+      if (isFresh) {
+        return cached.details;
+      }
+    }
+
     final String endpoint = '/person/$actorId';
     final params = {
       'api_key': apiKey,
@@ -74,7 +92,10 @@ class ActorsRepositoryImpl extends ActorsRepository {
     try {
       final response = await dio.get(endpoint, queryParameters: params);
       final data = response.data as Map<String, dynamic>;
-      return ActorDetails.fromJson(data);
+      final actorDetails = ActorDetails.fromJson(data);
+      _actorDetailsCache[actorId] =
+          _CachedActorDetails(details: actorDetails, fetchedAt: DateTime.now());
+      return actorDetails;
     } on DioException catch (e) {
       final status = e.response?.statusCode;
       final msg = _readableDioMessage(e);
@@ -82,6 +103,10 @@ class ActorsRepositoryImpl extends ActorsRepository {
     } catch (e) {
       throw FetchActorsException(message: e.toString());
     }
+  }
+
+  void clearActorDetailsCache() {
+    _actorDetailsCache.clear();
   }
 
   String _readableDioMessage(DioException e) {
