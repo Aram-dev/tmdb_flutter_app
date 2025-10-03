@@ -21,8 +21,6 @@ class ActorsRepositoryImpl extends ActorsRepository {
   final Dio dio;
   final Duration _cacheTTL;
   final Map<int, _CachedActorDetails> _actorDetailsCache = {};
-  // int _maxPages = 1;
-  // int _currentPage = 1;
 
   @override
   Future<ActorsListEntity> getPopularActors(
@@ -163,30 +161,16 @@ class ActorsRepositoryImpl extends ActorsRepository {
     }
   }
 
-  // Future<ActorsListEntity> _fetchActorsFromApi(
-  //     String endpoint,
-  //     Map<String, Object> queryParams) async {
-  //
-  //   queryParams.putIfAbsent('page', () => _currentPage);
-  //   final response = await dio.get(endpoint, queryParameters: queryParams);
-  //
-  //   final data = response.data as Map<String, dynamic>;
-  //   _currentPage =  data.containsKey('page') ? data['page'] + 1 as int : _currentPage;
-  //   final results = (data.containsKey('results') ? data['results'] as List : null)
-  //       ?.map((json) => ActorsListResults.fromJson(json))
-  //       .toList();
-  //   final totalPages = data.containsKey('total_pages') ? data['total_pages'] as int : null;
-  //   final totalResults = data.containsKey('total_results') ? data['total_results'] as int : null;
-  //
-  //   final entity = ActorsListEntity(
-  //     page: _currentPage,
-  //     results: results,
-  //     totalPages: totalPages,
-  //     totalResults: totalResults,
-  //   );
-  //
-  //   return entity;
-  // }
+  CacheOptions _cacheOptions({
+    required Duration maxStale,
+    bool allowPostMethod = true,
+  }) {
+    return GetIt.I<CacheOptions>().copyWith(
+      policy: CachePolicy.refresh,
+      maxStale: Nullable(maxStale),
+      allowPostMethod: allowPostMethod,
+    );
+  }
 }
 
 /// Optional domain exception to bubble up to UI/state layer.
