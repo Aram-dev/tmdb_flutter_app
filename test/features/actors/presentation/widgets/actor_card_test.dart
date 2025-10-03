@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:tmdb_flutter_app/core/router/router.gr.dart';
+import 'package:tmdb_flutter_app/core/router/router.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/models/actors_list_result.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/models/actors_list_result_known_for.dart';
 import 'package:tmdb_flutter_app/features/actors/presentation/widgets/actor_card.dart';

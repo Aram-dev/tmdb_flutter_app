@@ -1,7 +1,7 @@
 part of 'actor_details_bloc.dart';
 
 class FetchActorDetails extends UiEvent {
-  const FetchActorDetails({
+  FetchActorDetails({
     required this.actorId,
     this.initialActor,
   });

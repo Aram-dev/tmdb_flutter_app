@@ -1,7 +1,7 @@
 part of 'actor_details_bloc.dart';
 
 abstract class ActorDetailsEvent extends UiEvent {
-  const ActorDetailsEvent();
+  ActorDetailsEvent();
 }
 
 class LoadActorDetails extends ActorDetailsEvent {

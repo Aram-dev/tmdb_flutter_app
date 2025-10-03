@@ -31,21 +31,21 @@ void main() {
     );
   });
 
-  Widget _wrapWithMaterial(Widget child) {
+  Widget wrapWithMaterial(Widget child) {
     return MaterialApp(home: child);
   }
 
   testWidgets('renders loading state', (tester) async {
     final bloc = _MockActorDetailsBloc();
-    when(() => bloc.state).thenReturn(const ActorDetailsLoading());
+    when(() => bloc.state).thenReturn(ActorDetailsLoading());
     whenListen(
       bloc,
       const Stream<ActorDetailsState>.empty(),
-      initialState: const ActorDetailsLoading(),
+      initialState: ActorDetailsLoading(),
     );
 
     await tester.pumpWidget(
-      _wrapWithMaterial(
+      wrapWithMaterial(
         ActorDetailsScreen(
           actorId: actorDetails.id,
           blocOverride: bloc,
@@ -69,7 +69,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      _wrapWithMaterial(
+      wrapWithMaterial(
         ActorDetailsScreen(
           actorId: actorDetails.id,
           actorName: actorDetails.name,
@@ -99,7 +99,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      _wrapWithMaterial(
+      wrapWithMaterial(
         ActorDetailsScreen(
           actorId: actorDetails.id,
           blocOverride: bloc,

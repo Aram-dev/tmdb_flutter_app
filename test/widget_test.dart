@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/home/domain/usecases/discover_movies/discover_movies_use_case.dart';
@@ -80,7 +80,7 @@ void main() {
 
   setUp(() async {
     await getIt.reset();
-    await dotenv.testLoad(fileInput: 'PERSONAL_TMDB_API_KEY=dummy');
+    dotenv.testLoad(fileInput: 'PERSONAL_TMDB_API_KEY=dummy');
 
     getIt.registerSingleton<Talker>(TalkerFlutter.init());
     getIt.registerLazySingleton<DiscoverContentUseCase>(

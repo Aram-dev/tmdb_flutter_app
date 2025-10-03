@@ -32,7 +32,7 @@ void main() {
       },
       act: (bloc) => bloc.add(LoadActorDetails(actorId: actorDetails.id)),
       expect: () => [
-        const ActorDetailsLoading(),
+        ActorDetailsLoading(),
         ActorDetailsLoaded(actorDetails: actorDetails),
       ],
       verify: (_) {
@@ -50,7 +50,7 @@ void main() {
       },
       act: (bloc) => bloc.add(LoadActorDetails(actorId: actorDetails.id)),
       expect: () => [
-        const ActorDetailsLoading(),
+        ActorDetailsLoading(),
         isA<ActorDetailsFailure>(),
       ],
       verify: (_) {

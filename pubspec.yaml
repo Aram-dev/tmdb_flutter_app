@@ -62,8 +62,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.6
-  mocktail: ^1.0.3
+  bloc_test: ^10.0.0
+  mocktail: ^1.0.4
   golden_toolkit: ^0.15.0
 
   # The "flutter_lints" package below contains a set of recommended lints to

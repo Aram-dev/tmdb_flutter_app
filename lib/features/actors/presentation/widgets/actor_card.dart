@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:tmdb_flutter_app/core/router/router.gr.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/models/actors_list_result.dart';
 
 import '../../../../core/router/router.dart';
@@ -50,7 +49,7 @@ class ActorCard extends StatelessWidget {
                 Image.network(
                   imgUrl,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => _placeholder(),
+                  errorBuilder: (_, _, _) => _placeholder(),
                   loadingBuilder: (c, child, p) =>
                       p == null ? child : Container(color: Colors.black12),
                   frameBuilder: (ctx, child, frame, wasSync) {

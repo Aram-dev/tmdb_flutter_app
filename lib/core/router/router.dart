@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../features/actors/domain/models/actors_list_result.dart';
+import '../../features/actors/presentation/bloc/actor_details_bloc.dart';
 import '../../features/movies/domain/models/movie.dart';
 import '../../features/screens.dart';
 

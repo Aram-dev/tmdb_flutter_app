@@ -3,10 +3,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
-import '../../../common/common.dart';
-import '../../domain/models/actor_details.dart';
-import '../../domain/models/actors_list_result.dart';
-import '../../domain/usecases/usecases.dart';
+import '../../../../common/common.dart';
+import '../../../domain/models/actor_details.dart';
+import '../../../domain/models/actors_list_result.dart';
+import '../../../domain/usecases/details/actor_details_use_case.dart';
 
 part 'actor_details_event.dart';
 part 'actor_details_state.dart';
@@ -41,10 +41,10 @@ class ActorDetailsBloc extends Bloc<UiEvent, UiState> {
     emit(ActorDetailsLoading(initialActor: fallbackActor));
 
     try {
-      final details = await actorDetailsUseCase.fetchActorDetails(
-        actorId: event.actorId,
-        apiKey: _apiKey,
-        language: 'en-US',
+      final details = await actorDetailsUseCase.getActorDetails(
+        event.actorId,
+        _apiKey,
+        'en-US',
       );
       emit(ActorDetailsLoaded(details: details));
     } catch (error) {

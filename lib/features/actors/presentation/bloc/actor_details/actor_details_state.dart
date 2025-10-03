@@ -1,7 +1,7 @@
 part of 'actor_details_bloc.dart';
 
 class ActorDetailsInitial extends UiState {
-  const ActorDetailsInitial({this.initialActor});
+  ActorDetailsInitial({this.initialActor});
 
   final ActorsListResults? initialActor;
 
@@ -10,7 +10,7 @@ class ActorDetailsInitial extends UiState {
 }
 
 class ActorDetailsLoading extends UiState {
-  const ActorDetailsLoading({this.initialActor});
+  ActorDetailsLoading({this.initialActor});
 
   final ActorsListResults? initialActor;
 
@@ -19,7 +19,7 @@ class ActorDetailsLoading extends UiState {
 }
 
 class ActorDetailsLoaded extends UiState {
-  const ActorDetailsLoaded({required this.details});
+  ActorDetailsLoaded({required this.details});
 
   final ActorDetails details;
 
@@ -28,7 +28,7 @@ class ActorDetailsLoaded extends UiState {
 }
 
 class ActorDetailsFailure extends UiState {
-  const ActorDetailsFailure({
+  ActorDetailsFailure({
     required this.exception,
     this.initialActor,
   });

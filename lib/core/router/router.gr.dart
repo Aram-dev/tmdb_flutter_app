@@ -15,12 +15,6 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
-    ActorsRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const ActorsScreen(),
-      );
-    },
     ActorDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<ActorDetailsRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -28,8 +22,15 @@ abstract class _$AppRouter extends RootStackRouter {
         child: ActorDetailsScreen(
           key: args.key,
           actorId: args.actorId,
-          initialActor: args.initialActor,
+          actorName: args.actorName,
+          blocOverride: args.blocOverride,
         ),
+      );
+    },
+    ActorsRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const ActorsScreen(),
       );
     },
     HomeRoute.name: (routeData) {
@@ -51,17 +52,6 @@ abstract class _$AppRouter extends RootStackRouter {
         child: MovieDetailsScreen(
           key: args.key,
           movie: args.movie,
-        ),
-      );
-    },
-    ActorDetailsRoute.name: (routeData) {
-      final args = routeData.argsAs<ActorDetailsRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: ActorDetailsScreen(
-          key: args.key,
-          actorId: args.actorId,
-          actorName: args.actorName,
         ),
       );
     },
@@ -93,33 +83,21 @@ abstract class _$AppRouter extends RootStackRouter {
 }
 
 /// generated route for
-/// [ActorsScreen]
-class ActorsRoute extends PageRouteInfo<void> {
-  const ActorsRoute({List<PageRouteInfo>? children})
-      : super(
-          ActorsRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'ActorsRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
 /// [ActorDetailsScreen]
 class ActorDetailsRoute extends PageRouteInfo<ActorDetailsRouteArgs> {
   ActorDetailsRoute({
     Key? key,
     required int actorId,
-    ActorsListResults? initialActor,
+    String? actorName,
+    ActorDetailsBloc? blocOverride,
     List<PageRouteInfo>? children,
   }) : super(
           ActorDetailsRoute.name,
           args: ActorDetailsRouteArgs(
             key: key,
             actorId: actorId,
-            initialActor: initialActor,
+            actorName: actorName,
+            blocOverride: blocOverride,
           ),
           initialChildren: children,
         );
@@ -134,19 +112,36 @@ class ActorDetailsRouteArgs {
   const ActorDetailsRouteArgs({
     this.key,
     required this.actorId,
-    this.initialActor,
+    this.actorName,
+    this.blocOverride,
   });
 
   final Key? key;
 
   final int actorId;
 
-  final ActorsListResults? initialActor;
+  final String? actorName;
+
+  final ActorDetailsBloc? blocOverride;
 
   @override
   String toString() {
-    return 'ActorDetailsRouteArgs{key: $key, actorId: $actorId, initialActor: $initialActor}';
+    return 'ActorDetailsRouteArgs{key: $key, actorId: $actorId, actorName: $actorName, blocOverride: $blocOverride}';
   }
+}
+
+/// generated route for
+/// [ActorsScreen]
+class ActorsRoute extends PageRouteInfo<void> {
+  const ActorsRoute({List<PageRouteInfo>? children})
+      : super(
+          ActorsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ActorsRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
@@ -212,49 +207,6 @@ class MovieDetailsRouteArgs {
   @override
   String toString() {
     return 'MovieDetailsRouteArgs{key: $key, movie: $movie}';
-  }
-}
-
-/// generated route for
-/// [ActorDetailsScreen]
-class ActorDetailsRoute extends PageRouteInfo<ActorDetailsRouteArgs> {
-  ActorDetailsRoute({
-    Key? key,
-    required int actorId,
-    String? actorName,
-    List<PageRouteInfo>? children,
-  }) : super(
-          ActorDetailsRoute.name,
-          args: ActorDetailsRouteArgs(
-            key: key,
-            actorId: actorId,
-            actorName: actorName,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'ActorDetailsRoute';
-
-  static const PageInfo<ActorDetailsRouteArgs> page =
-      PageInfo<ActorDetailsRouteArgs>(name);
-}
-
-class ActorDetailsRouteArgs {
-  const ActorDetailsRouteArgs({
-    this.key,
-    required this.actorId,
-    this.actorName,
-  });
-
-  final Key? key;
-
-  final int actorId;
-
-  final String? actorName;
-
-  @override
-  String toString() {
-    return 'ActorDetailsRouteArgs{key: $key, actorId: $actorId, actorName: $actorName}';
   }
 }
 
