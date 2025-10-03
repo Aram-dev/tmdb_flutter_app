@@ -50,47 +50,101 @@ class HomeRepositoryImpl extends HomeRepository {
     String endpoint,
     Map<String, Object?> queryParams, {
     required Duration maxStale,
-  }
-  ) async {
+  }) async {
+    final cacheOptions = _cacheOptions(maxStale: maxStale);
+    final cachedData = await _tryGetCachedData(
+      cacheOptions: cacheOptions,
+      endpoint: endpoint,
+      queryParams: queryParams,
+    );
+
+    if (cachedData != null) {
+      return _mapToEntity(cachedData);
+    }
+
     final response = await dio.get(
       endpoint,
       queryParameters: queryParams,
-      options: _cacheOptions(maxStale: maxStale),
+      options: cacheOptions.toOptions(),
     );
 
-    final data = response.data as Map<String, dynamic>;
-    final dates = data.containsKey('dates')
-        ? MoviesDates.fromJson(data['dates'])
-        : null;
-    final page = data.containsKey('page') ? data['page'] as int : null;
-    final results =
-        (data.containsKey('results') ? data['results'] as List : null)
-            ?.map((json) => Movie.fromJson(json))
-            .toList();
-    final totalPages = data.containsKey('total_pages')
-        ? data['total_pages'] as int
-        : null;
-    final totalResults = data.containsKey('total_results')
-        ? data['total_results'] as int
-        : null;
-
-    final entity = MovieTvShowEntity(
-      dates: dates,
-      page: page,
-      results: results,
-      totalPages: totalPages,
-      totalResults: totalResults,
-    );
-
-    return entity;
+    final data = _normalizeResponseData(response.data);
+    return _mapToEntity(data);
   }
 
-  Options _cacheOptions({required Duration maxStale}) {
-    return GetIt.I<CacheOptions>()
-        .copyWith(
-          policy: CachePolicy.refresh,
+  CacheOptions _cacheOptions({required Duration maxStale}) {
+    return GetIt.I<CacheOptions>().copyWith(
+          policy: CachePolicy.request,
           maxStale: Nullable(maxStale),
-        )
-        .toOptions();
+        );
+  }
+
+  Future<Map<String, dynamic>?> _tryGetCachedData({
+    required CacheOptions cacheOptions,
+    required String endpoint,
+    required Map<String, Object?> queryParams,
+  }) async {
+    if (cacheOptions.policy == CachePolicy.refresh) {
+      return null;
+    }
+
+    final store = cacheOptions.store;
+    if (store == null) {
+      return null;
+    }
+
+    final requestOptions = cacheOptions
+        .toOptions()
+        .compose(dio.options, endpoint, queryParameters: queryParams);
+    final cacheKey = cacheOptions.keyBuilder(requestOptions);
+    final cachedResponse = await store.get(cacheKey);
+
+    if (cachedResponse == null) {
+      return null;
+    }
+
+    if (cachedResponse.isStaled()) {
+      await store.delete(cacheKey, staleOnly: true);
+      return null;
+    }
+
+    final cachedData = cachedResponse.toResponse(requestOptions).data;
+    return _normalizeResponseData(cachedData);
+  }
+
+  Map<String, dynamic> _normalizeResponseData(dynamic data) {
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+    if (data is Map) {
+      return Map<String, dynamic>.from(data as Map);
+    }
+    return <String, dynamic>{};
+  }
+
+  MovieTvShowEntity _mapToEntity(Map<String, dynamic> data) {
+    final datesRaw = data['dates'];
+    MoviesDates? dates;
+    if (datesRaw is Map<String, dynamic>) {
+      dates = MoviesDates.fromJson(datesRaw);
+    } else if (datesRaw is Map) {
+      dates = MoviesDates.fromJson(Map<String, dynamic>.from(datesRaw as Map));
+    }
+
+    final resultsRaw = data['results'];
+    final results = resultsRaw is List
+        ? resultsRaw
+            .whereType<Map<String, dynamic>>()
+            .map(Movie.fromJson)
+            .toList()
+        : null;
+
+    return MovieTvShowEntity(
+      dates: dates,
+      page: (data['page'] as num?)?.toInt(),
+      results: results,
+      totalPages: (data['total_pages'] as num?)?.toInt(),
+      totalResults: (data['total_results'] as num?)?.toInt(),
+    );
   }
 }
