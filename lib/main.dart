@@ -122,6 +122,36 @@ Future<void> main() async {
           TopRatedMoviesUseCaseImpl(repository: di.get<MovieRepository>()),
     );
 
+    di.registerLazySingleton<MovieDetailsUseCase>(
+      () => MovieDetailsUseCaseImpl(
+        repository: di.get<MovieRepository>(),
+      ),
+    );
+
+    di.registerLazySingleton<MovieCreditsUseCase>(
+      () => MovieCreditsUseCaseImpl(
+        repository: di.get<MovieRepository>(),
+      ),
+    );
+
+    di.registerLazySingleton<MovieReviewsUseCase>(
+      () => MovieReviewsUseCaseImpl(
+        repository: di.get<MovieRepository>(),
+      ),
+    );
+
+    di.registerLazySingleton<MovieRecommendationsUseCase>(
+      () => MovieRecommendationsUseCaseImpl(
+        repository: di.get<MovieRepository>(),
+      ),
+    );
+
+    di.registerLazySingleton<MovieWatchProvidersUseCase>(
+      () => MovieWatchProvidersUseCaseImpl(
+        repository: di.get<MovieRepository>(),
+      ),
+    );
+
     di.registerLazySingleton<DiscoverContentUseCase>(
       () =>
           DiscoverContentUseCaseImpl(repository: di.get<HomeRepository>()),
