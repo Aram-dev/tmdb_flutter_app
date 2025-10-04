@@ -2,25 +2,25 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../../domain/usecases/usecases.dart';
 import '../../../../common/common.dart';
+import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 part 'trending_movies_event.dart';
 
 part 'trending_movies_state.dart';
 
 class TrendingMoviesBloc extends Bloc<UiEvent, UiState> {
-  TrendingMoviesBloc(this.trendingMoviesUseCase)
+  TrendingMoviesBloc(this.trendingMoviesUseCase, this.authRepository)
     : super(TrendingMoviesLoading()) {
     on<LoadTrendingMovies>(_load);
   }
 
   final TrendingMoviesUseCase trendingMoviesUseCase;
-  String apiKey = dotenv.env['PERSONAL_TMDB_API_KEY']!;
+  final AuthRepository authRepository;
 
   Future<void> _load(
     LoadTrendingMovies event,
@@ -30,6 +30,7 @@ class TrendingMoviesBloc extends Bloc<UiEvent, UiState> {
       if (state is! TrendingMoviesLoaded) {
         emit(TrendingMoviesLoading());
       }
+      final apiKey = await authRepository.requireApiKey();
       final trendingMovies = await trendingMoviesUseCase.getTrendingMovies(
         apiKey,
         'us-US',

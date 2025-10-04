@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:tmdb_flutter_app/core/connection/no_internet_dialog.dart';
+import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 import '../../../common/common.dart';
 import '../../../movies/domain/usecases/trending/trending_movies_use_case.dart';
@@ -24,16 +25,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authRepository = GetIt.I<AuthRepository>();
     return MultiBlocProvider(
       providers: [
         BlocProvider<DiscoverContentBloc>(
           create: (context) =>
-              DiscoverContentBloc(GetIt.I<DiscoverContentUseCase>())
-                ..add(LoadDiscoverContent(category: 'movie')),
+              DiscoverContentBloc(
+                GetIt.I<DiscoverContentUseCase>(),
+                authRepository,
+              )..add(LoadDiscoverContent(category: 'movie')),
         ),
         BlocProvider<TrendingMoviesBloc>(
           create: (context) =>
-              TrendingMoviesBloc(GetIt.I<TrendingMoviesUseCase>())..add(
+              TrendingMoviesBloc(
+                GetIt.I<TrendingMoviesUseCase>(),
+                authRepository,
+              )..add(
                 LoadTrendingMovies(
                   selectedPeriod: 'day',
                   contentTypeId: 'movie',

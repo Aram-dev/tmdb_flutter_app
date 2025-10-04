@@ -1,26 +1,26 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
 
 import '../../../../common/common.dart';
+import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 part 'now_playing_movies_event.dart';
 
 part 'now_playing_movies_state.dart';
 
 class NowPlayingMoviesBloc extends Bloc<UiEvent, UiState> {
-  NowPlayingMoviesBloc(this.nowPlayingMoviesUseCase)
+  NowPlayingMoviesBloc(this.nowPlayingMoviesUseCase, this.authRepository)
     : super(NowPlayingMoviesInitial()) {
     on<LoadNowPlayingMovies>(_load);
     on<ToggleSection>(_onToggleSection);
   }
 
   final NowPlayingMoviesUseCase nowPlayingMoviesUseCase;
-  String apiKey = dotenv.env['PERSONAL_TMDB_API_KEY']!;
+  final AuthRepository authRepository;
 
   Future<void> _load(
     LoadNowPlayingMovies event,
@@ -31,13 +31,13 @@ class NowPlayingMoviesBloc extends Bloc<UiEvent, UiState> {
         emit(NowPlayingMoviesLoading());
       }
 
-      final nowPlayingMovies = await nowPlayingMoviesUseCase
-          .getNowPlayingMovies(
-            1,
-            apiKey,
-            'US',
-            'us-US',
-          );
+      final apiKey = await authRepository.requireApiKey();
+      final nowPlayingMovies = await nowPlayingMoviesUseCase.getNowPlayingMovies(
+        1,
+        apiKey,
+        'US',
+        'us-US',
+      );
       emit(
         NowPlayingMoviesLoaded(
           nowPlayingMovies: nowPlayingMovies,

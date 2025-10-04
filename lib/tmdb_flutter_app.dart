@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/theme/theme.dart';
 
 import 'core/router/router.dart';
+import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'features/auth/domain/repositories/auth_repository.dart';
 
 class TmdbFlutterApp extends StatefulWidget {
   const TmdbFlutterApp({super.key});
@@ -17,20 +20,26 @@ class _TmdbFlutterAppState extends State<TmdbFlutterApp> {
   @override
   Widget build(BuildContext context) {
     final appRouter = AppRouter();
-    return MaterialApp.router(
-      title: 'TmdbFlutterApp',
-      theme: darkTheme,
-      localizationsDelegates: const [
-        // S.delegate,
-        // GlobalMaterialLocalizations.delegate,
-        // GlobalWidgetsLocalizations.delegate,
-        // GlobalCupertinoLocalizations.delegate,
-      ],
-      // supportedLocales: S.delegate.supportedLocales,
-      routerConfig: appRouter.config(
-        navigatorObservers: () => [
-          TalkerRouteObserver(GetIt.I<Talker>()),
+    return BlocProvider<AuthCubit>(
+      create: (context) => AuthCubit(
+        authRepository: GetIt.I<AuthRepository>(),
+        talker: GetIt.I<Talker>(),
+      ),
+      child: MaterialApp.router(
+        title: 'TmdbFlutterApp',
+        theme: darkTheme,
+        localizationsDelegates: const [
+          // S.delegate,
+          // GlobalMaterialLocalizations.delegate,
+          // GlobalWidgetsLocalizations.delegate,
+          // GlobalCupertinoLocalizations.delegate,
         ],
+        // supportedLocales: S.delegate.supportedLocales,
+        routerConfig: appRouter.config(
+          navigatorObservers: () => [
+            TalkerRouteObserver(GetIt.I<Talker>()),
+          ],
+        ),
       ),
     );
   }
