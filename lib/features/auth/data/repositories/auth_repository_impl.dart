@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 
 import '../../domain/entities/auth_session.dart';
+import '../../domain/entities/auth_tokens.dart';
 import '../../domain/exceptions/auth_exception.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';
@@ -18,6 +21,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
   String? _cachedApiKey;
   AuthSession? _cachedSession;
+  AuthTokens? _cachedTokens;
+  final StreamController<void> _logoutController =
+      StreamController<void>.broadcast();
 
   @override
   Future<String?> getApiKey() async {
@@ -43,6 +49,54 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<bool> validateApiKey(String apiKey) {
     return _remoteDataSource.validateApiKey(apiKey);
+  }
+
+  @override
+  Future<String?> getAccessToken() async {
+    final tokens = await getTokens();
+    return tokens?.accessToken;
+  }
+
+  @override
+  Future<AuthTokens?> getTokens() async {
+    if (_cachedTokens != null) {
+      return _cachedTokens;
+    }
+    _cachedTokens = await _localDataSource.getTokens();
+    return _cachedTokens;
+  }
+
+  @override
+  Future<void> saveTokens(AuthTokens tokens) async {
+    _cachedTokens = tokens;
+    await _localDataSource.saveTokens(tokens);
+  }
+
+  @override
+  Future<void> clearTokens() async {
+    _cachedTokens = null;
+    await _localDataSource.clearTokens();
+  }
+
+  @override
+  Future<AuthTokens?> refreshTokens() async {
+    final currentTokens = await getTokens();
+    if (currentTokens == null) {
+      return null;
+    }
+    return _remoteDataSource.refreshTokens(
+      refreshToken: currentTokens.refreshToken,
+    );
+  }
+
+  @override
+  Stream<void> get logoutStream => _logoutController.stream;
+
+  @override
+  void notifyLogout() {
+    if (!_logoutController.isClosed) {
+      _logoutController.add(null);
+    }
   }
 
   @override

@@ -1,5 +1,7 @@
 import '../entities/auth_session.dart';
 
+import '../entities/auth_tokens.dart';
+
 abstract class AuthRepository {
   Future<String?> getApiKey();
 
@@ -8,6 +10,20 @@ abstract class AuthRepository {
   Future<void> clearApiKey();
 
   Future<bool> validateApiKey(String apiKey);
+
+  Future<String?> getAccessToken();
+
+  Future<AuthTokens?> getTokens();
+
+  Future<void> saveTokens(AuthTokens tokens);
+
+  Future<void> clearTokens();
+
+  Future<AuthTokens?> refreshTokens();
+
+  Stream<void> get logoutStream;
+
+  void notifyLogout();
 
   Future<AuthSession?> getSession();
 

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../domain/entities/auth_tokens.dart';
 import '../models/account_response.dart';
 import '../models/request_token_response.dart';
 import '../models/session_response.dart';
