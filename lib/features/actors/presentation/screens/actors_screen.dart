@@ -7,7 +7,6 @@ import '../../../common/common.dart';
 import '../../domain/usecases/popular/popular_actors_use_case.dart';
 import '../bloc/popular_actors_bloc.dart';
 import '../widgets/actor_card.dart';
-import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 @RoutePage()
 class ActorsScreen extends StatefulWidget {
@@ -24,7 +23,6 @@ class _ActorsScreenState extends State<ActorsScreen> {
       create: (_) =>
           PopularActorsBloc(
             GetIt.I<PopularActorsUseCase>(),
-            GetIt.I<AuthRepository>(),
           )..add(LoadPopularActors()),
       child: BlocBuilder<PopularActorsBloc, UiState>(
         builder: (context, state) {

@@ -16,7 +16,6 @@ class HomeRepositoryImpl extends HomeRepository {
   @override
   Future<MovieTvShowEntity> getDiscoverContent(
     int page,
-    String apiKey,
     String language,
     String category,
     String? region,
@@ -32,7 +31,6 @@ class HomeRepositoryImpl extends HomeRepository {
     final String endpoint = '/discover/$category';
     final params = {
       'page': page,
-      'api_key': apiKey,
       'region': region,
       'language': language,
       'include_adult': false,

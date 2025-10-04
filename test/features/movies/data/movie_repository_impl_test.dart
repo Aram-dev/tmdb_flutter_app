@@ -46,12 +46,10 @@ void main() {
 
   group('MovieRepositoryImpl caching', () {
     test('returns cached trending movies without network call', () async {
-      const apiKey = 'api-key';
       const language = 'en-US';
       const timeWindow = 'day';
       final endpoint = '/trending/movie/$timeWindow';
       final params = <String, dynamic>{
-        'api_key': apiKey,
         'language': language,
       };
 
@@ -99,7 +97,7 @@ void main() {
       await store.set(cachedResponse);
 
       final result =
-          await repository.getTrendingMovies(apiKey, language, timeWindow);
+          await repository.getTrendingMovies(language, timeWindow);
 
       expect(result, isA<MovieTvShowEntity>());
       expect(result.results, isNotNull);

@@ -15,13 +15,11 @@ class TvShowsRepositoryImpl extends TvShowsRepository {
   @override
   // Fetch trending TvShowss. `timeWindow` can be "day" or "week".
   Future<MovieTvShowEntity> getTrendingTvShows(
-      String apiKey,
-      String language,
-      String timeWindow,
-      ) async {
+    String language,
+    String timeWindow,
+  ) async {
     final String endpoint = '/trending/tv/$timeWindow';
     final params = {
-      'api_key': apiKey,
       'language': language,
     };
     return _fetchTvShowsFromApi(
@@ -33,15 +31,13 @@ class TvShowsRepositoryImpl extends TvShowsRepository {
 
   @override
   Future<MovieTvShowEntity> getAiringTodayTvShows(
-      int page,
-      String apiKey,
-      String timezone,
-      String language,
-      ) async {
+    int page,
+    String timezone,
+    String language,
+  ) async {
     final String endpoint = '/tv/airing_today';
     final params = {
       'page': page,
-      'api_key': apiKey,
       'timezone': timezone,
       'language': language,
     };
@@ -54,15 +50,13 @@ class TvShowsRepositoryImpl extends TvShowsRepository {
 
   @override
   Future<MovieTvShowEntity> getOnTheAirTvShows(
-      int page,
-      String apiKey,
-      String region,
-      String language,
-      ) async {
+    int page,
+    String region,
+    String language,
+  ) async {
     final String endpoint = '/tv/on_the_air';
     final params = {
       'page': page,
-      'api_key': apiKey,
       'region': region,
       'language': language,
     };
@@ -76,14 +70,12 @@ class TvShowsRepositoryImpl extends TvShowsRepository {
   @override
   Future<MovieTvShowEntity> getPopularTvShows(
     int page,
-    String apiKey,
     String region,
     String language,
   ) async {
     final String endpoint = '/tv/popular';
     final params = {
       'page': page,
-      'api_key': apiKey,
       'region': region,
       'language': language,
     };
@@ -96,15 +88,13 @@ class TvShowsRepositoryImpl extends TvShowsRepository {
 
   @override
   Future<MovieTvShowEntity> getTopRatedTvShows(
-      int page,
-      String apiKey,
-      String region,
-      String language,
-      ) async {
+    int page,
+    String region,
+    String language,
+  ) async {
     final String endpoint = '/tv/top_rated';
     final params = {
       'page': page,
-      'api_key': apiKey,
       'region': region,
       'language': language,
     };

@@ -7,31 +7,27 @@ import 'package:talker_flutter/talker_flutter.dart';
 import '../../../../common/common.dart';
 import '../../../../movies/domain/models/movies_entity.dart';
 import '../../../domain/usecases/top_rated/top_rated_tv_shows_use_case.dart';
-import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 part 'top_rated_tv_shows_event.dart';
 
 part 'top_rated_tv_shows_state.dart';
 
 class TopRatedTvShowsBloc extends Bloc<UiEvent, UiState> {
-  TopRatedTvShowsBloc(this.topRatedTvShowsUseCase, this.authRepository)
+  TopRatedTvShowsBloc(this.topRatedTvShowsUseCase)
     : super(TopRatedTvShowsInitial()) {
     on<LoadTopRatedTvShows>(_load);
     on<ToggleSection>(_onToggleSection);
   }
 
   final TopRatedTvShowsUseCase topRatedTvShowsUseCase;
-  final AuthRepository authRepository;
 
   Future<void> _load(LoadTopRatedTvShows event, Emitter<UiState> emit) async {
     try {
       if (state is! TopRatedTvShowsLoaded) {
         emit(TopRatedTvShowsLoading());
       }
-      final apiKey = await authRepository.requireApiKey();
       final topRatedTvShows = await topRatedTvShowsUseCase.getTopRatedTvShows(
         1,
-        apiKey,
         'US',
         'us-US',
       );

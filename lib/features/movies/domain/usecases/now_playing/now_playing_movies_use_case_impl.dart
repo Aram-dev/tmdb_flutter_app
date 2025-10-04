@@ -11,10 +11,9 @@ class NowPlayingMoviesUseCaseImpl extends NowPlayingMoviesUseCase {
   @override
   Future<MovieTvShowEntity> getNowPlayingMovies(
     int page,
-    String apiKey,
     String region,
     String language,
   ) async {
-    return repository.getNowPlayingMovies(page, apiKey, region, language);
+    return repository.getNowPlayingMovies(page, region, language);
   }
 }

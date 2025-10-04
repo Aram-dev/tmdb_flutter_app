@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:tmdb_flutter_app/features/movies/presentation/bloc/top_rated/top_rated_movies_bloc.dart';
 
 import '../../../../core/connection/no_internet_dialog.dart';
@@ -25,14 +24,12 @@ class _MoviesScreenState extends State<MoviesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authRepository = GetIt.I<AuthRepository>();
     return MultiBlocProvider(
       providers: [
         BlocProvider<TrendingMoviesBloc>(
           create: (context) =>
               TrendingMoviesBloc(
                 GetIt.I<TrendingMoviesUseCase>(),
-                authRepository,
               )..add(
                 LoadTrendingMovies(
                   selectedPeriod: 'day',
@@ -44,28 +41,24 @@ class _MoviesScreenState extends State<MoviesScreen> {
           create: (context) =>
               PopularMoviesBloc(
                 GetIt.I<PopularMoviesUseCase>(),
-                authRepository,
               )..add(LoadPopularMovies()),
         ),
         BlocProvider<NowPlayingMoviesBloc>(
           create: (context) =>
               NowPlayingMoviesBloc(
                 GetIt.I<NowPlayingMoviesUseCase>(),
-                authRepository,
               )..add(LoadNowPlayingMovies()),
         ),
         BlocProvider<UpcomingMoviesBloc>(
           create: (context) =>
               UpcomingMoviesBloc(
                 GetIt.I<UpcomingMoviesUseCase>(),
-                authRepository,
               )..add(LoadUpcomingMovies()),
         ),
         BlocProvider<TopRatedMoviesBloc>(
           create: (context) =>
               TopRatedMoviesBloc(
                 GetIt.I<TopRatedMoviesUseCase>(),
-                authRepository,
               )..add(LoadTopRatedMovies()),
         ),
       ],

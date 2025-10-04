@@ -10,7 +10,6 @@ class DiscoverContentUseCaseImpl extends DiscoverContentUseCase {
   @override
   Future<MovieTvShowEntity> getDiscoverContent({
     required int page,
-    required String apiKey,
     required String language,
     required String category,
     String? region,
@@ -24,7 +23,6 @@ class DiscoverContentUseCaseImpl extends DiscoverContentUseCase {
   }) async {
     return repository.getDiscoverContent(
       page,
-      apiKey,
       language,
       category,
       region,

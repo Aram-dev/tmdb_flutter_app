@@ -14,7 +14,7 @@ class AuthRemoteDataSource {
     try {
       final response = await _dio.get(
         '/configuration',
-        queryParameters: {'api_key': apiKey},
+        options: _withAuthorization(apiKey),
       );
       return response.statusCode == 200;
     } on DioException catch (error) {
@@ -28,7 +28,7 @@ class AuthRemoteDataSource {
   Future<RequestTokenResponse> createRequestToken(String apiKey) async {
     final response = await _dio.get(
       '/authentication/token/new',
-      queryParameters: {'api_key': apiKey},
+      options: _withAuthorization(apiKey),
     );
     return RequestTokenResponse.fromJson(_mapResponse(response.data));
   }
@@ -41,12 +41,12 @@ class AuthRemoteDataSource {
   }) async {
     final response = await _dio.post(
       '/authentication/token/validate_with_login',
-      queryParameters: {'api_key': apiKey},
       data: {
         'username': username,
         'password': password,
         'request_token': requestToken,
       },
+      options: _withAuthorization(apiKey),
     );
     return RequestTokenResponse.fromJson(_mapResponse(response.data));
   }
@@ -57,8 +57,8 @@ class AuthRemoteDataSource {
   }) async {
     final response = await _dio.post(
       '/authentication/session/new',
-      queryParameters: {'api_key': apiKey},
       data: {'request_token': requestToken},
+      options: _withAuthorization(apiKey),
     );
     return SessionResponse.fromJson(_mapResponse(response.data));
   }
@@ -70,29 +70,19 @@ class AuthRemoteDataSource {
     final response = await _dio.get(
       '/account',
       queryParameters: {
-        'api_key': apiKey,
         'session_id': sessionId,
       },
+      options: _withAuthorization(apiKey),
     );
     return AccountResponse.fromJson(_mapResponse(response.data));
   }
 
-  Future<AuthTokens> refreshTokens({required String refreshToken}) async {
-    final response = await _dio.post(
-      '/authentication/token/refresh',
-      data: {'refresh_token': refreshToken},
+  Options _withAuthorization(String apiKey) {
+    return Options(
+      headers: {
+        'Authorization': 'Bearer $apiKey',
+      },
     );
-    final data = _mapResponse(response.data);
-    final accessToken = (data['access_token'] as String?) ?? '';
-    final newRefreshToken = (data['refresh_token'] as String?) ?? '';
-    if (accessToken.isEmpty || newRefreshToken.isEmpty) {
-      throw DioException(
-        requestOptions: RequestOptions(path: '/authentication/token/refresh'),
-        type: DioExceptionType.badResponse,
-        error: 'Missing tokens in refresh response',
-      );
-    }
-    return AuthTokens(accessToken: accessToken, refreshToken: newRefreshToken);
   }
 
   Map<String, dynamic> _mapResponse(dynamic data) {

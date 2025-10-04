@@ -46,7 +46,6 @@ void main() {
 
   group('HomeRepositoryImpl caching', () {
     test('returns cached discover content without network call', () async {
-      const apiKey = 'api-key';
       const language = 'en-US';
       const category = 'movie';
       const region = 'US';
@@ -54,7 +53,6 @@ void main() {
       final endpoint = '/discover/$category';
       final params = <String, dynamic>{
         'page': page,
-        'api_key': apiKey,
         'region': region,
         'language': language,
         'include_adult': false,
@@ -106,7 +104,6 @@ void main() {
 
       final result = await repository.getDiscoverContent(
         page,
-        apiKey,
         language,
         category,
         region,

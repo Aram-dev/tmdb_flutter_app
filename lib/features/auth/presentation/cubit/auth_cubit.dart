@@ -27,7 +27,9 @@ class AuthCubit extends Cubit<AuthState> {
       final apiKey = await _authRepository.getApiKey();
       final session = await _authRepository.getSession();
 
-      if (apiKey == null || apiKey.isEmpty) {
+      final hasApiKey = apiKey != null && apiKey.isNotEmpty;
+
+      if (!hasApiKey) {
         emit(const AuthState(status: AuthStatus.needsApiKey));
         return;
       }
@@ -35,13 +37,13 @@ class AuthCubit extends Cubit<AuthState> {
       if (session != null) {
         emit(AuthState(
           status: AuthStatus.authenticated,
-          apiKey: apiKey,
+          hasApiKey: true,
           session: session,
         ));
         return;
       }
 
-      emit(AuthState(status: AuthStatus.unauthenticated, apiKey: apiKey));
+      emit(const AuthState(status: AuthStatus.unauthenticated, hasApiKey: true));
     } catch (error, stackTrace) {
       _logError(error, stackTrace);
       emit(AuthState(
@@ -59,7 +61,7 @@ class AuthCubit extends Cubit<AuthState> {
         throw AuthException('The provided TMDB API key is invalid.');
       }
       await _authRepository.saveApiKey(apiKey);
-      emit(AuthState(status: AuthStatus.unauthenticated, apiKey: apiKey));
+      emit(const AuthState(status: AuthStatus.unauthenticated, hasApiKey: true));
     } catch (error, stackTrace) {
       _logError(error, stackTrace);
       emit(state.copyWith(
@@ -75,7 +77,10 @@ class AuthCubit extends Cubit<AuthState> {
   }) async {
     emit(state.copyWith(status: AuthStatus.loading, clearErrorMessage: true));
     try {
-      final apiKey = await _authRepository.requireApiKey();
+      final apiKey = await _authRepository.getApiKey();
+      if (apiKey == null || apiKey.isEmpty) {
+        throw AuthException('TMDB API key has not been configured.');
+      }
       final session = await _authRepository.createSession(
         apiKey: apiKey,
         username: username,
@@ -83,7 +88,7 @@ class AuthCubit extends Cubit<AuthState> {
       );
       emit(AuthState(
         status: AuthStatus.authenticated,
-        apiKey: apiKey,
+        hasApiKey: true,
         session: session,
       ));
     } catch (error, stackTrace) {
@@ -100,10 +105,11 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final apiKey = await _authRepository.getApiKey();
       await _authRepository.clearSession();
-      if (apiKey == null || apiKey.isEmpty) {
+      final hasApiKey = apiKey != null && apiKey.isNotEmpty;
+      if (!hasApiKey) {
         emit(const AuthState(status: AuthStatus.needsApiKey));
       } else {
-        emit(AuthState(status: AuthStatus.unauthenticated, apiKey: apiKey));
+        emit(const AuthState(status: AuthStatus.unauthenticated, hasApiKey: true));
       }
     } catch (error, stackTrace) {
       _logError(error, stackTrace);

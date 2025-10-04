@@ -10,10 +10,9 @@ class AiringTodayTvShowsUseCaseImpl extends AiringTodayTvShowsUseCase {
   @override
   Future<MovieTvShowEntity> getAiringTodayTvShows(
     int page,
-    String apiKey,
     String timezone,
     String language,
   ) async {
-    return repository.getAiringTodayTvShows(page, apiKey, timezone, language);
+    return repository.getAiringTodayTvShows(page, timezone, language);
   }
 }

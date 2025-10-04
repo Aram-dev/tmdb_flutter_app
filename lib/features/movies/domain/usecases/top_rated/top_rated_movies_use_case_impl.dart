@@ -11,10 +11,9 @@ class TopRatedMoviesUseCaseImpl extends TopRatedMoviesUseCase {
   @override
   Future<MovieTvShowEntity> getTopRatedMovies(
     int page,
-    String apiKey,
     String region,
     String language,
   ) async {
-    return repository.getTopRatedMovies(page, apiKey, region, language);
+    return repository.getTopRatedMovies(page, region, language);
   }
 }
