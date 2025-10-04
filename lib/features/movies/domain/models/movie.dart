@@ -20,6 +20,7 @@ class Movie extends Equatable {
     required this.video,
     required this.voteAverage,
     required this.voteCount,
+    required this.runtime,
   });
 
   final bool? adult;
@@ -44,6 +45,7 @@ class Movie extends Equatable {
   final double? voteAverage;
   @JsonKey(name: "vote_count")
   final int? voteCount;
+  final int? runtime;
 
   @override
   List<Object?> get props => [
@@ -61,6 +63,7 @@ class Movie extends Equatable {
     video,
     voteAverage,
     voteCount,
+    runtime,
   ];
 
   factory Movie.fromJson(Map<String, dynamic> json) =>
