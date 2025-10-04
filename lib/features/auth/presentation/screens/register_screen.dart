@@ -36,7 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return BlocListener<AuthCubit, AuthState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
-        if (state.status == AuthStatus.unauthenticated && state.apiKey != null) {
+        if (state.status == AuthStatus.unauthenticated && state.hasApiKey) {
           context.router.replaceAll([const SignInRoute()]);
         } else if (state.status == AuthStatus.failure && state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(

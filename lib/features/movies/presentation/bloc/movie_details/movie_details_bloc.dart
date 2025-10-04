@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
-import '../../../auth/domain/repositories/auth_repository.dart';
 import '../../../common/common.dart';
 import '../../domain/models/movie_credits.dart';
 import '../../domain/models/movie_detail.dart';
@@ -21,7 +20,6 @@ class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
     required this.movieReviewsUseCase,
     required this.movieRecommendationsUseCase,
     required this.movieWatchProvidersUseCase,
-    required this.authRepository,
   }) : super(MovieDetailsInitial()) {
     on<LoadMovieDetails>(_onLoad);
   }
@@ -31,7 +29,6 @@ class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
   final MovieReviewsUseCase movieReviewsUseCase;
   final MovieRecommendationsUseCase movieRecommendationsUseCase;
   final MovieWatchProvidersUseCase movieWatchProvidersUseCase;
-  final AuthRepository authRepository;
 
   Future<void> _onLoad(
     LoadMovieDetails event,
@@ -39,35 +36,29 @@ class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
   ) async {
     emit(MovieDetailsLoading());
     try {
-      final apiKey = await authRepository.requireApiKey();
       final language = event.language ?? 'en-US';
       final region = event.region ?? 'US';
 
       final detail = await movieDetailsUseCase.getMovieDetails(
         event.movieId,
-        apiKey,
         language,
       );
       final credits = await movieCreditsUseCase.getMovieCredits(
         event.movieId,
-        apiKey,
         language,
       );
       final reviews = await movieReviewsUseCase.getMovieReviews(
         event.movieId,
-        apiKey,
         language,
       );
       final recommendations =
           await movieRecommendationsUseCase.getMovieRecommendations(
         event.movieId,
-        apiKey,
         language,
       );
       final watchProviders =
           await movieWatchProvidersUseCase.getMovieWatchProviders(
         event.movieId,
-        apiKey,
         region,
       );
 

@@ -5,31 +5,27 @@ import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
 import '../../../../common/common.dart';
-import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 part 'popular_movies_event.dart';
 
 part 'popular_movies_state.dart';
 
 class PopularMoviesBloc extends Bloc<UiEvent, UiState> {
-  PopularMoviesBloc(this.popularMoviesUseCase, this.authRepository)
+  PopularMoviesBloc(this.popularMoviesUseCase)
       : super(PopularMoviesInitial()) {
     on<LoadPopularMovies>(_load);
     on<ToggleSection>(_onToggleSection);
   }
 
   final PopularMoviesUseCase popularMoviesUseCase;
-  final AuthRepository authRepository;
 
   Future<void> _load(LoadPopularMovies event, Emitter<UiState> emit) async {
     try {
       if (state is! PopularMoviesLoaded) {
         emit(PopularMoviesLoading());
       }
-      final apiKey = await authRepository.requireApiKey();
       final popularMovies = await popularMoviesUseCase.getPopularMovies(
         1,
-        apiKey,
         'US',
         'us-US',
       );

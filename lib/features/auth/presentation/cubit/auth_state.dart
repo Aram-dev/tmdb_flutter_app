@@ -12,13 +12,13 @@ enum AuthStatus {
 class AuthState extends Equatable {
   const AuthState({
     this.status = AuthStatus.initial,
-    this.apiKey,
+    this.hasApiKey = false,
     this.session,
     this.errorMessage,
   });
 
   final AuthStatus status;
-  final String? apiKey;
+  final bool hasApiKey;
   final AuthSession? session;
   final String? errorMessage;
 
@@ -27,7 +27,7 @@ class AuthState extends Equatable {
 
   AuthState copyWith({
     AuthStatus? status,
-    String? apiKey,
+    bool? hasApiKey,
     AuthSession? session,
     String? errorMessage,
     bool clearErrorMessage = false,
@@ -35,12 +35,12 @@ class AuthState extends Equatable {
   }) {
     return AuthState(
       status: status ?? this.status,
-      apiKey: apiKey ?? this.apiKey,
+      hasApiKey: hasApiKey ?? this.hasApiKey,
       session: clearSession ? null : (session ?? this.session),
       errorMessage: clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
     );
   }
 
   @override
-  List<Object?> get props => [status, apiKey, session, errorMessage];
+  List<Object?> get props => [status, hasApiKey, session, errorMessage];
 }

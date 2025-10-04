@@ -25,12 +25,10 @@ class ActorsRepositoryImpl extends ActorsRepository {
   @override
   Future<ActorsListEntity> getPopularActors(
     int page,
-    String apiKey,
     String language,
   ) async {
     final String endpoint = '/person/popular';
     final params = <String, dynamic>{
-      'api_key': apiKey,
       'language': language,
       'page': page, // caller controls pagination
     };
@@ -77,7 +75,6 @@ class ActorsRepositoryImpl extends ActorsRepository {
   @override
   Future<ActorDetails> getActorDetails(
     int actorId,
-    String apiKey,
     String language,
   ) async {
     final cached = _actorDetailsCache[actorId];
@@ -90,7 +87,6 @@ class ActorsRepositoryImpl extends ActorsRepository {
 
     final String endpoint = '/person/$actorId';
     final params = <String, dynamic>{
-      'api_key': apiKey,
       'language': language,
     };
 

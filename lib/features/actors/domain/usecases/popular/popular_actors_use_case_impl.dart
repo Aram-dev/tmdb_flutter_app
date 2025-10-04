@@ -10,9 +10,8 @@ class PopularActorsUseCaseImpl extends PopularActorsUseCase {
   @override
   Future<ActorsListEntity> getPopularActors(
     int page,
-    String apiKey,
     String language,
   ) async {
-    return repository.getPopularActors(page, apiKey, language);
+    return repository.getPopularActors(page, language);
   }
 }

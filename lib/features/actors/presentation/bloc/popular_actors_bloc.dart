@@ -6,20 +6,18 @@ import 'package:talker_flutter/talker_flutter.dart';
 import '../../../common/common.dart';
 import '../../domain/models/actors_list_result.dart';
 import 'package:tmdb_flutter_app/features/actors/domain/usecases/usecases.dart';
-import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 part 'popular_actors_event.dart';
 
 part 'popular_actors_state.dart';
 
 class PopularActorsBloc extends Bloc<UiEvent, UiState> {
-  PopularActorsBloc(this.popularActorsUseCase, this.authRepository)
+  PopularActorsBloc(this.popularActorsUseCase)
       : super(PopularActorsInitial()) {
     on<LoadPopularActors>(_load);
   }
 
   final PopularActorsUseCase popularActorsUseCase;
-  final AuthRepository authRepository;
 
   // local pagination accumulator
   final List<ActorsListResults> _buffer = [];
@@ -50,10 +48,8 @@ class PopularActorsBloc extends Bloc<UiEvent, UiState> {
         return;
       }
 
-      final apiKey = await authRepository.requireApiKey();
       final result = await popularActorsUseCase.getPopularActors(
         _nextPage,
-        apiKey,
         'us-US',
       );
 

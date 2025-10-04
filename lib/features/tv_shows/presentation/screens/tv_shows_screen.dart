@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:tmdb_flutter_app/features/tv_shows/presentation/bloc/airing_today/airing_today_tv_shows_bloc.dart';
 import 'package:tmdb_flutter_app/features/tv_shows/presentation/widgets/tv_shows_screen_content.dart';
 
@@ -27,35 +26,30 @@ class _TvShowsScreenState extends State<TvShowsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authRepository = GetIt.I<AuthRepository>();
     return MultiBlocProvider(
       providers: [
         BlocProvider<TrendingTvShowsBloc>(
           create: (context) =>
               TrendingTvShowsBloc(
                 GetIt.I<TrendingTvShowsUseCase>(),
-                authRepository,
               )..add(LoadTrendingTvShows(selectedPeriod: 'day')),
         ),
         BlocProvider<PopularTvShowsBloc>(
           create: (context) =>
               PopularTvShowsBloc(
                 GetIt.I<PopularTvShowsUseCase>(),
-                authRepository,
               )..add(LoadPopularTvShows()),
         ),
         BlocProvider<TopRatedTvShowsBloc>(
           create: (context) =>
               TopRatedTvShowsBloc(
                 GetIt.I<TopRatedTvShowsUseCase>(),
-                authRepository,
               )..add(LoadTopRatedTvShows()),
         ),
         BlocProvider<AiringTodayTvShowsBloc>(
           create: (context) =>
               AiringTodayTvShowsBloc(
                 GetIt.I<AiringTodayTvShowsUseCase>(),
-                authRepository,
               )..add(LoadAiringTodayTvShows()),
         )
       ],

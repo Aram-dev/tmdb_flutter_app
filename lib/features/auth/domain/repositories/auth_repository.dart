@@ -25,6 +25,4 @@ abstract class AuthRepository {
     required String apiKey,
     required String sessionId,
   });
-
-  Future<String> requireApiKey();
 }

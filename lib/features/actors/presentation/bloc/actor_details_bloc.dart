@@ -7,19 +7,17 @@ import 'package:talker_flutter/talker_flutter.dart';
 import '../../../common/common.dart';
 import '../../domain/models/actor_details.dart';
 import '../../domain/usecases/usecases.dart';
-import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 part 'actor_details_event.dart';
 part 'actor_details_state.dart';
 
 class ActorDetailsBloc extends Bloc<ActorDetailsEvent, ActorDetailsState> {
-  ActorDetailsBloc(this.actorDetailsUseCase, this.authRepository)
+  ActorDetailsBloc(this.actorDetailsUseCase)
       : super(ActorDetailsInitial()) {
     on<LoadActorDetails>(_onLoad);
   }
 
   final ActorDetailsUseCase actorDetailsUseCase;
-  final AuthRepository authRepository;
 
   Future<void> _onLoad(
     LoadActorDetails event,
@@ -27,10 +25,8 @@ class ActorDetailsBloc extends Bloc<ActorDetailsEvent, ActorDetailsState> {
   ) async {
     emit(ActorDetailsLoading());
     try {
-      final apiKey = await authRepository.requireApiKey();
       final details = await actorDetailsUseCase.getActorDetails(
         event.actorId,
-        apiKey,
         event.language ?? 'en-US',
       );
       emit(ActorDetailsLoaded(actorDetails: details));

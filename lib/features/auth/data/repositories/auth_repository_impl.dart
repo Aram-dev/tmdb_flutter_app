@@ -130,12 +130,4 @@ class AuthRepositoryImpl implements AuthRepository {
     return account.id;
   }
 
-  @override
-  Future<String> requireApiKey() async {
-    final apiKey = await getApiKey();
-    if (apiKey == null || apiKey.isEmpty) {
-      throw AuthException('TMDB API key has not been configured.');
-    }
-    return apiKey;
-  }
 }

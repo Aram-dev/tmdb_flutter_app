@@ -6,21 +6,19 @@ import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
 
 import '../../../../common/common.dart';
-import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 part 'top_rated_movies_event.dart';
 
 part 'top_rated_movies_state.dart';
 
 class TopRatedMoviesBloc extends Bloc<UiEvent, UiState> {
-  TopRatedMoviesBloc(this.topRatedMoviesUseCase, this.authRepository)
+  TopRatedMoviesBloc(this.topRatedMoviesUseCase)
     : super(TopRatedMoviesInitial()) {
     on<LoadTopRatedMovies>(_load);
     on<ToggleSection>(_onToggleSection);
   }
 
   final TopRatedMoviesUseCase topRatedMoviesUseCase;
-  final AuthRepository authRepository;
 
   Future<void> _load(
     LoadTopRatedMovies event,
@@ -30,9 +28,8 @@ class TopRatedMoviesBloc extends Bloc<UiEvent, UiState> {
       if (state is! TopRatedMoviesLoaded) {
         emit(TopRatedMoviesLoading());
       }
-      final apiKey = await authRepository.requireApiKey();
       final topRatedMovies = await topRatedMoviesUseCase
-          .getTopRatedMovies(1, apiKey, 'US', 'us-US');
+          .getTopRatedMovies(1, 'US', 'us-US');
       emit(TopRatedMoviesLoaded(topRatedMovies: topRatedMovies, isExpanded: false));
     } catch (e, st) {
       emit(TopRatedMoviesLoadingFailure(exception: e));

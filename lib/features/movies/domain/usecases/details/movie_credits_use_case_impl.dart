@@ -10,9 +10,8 @@ class MovieCreditsUseCaseImpl extends MovieCreditsUseCase {
   @override
   Future<MovieCredits> getMovieCredits(
     int movieId,
-    String apiKey,
     String language,
   ) {
-    return repository.getMovieCredits(movieId, apiKey, language);
+    return repository.getMovieCredits(movieId, language);
   }
 }

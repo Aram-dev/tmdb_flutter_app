@@ -3,7 +3,6 @@ import 'package:tmdb_flutter_app/features/actors/domain/models/actors_list_entit
 abstract class PopularActorsUseCase {
   Future<ActorsListEntity> getPopularActors(
     int page,
-    String apiKey,
     String language,
   );
 }

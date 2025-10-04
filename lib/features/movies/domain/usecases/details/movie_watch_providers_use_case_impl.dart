@@ -10,9 +10,8 @@ class MovieWatchProvidersUseCaseImpl extends MovieWatchProvidersUseCase {
   @override
   Future<MovieWatchProviders> getMovieWatchProviders(
     int movieId,
-    String apiKey,
     String region,
   ) {
-    return repository.getMovieWatchProviders(movieId, apiKey, region);
+    return repository.getMovieWatchProviders(movieId, region);
   }
 }

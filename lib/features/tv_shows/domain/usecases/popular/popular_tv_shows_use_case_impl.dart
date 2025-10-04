@@ -10,10 +10,9 @@ class PopularTvShowsUseCaseImpl extends PopularTvShowsUseCase {
   @override
   Future<MovieTvShowEntity> getPopularTvShows(
     int page,
-    String apiKey,
     String region,
     String language,
   ) async {
-    return repository.getPopularTvShows(page, apiKey, region, language);
+    return repository.getPopularTvShows(page, region, language);
   }
 }

@@ -2,7 +2,6 @@ import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dar
 
 abstract class TrendingMoviesUseCase {
   Future<MovieTvShowEntity> getTrendingMovies(
-    String apiKey,
     String language,
     String timeWindow,
   );
