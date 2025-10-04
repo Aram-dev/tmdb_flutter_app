@@ -10,10 +10,17 @@ class MovieDetailsScreen extends StatelessWidget {
 
   final Movie movie;
 
+  static const _tabLabels = [
+    'About',
+    'Cast',
+    'Comments',
+    'Reviews',
+    'Recommendations',
+  ];
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final backdropUrl = movie.backdropPath != null
         ? 'https://image.tmdb.org/t/p/w780/${movie.backdropPath}'
         : null;
@@ -92,7 +99,33 @@ class MovieDetailsScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                  ],
+                ),
+              ),
+            ),
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _TabBarDelegate(
+                tabBar: tabBar,
+                backgroundColor: theme.colorScheme.surface,
+              ),
+            ),
+            SliverFillRemaining(
+              child: TabBarView(
+                children: [
+                  _AboutTab(
+                    movie: movie,
+                    posterUrl: posterUrl,
+                    releaseDate: releaseDate,
+                    language: language,
+                    voteAverage: voteAverage,
+                    voteCount: voteCount,
+                    popularity: popularity,
                   ),
+                  const _PlaceholderTabContent(title: 'Cast'),
+                  const _PlaceholderTabContent(title: 'Comments'),
+                  const _PlaceholderTabContent(title: 'Reviews'),
+                  const _PlaceholderTabContent(title: 'Recommendations'),
                 ],
               ),
             ),
@@ -175,25 +208,41 @@ class MovieDetailsScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Overview',
-                    style: textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                  child: const Icon(Icons.movie, size: 48),
+                ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      movie.title ?? 'Untitled',
+                      style: textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    movie.overview?.isNotEmpty == true
-                        ? movie.overview!
-                        : 'No overview available for this movie yet.',
-                    style: textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Additional Details',
-                    style: textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _InfoChip(
+                          icon: Icons.calendar_today,
+                          label: releaseDate,
+                        ),
+                        _InfoChip(
+                          icon: Icons.language,
+                          label: language,
+                        ),
+                        _InfoChip(
+                          icon: Icons.people,
+                          label: 'Votes $voteCount',
+                        ),
+                        _InfoChip(
+                          icon: Icons.trending_up,
+                          label: 'Popularity $popularity',
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -214,11 +263,102 @@ class MovieDetailsScreen extends StatelessWidget {
                   ),
                 ],
               ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Icon(Icons.star, color: theme.colorScheme.secondary),
+              const SizedBox(width: 8),
+              Text(
+                voteAverage,
+                style: textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text('User Score', style: textTheme.titleMedium),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Overview',
+            style: textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
             ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            movie.overview?.isNotEmpty == true
+                ? movie.overview!
+                : 'No overview available for this movie yet.',
+            style: textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Additional Details',
+            style: textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          _InfoRow(
+            title: 'Original Title',
+            value: movie.originalTitle ?? '–',
+          ),
+          _InfoRow(title: 'Release Date', value: releaseDate),
+          _InfoRow(title: 'Original Language', value: language),
+          _InfoRow(
+            title: 'Adult',
+            value: movie.adult == true ? 'Yes' : 'No',
           ),
         ],
       ),
     );
+  }
+}
+
+class _PlaceholderTabContent extends StatelessWidget {
+  const _PlaceholderTabContent({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Center(
+      child: Text(
+        '$title content coming soon',
+        style: textTheme.titleMedium,
+      ),
+    );
+  }
+}
+
+class _TabBarDelegate extends SliverPersistentHeaderDelegate {
+  _TabBarDelegate({required this.tabBar, required this.backgroundColor});
+
+  final TabBar tabBar;
+  final Color backgroundColor;
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
+
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: backgroundColor,
+      child: tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _TabBarDelegate oldDelegate) {
+    return oldDelegate.tabBar != tabBar ||
+        oldDelegate.backgroundColor != backgroundColor;
   }
 }
 
