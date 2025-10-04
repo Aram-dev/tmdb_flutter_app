@@ -12,7 +12,10 @@ class AppRouter extends _$AppRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: MainHomeRoute.page, initial: true),
+    AutoRoute(page: SplashRoute.page, initial: true),
+    AutoRoute(page: SignInRoute.page),
+    AutoRoute(page: RegisterRoute.page),
+    AutoRoute(page: MainHomeRoute.page),
     AutoRoute(page: MoviesRoute.page),
     AutoRoute(page: MovieDetailsRoute.page),
     AutoRoute(page: ActorDetailsRoute.page),
