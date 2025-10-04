@@ -27,6 +27,7 @@ import 'features/tv_shows/domain/usecases/usecases.dart';
 import 'features/tv_shows/domain/repositories/tv_shows_repository.dart';
 import 'features/auth/data/datasources/auth_local_data_source.dart';
 import 'features/auth/data/datasources/auth_remote_data_source.dart';
+import 'features/auth/data/interceptors/auth_interceptor.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 
@@ -241,6 +242,11 @@ Future<Dio> buildDio() async {
   di.registerSingleton<CacheOptions>(cacheOptions);
   final cacheInterceptor = DioCacheInterceptor(options: cacheOptions);
 
+  final authInterceptor = AuthInterceptor(
+    dio: dio,
+    authRepositoryProvider: () => GetIt.I<AuthRepository>(),
+  );
+
   dio.interceptors.addAll([
     cacheInterceptor,
     ConnectionInterceptor(),
@@ -250,6 +256,7 @@ Future<Dio> buildDio() async {
         printResponseData: true,
       ),
     ),
+    authInterceptor,
     // Retries with exponential backoff (no retry on 4xx)
     RetryInterceptor(
       dio: dio,

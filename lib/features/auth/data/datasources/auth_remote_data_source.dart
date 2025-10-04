@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../domain/entities/auth_tokens.dart';
 import '../models/account_response.dart';
 import '../models/request_token_response.dart';
 import '../models/session_response.dart';
@@ -74,6 +75,24 @@ class AuthRemoteDataSource {
       },
     );
     return AccountResponse.fromJson(_mapResponse(response.data));
+  }
+
+  Future<AuthTokens> refreshTokens({required String refreshToken}) async {
+    final response = await _dio.post(
+      '/authentication/token/refresh',
+      data: {'refresh_token': refreshToken},
+    );
+    final data = _mapResponse(response.data);
+    final accessToken = (data['access_token'] as String?) ?? '';
+    final newRefreshToken = (data['refresh_token'] as String?) ?? '';
+    if (accessToken.isEmpty || newRefreshToken.isEmpty) {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/authentication/token/refresh'),
+        type: DioExceptionType.badResponse,
+        error: 'Missing tokens in refresh response',
+      );
+    }
+    return AuthTokens(accessToken: accessToken, refreshToken: newRefreshToken);
   }
 
   Map<String, dynamic> _mapResponse(dynamic data) {

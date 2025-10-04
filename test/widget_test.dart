@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -8,6 +10,7 @@ import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dar
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/trending/trending_movies_use_case.dart';
 import 'package:tmdb_flutter_app/tmdb_flutter_app.dart';
 import 'package:tmdb_flutter_app/features/auth/domain/entities/auth_session.dart';
+import 'package:tmdb_flutter_app/features/auth/domain/entities/auth_tokens.dart';
 import 'package:tmdb_flutter_app/features/auth/domain/exceptions/auth_exception.dart';
 import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
@@ -115,12 +118,16 @@ void main() {
   });
 }
 class _FakeAuthRepository implements AuthRepository {
-  _FakeAuthRepository({String? apiKey, AuthSession? session})
+  _FakeAuthRepository({String? apiKey, AuthSession? session, AuthTokens? tokens})
       : _apiKey = apiKey,
-        _session = session;
+        _session = session,
+        _tokens = tokens;
 
   String? _apiKey;
   AuthSession? _session;
+  AuthTokens? _tokens;
+  final StreamController<void> _logoutController =
+      StreamController<void>.broadcast();
 
   @override
   Future<void> clearApiKey() async {
@@ -178,4 +185,31 @@ class _FakeAuthRepository implements AuthRepository {
 
   @override
   Future<bool> validateApiKey(String apiKey) async => true;
+
+  @override
+  Future<String?> getAccessToken() async => _tokens?.accessToken;
+
+  @override
+  Future<AuthTokens?> getTokens() async => _tokens;
+
+  @override
+  Future<void> saveTokens(AuthTokens tokens) async {
+    _tokens = tokens;
+  }
+
+  @override
+  Future<void> clearTokens() async {
+    _tokens = null;
+  }
+
+  @override
+  Future<AuthTokens?> refreshTokens() async => _tokens;
+
+  @override
+  Stream<void> get logoutStream => _logoutController.stream;
+
+  @override
+  void notifyLogout() {
+    _logoutController.add(null);
+  }
 }
