@@ -45,12 +45,10 @@ void main() {
   });
 
   group('ActorsRepositoryImpl caching', () {
-    const apiKey = 'api-key';
     const language = 'en-US';
     const actorId = 42;
     final endpoint = '/person/$actorId';
     final params = <String, dynamic>{
-      'api_key': apiKey,
       'language': language,
     };
 
@@ -76,7 +74,7 @@ void main() {
 
       await store.set(cachedResponse);
 
-      final result = await repository.getActorDetails(actorId, apiKey, language);
+      final result = await repository.getActorDetails(actorId, language);
 
       expect(result, isA<ActorDetails>());
       expect(result.id, actorId);
@@ -142,7 +140,7 @@ void main() {
         ),
       );
 
-      final result = await repository.getActorDetails(actorId, apiKey, language);
+      final result = await repository.getActorDetails(actorId, language);
 
       expect(result.name, 'Fresh Name');
       verify(

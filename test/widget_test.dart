@@ -8,7 +8,6 @@ import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dar
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/trending/trending_movies_use_case.dart';
 import 'package:tmdb_flutter_app/tmdb_flutter_app.dart';
 import 'package:tmdb_flutter_app/features/auth/domain/entities/auth_session.dart';
-import 'package:tmdb_flutter_app/features/auth/domain/exceptions/auth_exception.dart';
 import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 class _FakeDiscoverContentUseCase extends DiscoverContentUseCase {
@@ -19,7 +18,6 @@ class _FakeDiscoverContentUseCase extends DiscoverContentUseCase {
   @override
   Future<MovieTvShowEntity> getDiscoverContent({
     required int page,
-    required String apiKey,
     required String language,
     required String category,
     String? region,
@@ -42,7 +40,6 @@ class _FakeTrendingMoviesUseCase extends TrendingMoviesUseCase {
 
   @override
   Future<MovieTvShowEntity> getTrendingMovies(
-    String apiKey,
     String language,
     String timeWindow,
   ) async {
@@ -156,15 +153,6 @@ class _FakeAuthRepository implements AuthRepository {
 
   @override
   Future<AuthSession?> getSession() async => _session;
-
-  @override
-  Future<String> requireApiKey() async {
-    final apiKey = _apiKey;
-    if (apiKey == null) {
-      throw AuthException('Missing API key');
-    }
-    return apiKey;
-  }
 
   @override
   Future<void> saveApiKey(String apiKey) async {

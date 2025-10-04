@@ -9,10 +9,9 @@ class TrendingTvShowsUseCaseImpl extends TrendingTvShowsUseCase {
 
   @override
   Future<MovieTvShowEntity> getTrendingTvShows(
-    String apiKey,
     String language,
     String timeWindow,
   ) async {
-    return repository.getTrendingTvShows(apiKey, language, timeWindow);
+    return repository.getTrendingTvShows(language, timeWindow);
   }
 }

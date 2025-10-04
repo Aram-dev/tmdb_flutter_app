@@ -3,7 +3,6 @@ import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dar
 abstract class DiscoverContentUseCase {
   Future<MovieTvShowEntity> getDiscoverContent({
     required int page,
-    required String apiKey,
     required String language,
     required String category,
     String region,

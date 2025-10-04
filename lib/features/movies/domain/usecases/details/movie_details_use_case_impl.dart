@@ -10,9 +10,8 @@ class MovieDetailsUseCaseImpl extends MovieDetailsUseCase {
   @override
   Future<MovieDetail> getMovieDetails(
     int movieId,
-    String apiKey,
     String language,
   ) {
-    return repository.getMovieDetails(movieId, apiKey, language);
+    return repository.getMovieDetails(movieId, language);
   }
 }

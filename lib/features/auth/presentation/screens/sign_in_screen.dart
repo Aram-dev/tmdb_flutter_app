@@ -37,15 +37,6 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
-  String _maskApiKey(String apiKey) {
-    if (apiKey.length <= 8) {
-      return apiKey;
-    }
-    final prefix = apiKey.substring(0, 4);
-    final suffix = apiKey.substring(apiKey.length - 4);
-    return '$prefix••••$suffix';
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
@@ -74,9 +65,6 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: BlocBuilder<AuthCubit, AuthState>(
                   builder: (context, state) {
                     final isLoading = state.isLoading;
-                    final obscuredApiKey = state.apiKey == null
-                        ? null
-                        : _maskApiKey(state.apiKey!);
                     return Form(
                       key: _formKey,
                       child: Column(
@@ -88,18 +76,18 @@ class _SignInScreenState extends State<SignInScreen> {
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           const SizedBox(height: 16),
-                          if (obscuredApiKey != null)
+                          if (state.hasApiKey)
                             Card(
                               color: Theme.of(context).colorScheme.surfaceVariant,
                               child: Padding(
                                 padding: const EdgeInsets.all(12),
                                 child: Text(
-                                  'Using API key: $obscuredApiKey',
+                                  'TMDB API key configured. You can sign in now.',
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
                             ),
-                          if (obscuredApiKey != null) const SizedBox(height: 16),
+                          if (state.hasApiKey) const SizedBox(height: 16),
                           TextFormField(
                             controller: _usernameController,
                             decoration: const InputDecoration(

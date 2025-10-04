@@ -26,9 +26,9 @@ void main() {
     blocTest<ActorDetailsBloc, ActorDetailsState>(
       'emits [loading, loaded] when use case succeeds',
       build: () {
-        when(() => useCase.getActorDetails(any(), any(), any()))
+        when(() => useCase.getActorDetails(any(), any()))
             .thenAnswer((_) async => actorDetails);
-        return ActorDetailsBloc(useCase)..apiKey = 'abc';
+        return ActorDetailsBloc(useCase);
       },
       act: (bloc) => bloc.add(LoadActorDetails(actorId: actorDetails.id)),
       expect: () => [
@@ -36,7 +36,7 @@ void main() {
         ActorDetailsLoaded(actorDetails: actorDetails),
       ],
       verify: (_) {
-        verify(() => useCase.getActorDetails(actorDetails.id, any(), any()))
+        verify(() => useCase.getActorDetails(actorDetails.id, any()))
             .called(1);
       },
     );
@@ -44,9 +44,9 @@ void main() {
     blocTest<ActorDetailsBloc, ActorDetailsState>(
       'emits [loading, failure] when use case throws',
       build: () {
-        when(() => useCase.getActorDetails(any(), any(), any()))
+        when(() => useCase.getActorDetails(any(), any()))
             .thenThrow(Exception('boom'));
-        return ActorDetailsBloc(useCase)..apiKey = 'abc';
+        return ActorDetailsBloc(useCase);
       },
       act: (bloc) => bloc.add(LoadActorDetails(actorId: actorDetails.id)),
       expect: () => [
@@ -54,7 +54,7 @@ void main() {
         isA<ActorDetailsFailure>(),
       ],
       verify: (_) {
-        verify(() => useCase.getActorDetails(actorDetails.id, any(), any()))
+        verify(() => useCase.getActorDetails(actorDetails.id, any()))
             .called(1);
       },
     );

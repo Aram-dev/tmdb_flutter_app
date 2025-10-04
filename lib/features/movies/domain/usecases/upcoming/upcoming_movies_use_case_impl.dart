@@ -11,10 +11,9 @@ class UpcomingMoviesUseCaseImpl extends UpcomingMoviesUseCase {
   @override
   Future<MovieTvShowEntity> getUpcomingMovies(
     int page,
-    String apiKey,
     String region,
     String language,
   ) async {
-    return repository.getUpcomingMovies(page, apiKey, region, language);
+    return repository.getUpcomingMovies(page, region, language);
   }
 }

@@ -4,7 +4,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../auth/domain/repositories/auth_repository.dart';
 import '../../domain/models/movie.dart';
 import '../../domain/models/movie_credit.dart';
 import '../../domain/models/movie_credits.dart';
@@ -57,7 +56,6 @@ class MovieDetailsScreen extends StatelessWidget {
           movieReviewsUseCase: GetIt.I<MovieReviewsUseCase>(),
           movieRecommendationsUseCase: GetIt.I<MovieRecommendationsUseCase>(),
           movieWatchProvidersUseCase: GetIt.I<MovieWatchProvidersUseCase>(),
-          authRepository: GetIt.I<AuthRepository>(),
         );
         scheduleMicrotask(
           () => bloc.add(LoadMovieDetails(movieId: movieId)),

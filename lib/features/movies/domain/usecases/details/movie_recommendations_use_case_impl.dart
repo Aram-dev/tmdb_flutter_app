@@ -10,9 +10,8 @@ class MovieRecommendationsUseCaseImpl extends MovieRecommendationsUseCase {
   @override
   Future<MovieRecommendations> getMovieRecommendations(
     int movieId,
-    String apiKey,
     String language,
   ) {
-    return repository.getMovieRecommendations(movieId, apiKey, language);
+    return repository.getMovieRecommendations(movieId, language);
   }
 }

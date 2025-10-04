@@ -20,13 +20,11 @@ class MovieRepositoryImpl extends MovieRepository {
   @override
   // Fetch trending movies. `timeWindow` can be "day" or "week".
   Future<MovieTvShowEntity> getTrendingMovies(
-      String apiKey,
-      String language,
-      String timeWindow,
-      ) async {
+    String language,
+    String timeWindow,
+  ) async {
     final String endpoint = '/trending/movie/$timeWindow';
     final params = {
-      'api_key': apiKey,
       'language': language,
     };
     return _fetchMoviesFromApi(
@@ -39,14 +37,12 @@ class MovieRepositoryImpl extends MovieRepository {
   @override
   Future<MovieTvShowEntity> getPopularMovies(
     int page,
-    String apiKey,
     String region,
     String language,
   ) async {
     final String endpoint = '/movie/popular';
     final params = {
       'page': page,
-      'api_key': apiKey,
       'region': region,
       'language': language,
     };
@@ -60,14 +56,12 @@ class MovieRepositoryImpl extends MovieRepository {
   @override
   Future<MovieTvShowEntity> getNowPlayingMovies(
     int page,
-    String apiKey,
     String region,
     String language,
   ) async {
     final String endpoint = '/movie/now_playing';
     final params = {
       'page': page,
-      'api_key': apiKey,
       'region': region,
       'language': language,
     };
@@ -80,15 +74,13 @@ class MovieRepositoryImpl extends MovieRepository {
 
   @override
   Future<MovieTvShowEntity> getUpcomingMovies(
-      int page,
-      String apiKey,
-      String region,
-      String language,
-      ) async {
+    int page,
+    String region,
+    String language,
+  ) async {
     final String endpoint = '/movie/upcoming';
     final params = {
       'page': page,
-      'api_key': apiKey,
       'region': region,
       'language': language,
     };
@@ -101,15 +93,13 @@ class MovieRepositoryImpl extends MovieRepository {
 
   @override
   Future<MovieTvShowEntity> getTopRatedMovies(
-      int page,
-      String apiKey,
-      String region,
-      String language,
-      ) async {
+    int page,
+    String region,
+    String language,
+  ) async {
     final String endpoint = '/movie/top_rated';
     final params = {
       'page': page,
-      'api_key': apiKey,
       'region': region,
       'language': language,
     };
@@ -123,12 +113,10 @@ class MovieRepositoryImpl extends MovieRepository {
   @override
   Future<MovieDetail> getMovieDetails(
     int movieId,
-    String apiKey,
     String language,
   ) async {
     final endpoint = '/movie/$movieId';
     final params = {
-      'api_key': apiKey,
       'language': language,
     };
     final data = await _fetchJsonFromApi(
@@ -142,12 +130,10 @@ class MovieRepositoryImpl extends MovieRepository {
   @override
   Future<MovieCredits> getMovieCredits(
     int movieId,
-    String apiKey,
     String language,
   ) async {
     final endpoint = '/movie/$movieId/credits';
     final params = {
-      'api_key': apiKey,
       'language': language,
     };
     final data = await _fetchJsonFromApi(
@@ -161,12 +147,10 @@ class MovieRepositoryImpl extends MovieRepository {
   @override
   Future<MovieReviews> getMovieReviews(
     int movieId,
-    String apiKey,
     String language,
   ) async {
     final endpoint = '/movie/$movieId/reviews';
     final params = {
-      'api_key': apiKey,
       'language': language,
       'page': 1,
     };
@@ -181,12 +165,10 @@ class MovieRepositoryImpl extends MovieRepository {
   @override
   Future<MovieRecommendations> getMovieRecommendations(
     int movieId,
-    String apiKey,
     String language,
   ) async {
     final endpoint = '/movie/$movieId/recommendations';
     final params = {
-      'api_key': apiKey,
       'language': language,
       'page': 1,
     };
@@ -201,12 +183,10 @@ class MovieRepositoryImpl extends MovieRepository {
   @override
   Future<MovieWatchProviders> getMovieWatchProviders(
     int movieId,
-    String apiKey,
     String region,
   ) async {
     final endpoint = '/movie/$movieId/watch/providers';
     final params = {
-      'api_key': apiKey,
       'watch_region': region,
     };
     final data = await _fetchJsonFromApi(

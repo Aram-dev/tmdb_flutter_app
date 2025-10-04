@@ -7,7 +7,6 @@ import 'package:get_it/get_it.dart';
 
 import '../../domain/usecases/usecases.dart';
 import '../bloc/actor_details_bloc.dart';
-import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 @RoutePage()
 class ActorDetailsScreen extends StatelessWidget {
@@ -37,7 +36,6 @@ class ActorDetailsScreen extends StatelessWidget {
       create: (_) {
         final bloc = ActorDetailsBloc(
           GetIt.I<ActorDetailsUseCase>(),
-          GetIt.I<AuthRepository>(),
         );
         scheduleMicrotask(
           () => bloc.add(LoadActorDetails(actorId: actorId)),

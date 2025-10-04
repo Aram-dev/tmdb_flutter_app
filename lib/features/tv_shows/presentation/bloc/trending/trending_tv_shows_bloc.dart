@@ -8,30 +8,25 @@ import 'package:talker_flutter/talker_flutter.dart';
 import '../../../../common/common.dart';
 import '../../../../movies/domain/models/movies_entity.dart';
 import '../../../domain/usecases/trending/trending_tv_shows_use_case.dart';
-import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 part 'trending_tv_shows_event.dart';
 
 part 'trending_tv_shows_state.dart';
 
 class TrendingTvShowsBloc extends Bloc<UiEvent, UiState> {
-  TrendingTvShowsBloc(this.trendingTvShowsUseCase, this.authRepository)
+  TrendingTvShowsBloc(this.trendingTvShowsUseCase)
     : super(TrendingTvShowsLoading()) {
     on<LoadTrendingTvShows>(_load);
   }
 
   final TrendingTvShowsUseCase trendingTvShowsUseCase;
-  final AuthRepository authRepository;
 
   Future<void> _load(LoadTrendingTvShows event, Emitter<UiState> emit) async {
     try {
       if (state is! TrendingTvShowsLoaded) {
         emit(TrendingTvShowsLoading());
       }
-      final apiKey = await authRepository.requireApiKey();
-
       final trendingTvShows = await trendingTvShowsUseCase.getTrendingTvShows(
-        apiKey,
         'us-US',
         event.selectedPeriod,
       );
