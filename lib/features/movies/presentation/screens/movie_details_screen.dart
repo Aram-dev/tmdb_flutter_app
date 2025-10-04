@@ -1,14 +1,150 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../auth/domain/repositories/auth_repository.dart';
 import '../../domain/models/movie.dart';
+import '../../domain/models/movie_credit.dart';
+import '../../domain/models/movie_credits.dart';
+import '../../domain/models/movie_detail.dart';
+import '../../domain/models/movie_recommendation.dart';
+import '../../domain/models/movie_recommendations.dart';
+import '../../domain/models/movie_reviews.dart';
+import '../../domain/models/movie_watch_providers.dart';
+import '../../domain/models/watch_provider.dart';
+import '../../domain/usecases/usecases.dart';
+import '../bloc/movie_details/movie_details_bloc.dart';
 
 @RoutePage()
 class MovieDetailsScreen extends StatelessWidget {
-  const MovieDetailsScreen({super.key, required this.movie});
+  const MovieDetailsScreen({
+    super.key,
+    required this.movie,
+    this.blocOverride,
+  });
 
   final Movie movie;
+  final MovieDetailsBloc? blocOverride;
+
+  @override
+  Widget build(BuildContext context) {
+    final movieId = movie.id;
+    if (movieId == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text(movie.title ?? 'Movie Details')),
+        body: const Center(
+          child: Text('Movie details are unavailable for this title.'),
+        ),
+      );
+    }
+
+    final body = _MovieDetailsView(movie: movie, movieId: movieId);
+
+    if (blocOverride != null) {
+      return BlocProvider<MovieDetailsBloc>.value(
+        value: blocOverride!,
+        child: body,
+      );
+    }
+
+    return BlocProvider<MovieDetailsBloc>(
+      create: (_) {
+        final bloc = MovieDetailsBloc(
+          movieDetailsUseCase: GetIt.I<MovieDetailsUseCase>(),
+          movieCreditsUseCase: GetIt.I<MovieCreditsUseCase>(),
+          movieReviewsUseCase: GetIt.I<MovieReviewsUseCase>(),
+          movieRecommendationsUseCase: GetIt.I<MovieRecommendationsUseCase>(),
+          movieWatchProvidersUseCase: GetIt.I<MovieWatchProvidersUseCase>(),
+          authRepository: GetIt.I<AuthRepository>(),
+        );
+        scheduleMicrotask(
+          () => bloc.add(LoadMovieDetails(movieId: movieId)),
+        );
+        return bloc;
+      },
+      child: body,
+    );
+  }
+}
+
+class _MovieDetailsView extends StatelessWidget {
+  const _MovieDetailsView({
+    required this.movie,
+    required this.movieId,
+  });
+
+  final Movie movie;
+  final int movieId;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
+      builder: (context, state) {
+        if (state is MovieDetailsFailure) {
+          return Scaffold(
+            appBar: AppBar(title: Text(movie.title ?? 'Movie #$movieId')),
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'We weren\'t able to load the movie details.\n${state.exception}',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: () => context
+                          .read<MovieDetailsBloc>()
+                          .add(LoadMovieDetails(movieId: movieId)),
+                      child: const Text('Try again'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
+        if (state is MovieDetailsLoaded) {
+          return _MovieDetailsContent(
+            movie: movie,
+            detail: state.detail,
+            credits: state.credits,
+            reviews: state.reviews,
+            recommendations: state.recommendations,
+            watchProviders: state.watchProviders,
+          );
+        }
+
+        return Scaffold(
+          appBar: AppBar(title: Text(movie.title ?? 'Movie #$movieId')),
+          body: const Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
+  }
+}
+
+class _MovieDetailsContent extends StatelessWidget {
+  const _MovieDetailsContent({
+    required this.movie,
+    required this.detail,
+    required this.credits,
+    required this.reviews,
+    required this.recommendations,
+    required this.watchProviders,
+  });
+
+  final Movie movie;
+  final MovieDetail detail;
+  final MovieCredits credits;
+  final MovieReviews reviews;
+  final MovieRecommendations recommendations;
+  final MovieWatchProviders watchProviders;
 
   static const _tabLabels = [
     'About',
@@ -129,10 +265,69 @@ class MovieDetailsScreen extends StatelessWidget {
                 ],
               ),
             ),
+          ],
+          body: TabBarView(
+            children: [
+              _OverviewTab(detail: detail, movie: movie, credits: credits),
+              _CastCrewTab(credits: credits),
+              _ReviewsTab(reviews: reviews),
+              _WatchProvidersTab(providers: watchProviders),
+              _RecommendationsTab(recommendations: recommendations),
+            ],
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
+        ),
+      ),
+    );
+  }
+}
+
+class _OverviewTab extends StatelessWidget {
+  const _OverviewTab({
+    required this.detail,
+    required this.movie,
+    required this.credits,
+  });
+
+  final MovieDetail detail;
+  final Movie movie;
+  final MovieCredits credits;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final runtime = _formatRuntime(detail.runtime);
+    final genres = detail.genres
+        .map((g) => g.name)
+        .whereType<String>()
+        .where((name) => name.isNotEmpty)
+        .toList();
+    final posterUrl = _imageUrl(detail.posterPath ?? movie.posterPath, 'w342');
+    final crewHighlights = _crewHighlights(credits);
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: posterUrl != null
+                  ? Image.network(
+                      posterUrl,
+                      width: 140,
+                      height: 210,
+                      fit: BoxFit.cover,
+                    )
+                  : Container(
+                      width: 140,
+                      height: 210,
+                      color: theme.colorScheme.surfaceVariant,
+                      child: const Icon(Icons.movie, size: 48),
+                    ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -244,11 +439,63 @@ class MovieDetailsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ],
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      if (detail.releaseDate != null && detail.releaseDate!.isNotEmpty)
+                        _InfoChip(icon: Icons.calendar_today, label: detail.releaseDate!),
+                      if (runtime != null)
+                        _InfoChip(icon: Icons.access_time, label: runtime),
+                      if (genres.isNotEmpty)
+                        _InfoChip(icon: Icons.local_offer, label: genres.join(' • ')),
+                      if (detail.voteAverage != null)
+                        _InfoChip(
+                          icon: Icons.star_rate,
+                          label:
+                              '${detail.voteAverage!.toStringAsFixed(1)} (${detail.voteCount ?? 0} votes)',
+                        ),
+                      if (detail.originalLanguage != null)
+                        _InfoChip(
+                          icon: Icons.language,
+                          label: detail.originalLanguage!.toUpperCase(),
+                        ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  _InfoRow(
-                    title: 'Original Title',
-                    value: movie.originalTitle ?? '–',
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        Text(
+          'Overview',
+          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          (detail.overview ?? movie.overview ?? '').isNotEmpty
+              ? (detail.overview ?? movie.overview!)
+              : 'No overview available for this movie yet.',
+          style: theme.textTheme.bodyLarge,
+        ),
+        const SizedBox(height: 24),
+        if (crewHighlights.isNotEmpty) ...[
+          Text(
+            'Featured Crew',
+            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: crewHighlights
+                .map(
+                  (member) => SizedBox(
+                    width: 160,
+                    child: _CrewCard(member: member),
                   ),
                   _InfoRow(
                     title: 'Release Date',
@@ -405,7 +652,12 @@ class _InfoRow extends StatelessWidget {
             child: Text(title, style: textTheme.titleMedium),
           ),
           const SizedBox(width: 8),
-          Expanded(child: Text(value, style: textTheme.bodyLarge)),
+          Expanded(
+            child: Text(
+              value,
+              style: textTheme.bodyLarge,
+            ),
+          ),
         ],
       ),
     );

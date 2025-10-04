@@ -10,5 +10,15 @@ export 'package:tmdb_flutter_app/features/movies/domain/usecases/trending/trendi
 export 'package:tmdb_flutter_app/features/movies/domain/usecases/trending/trending_movies_use_case_impl.dart';
 export 'package:tmdb_flutter_app/features/home/domain/usecases/discover_movies/discover_movies_use_case.dart';
 export 'package:tmdb_flutter_app/features/home/domain/usecases/discover_movies/discover_movies_use_case_impl.dart';
+export 'package:tmdb_flutter_app/features/movies/domain/usecases/details/movie_details_use_case.dart';
+export 'package:tmdb_flutter_app/features/movies/domain/usecases/details/movie_details_use_case_impl.dart';
+export 'package:tmdb_flutter_app/features/movies/domain/usecases/details/movie_credits_use_case.dart';
+export 'package:tmdb_flutter_app/features/movies/domain/usecases/details/movie_credits_use_case_impl.dart';
+export 'package:tmdb_flutter_app/features/movies/domain/usecases/details/movie_reviews_use_case.dart';
+export 'package:tmdb_flutter_app/features/movies/domain/usecases/details/movie_reviews_use_case_impl.dart';
+export 'package:tmdb_flutter_app/features/movies/domain/usecases/details/movie_recommendations_use_case.dart';
+export 'package:tmdb_flutter_app/features/movies/domain/usecases/details/movie_recommendations_use_case_impl.dart';
+export 'package:tmdb_flutter_app/features/movies/domain/usecases/details/movie_watch_providers_use_case.dart';
+export 'package:tmdb_flutter_app/features/movies/domain/usecases/details/movie_watch_providers_use_case_impl.dart';
 
 export 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dart';

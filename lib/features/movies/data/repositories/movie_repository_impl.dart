@@ -1,10 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:get_it/get_it.dart';
+import 'package:tmdb_flutter_app/features/movies/domain/models/movie_credits.dart';
+import 'package:tmdb_flutter_app/features/movies/domain/models/movie_detail.dart';
+import 'package:tmdb_flutter_app/features/movies/domain/models/movie_recommendations.dart';
+import 'package:tmdb_flutter_app/features/movies/domain/models/movie_reviews.dart';
+import 'package:tmdb_flutter_app/features/movies/domain/models/movie_watch_providers.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dart';
 
-import '../../domain/models/movies_dates_entity.dart';
 import '../../domain/models/movie.dart';
+import '../../domain/models/movies_dates_entity.dart';
 import '../../domain/repositories/movie_repository.dart';
 
 class MovieRepositoryImpl extends MovieRepository {
@@ -115,7 +120,141 @@ class MovieRepositoryImpl extends MovieRepository {
     );
   }
 
+  @override
+  Future<MovieDetail> getMovieDetails(
+    int movieId,
+    String apiKey,
+    String language,
+  ) async {
+    final endpoint = '/movie/$movieId';
+    final params = {
+      'api_key': apiKey,
+      'language': language,
+    };
+    final data = await _fetchJsonFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(hours: 12),
+    );
+    return MovieDetail.fromJson(data);
+  }
+
+  @override
+  Future<MovieCredits> getMovieCredits(
+    int movieId,
+    String apiKey,
+    String language,
+  ) async {
+    final endpoint = '/movie/$movieId/credits';
+    final params = {
+      'api_key': apiKey,
+      'language': language,
+    };
+    final data = await _fetchJsonFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(hours: 12),
+    );
+    return MovieCredits.fromJson(data);
+  }
+
+  @override
+  Future<MovieReviews> getMovieReviews(
+    int movieId,
+    String apiKey,
+    String language,
+  ) async {
+    final endpoint = '/movie/$movieId/reviews';
+    final params = {
+      'api_key': apiKey,
+      'language': language,
+      'page': 1,
+    };
+    final data = await _fetchJsonFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(hours: 1),
+    );
+    return MovieReviews.fromJson(data);
+  }
+
+  @override
+  Future<MovieRecommendations> getMovieRecommendations(
+    int movieId,
+    String apiKey,
+    String language,
+  ) async {
+    final endpoint = '/movie/$movieId/recommendations';
+    final params = {
+      'api_key': apiKey,
+      'language': language,
+      'page': 1,
+    };
+    final data = await _fetchJsonFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(hours: 6),
+    );
+    return MovieRecommendations.fromJson(data);
+  }
+
+  @override
+  Future<MovieWatchProviders> getMovieWatchProviders(
+    int movieId,
+    String apiKey,
+    String region,
+  ) async {
+    final endpoint = '/movie/$movieId/watch/providers';
+    final params = {
+      'api_key': apiKey,
+      'watch_region': region,
+    };
+    final data = await _fetchJsonFromApi(
+      endpoint,
+      params,
+      maxStale: const Duration(hours: 24),
+    );
+
+    final results = data['results'];
+    if (results is Map<String, dynamic>) {
+      final regionData = results[region];
+      if (regionData is Map<String, dynamic>) {
+        return MovieWatchProviders.fromJson(regionData);
+      }
+      if (regionData is Map) {
+        return MovieWatchProviders.fromJson(
+          Map<String, dynamic>.from(regionData as Map),
+        );
+      }
+    } else if (results is Map) {
+      final regionData = results[region];
+      if (regionData is Map<String, dynamic>) {
+        return MovieWatchProviders.fromJson(regionData);
+      }
+      if (regionData is Map) {
+        return MovieWatchProviders.fromJson(
+          Map<String, dynamic>.from(regionData as Map),
+        );
+      }
+    }
+
+    return const MovieWatchProviders.empty();
+  }
+
   Future<MovieTvShowEntity> _fetchMoviesFromApi(
+    String endpoint,
+    Map<String, Object?> queryParams, {
+    required Duration maxStale,
+  }) async {
+    final data = await _fetchJsonFromApi(
+      endpoint,
+      queryParams,
+      maxStale: maxStale,
+    );
+    return _mapToEntity(data);
+  }
+
+  Future<Map<String, dynamic>> _fetchJsonFromApi(
     String endpoint,
     Map<String, Object?> queryParams, {
     required Duration maxStale,
@@ -128,7 +267,7 @@ class MovieRepositoryImpl extends MovieRepository {
     );
 
     if (cachedData != null) {
-      return _mapToEntity(cachedData);
+      return cachedData;
     }
 
     final response = await dio.get(
@@ -137,8 +276,7 @@ class MovieRepositoryImpl extends MovieRepository {
       options: cacheOptions.toOptions(),
     );
 
-    final data = _normalizeResponseData(response.data);
-    return _mapToEntity(data);
+    return _normalizeResponseData(response.data);
   }
 
   CacheOptions _cacheOptions({required Duration maxStale}) {
