@@ -1,27 +1,26 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
 
 import '../../../../common/common.dart';
+import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 part 'top_rated_movies_event.dart';
 
 part 'top_rated_movies_state.dart';
 
-class TopRatedMoviesBloc
-    extends Bloc<UiEvent, UiState> {
-  TopRatedMoviesBloc(this.topRatedMoviesUseCase)
+class TopRatedMoviesBloc extends Bloc<UiEvent, UiState> {
+  TopRatedMoviesBloc(this.topRatedMoviesUseCase, this.authRepository)
     : super(TopRatedMoviesInitial()) {
     on<LoadTopRatedMovies>(_load);
     on<ToggleSection>(_onToggleSection);
   }
 
   final TopRatedMoviesUseCase topRatedMoviesUseCase;
-  String apiKey = dotenv.env['PERSONAL_TMDB_API_KEY']!;
+  final AuthRepository authRepository;
 
   Future<void> _load(
     LoadTopRatedMovies event,
@@ -31,6 +30,7 @@ class TopRatedMoviesBloc
       if (state is! TopRatedMoviesLoaded) {
         emit(TopRatedMoviesLoading());
       }
+      final apiKey = await authRepository.requireApiKey();
       final topRatedMovies = await topRatedMoviesUseCase
           .getTopRatedMovies(1, apiKey, 'US', 'us-US');
       emit(TopRatedMoviesLoaded(topRatedMovies: topRatedMovies, isExpanded: false));

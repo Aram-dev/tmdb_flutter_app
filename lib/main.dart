@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +15,8 @@ import 'package:tmdb_flutter_app/features/home/domain/repositories/home_reposito
 import 'package:tmdb_flutter_app/features/tv_shows/data/repositories/tv_shows_repository_impl.dart';
 import 'package:tmdb_flutter_app/tmdb_flutter_app.dart';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'core/connection/internet_connection_checker.dart';
 import 'features/actors/data/repositories/actors_repository_impl.dart';
 import 'features/actors/domain/repositories/actors_repository.dart';
@@ -24,6 +25,10 @@ import 'features/movies/domain/repositories/movie_repository.dart';
 import 'features/movies/domain/usecases/usecases.dart';
 import 'features/tv_shows/domain/usecases/usecases.dart';
 import 'features/tv_shows/domain/repositories/tv_shows_repository.dart';
+import 'features/auth/data/datasources/auth_local_data_source.dart';
+import 'features/auth/data/datasources/auth_remote_data_source.dart';
+import 'features/auth/data/repositories/auth_repository_impl.dart';
+import 'features/auth/domain/repositories/auth_repository.dart';
 
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
@@ -53,6 +58,25 @@ Future<void> main() async {
       settings: TalkerBlocLoggerSettings(
         printStateFullData: true,
         printEventFullData: true,
+      ),
+    );
+
+    di.registerLazySingleton<FlutterSecureStorage>(
+      () => const FlutterSecureStorage(),
+    );
+
+    di.registerLazySingleton<AuthLocalDataSource>(
+      () => AuthLocalDataSource(storage: di.get<FlutterSecureStorage>()),
+    );
+
+    di.registerLazySingleton<AuthRemoteDataSource>(
+      () => AuthRemoteDataSource(dio: dio),
+    );
+
+    di.registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImpl(
+        localDataSource: di.get<AuthLocalDataSource>(),
+        remoteDataSource: di.get<AuthRemoteDataSource>(),
       ),
     );
 
@@ -144,22 +168,7 @@ Future<void> main() async {
 
     WidgetsFlutterBinding.ensureInitialized();
 
-    try {
-      await dotenv.load(fileName: "tmdb_app_properties.env");
-    } catch (e, stackTrace) {
-      debugPrint("Failed to load .env file: $e");
-      di<Talker>().handle(e, stackTrace);
-    }
-
-    runApp(
-      MaterialApp(
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        ),
-        home: TmdbFlutterApp(),
-      ),
-    );
+    runApp(const TmdbFlutterApp());
   }, (e, st) => GetIt.I<Talker>().handle(e, st));
 }
 

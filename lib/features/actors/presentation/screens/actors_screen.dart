@@ -7,6 +7,7 @@ import '../../../common/common.dart';
 import '../../domain/usecases/popular/popular_actors_use_case.dart';
 import '../bloc/popular_actors_bloc.dart';
 import '../widgets/actor_card.dart';
+import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 @RoutePage()
 class ActorsScreen extends StatefulWidget {
@@ -21,8 +22,10 @@ class _ActorsScreenState extends State<ActorsScreen> {
   Widget build(BuildContext context) {
     return BlocProvider<PopularActorsBloc>(
       create: (_) =>
-      PopularActorsBloc(GetIt.I<PopularActorsUseCase>())
-        ..add(LoadPopularActors()), // initial load via BLoC
+          PopularActorsBloc(
+            GetIt.I<PopularActorsUseCase>(),
+            GetIt.I<AuthRepository>(),
+          )..add(LoadPopularActors()),
       child: BlocBuilder<PopularActorsBloc, UiState>(
         builder: (context, state) {
           // Initial / first paint shimmer

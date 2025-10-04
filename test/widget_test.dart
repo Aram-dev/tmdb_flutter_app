@@ -1,4 +1,3 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -8,6 +7,9 @@ import 'package:tmdb_flutter_app/features/movies/domain/models/movies_dates_enti
 import 'package:tmdb_flutter_app/features/movies/domain/models/movies_entity.dart';
 import 'package:tmdb_flutter_app/features/movies/domain/usecases/trending/trending_movies_use_case.dart';
 import 'package:tmdb_flutter_app/tmdb_flutter_app.dart';
+import 'package:tmdb_flutter_app/features/auth/domain/entities/auth_session.dart';
+import 'package:tmdb_flutter_app/features/auth/domain/exceptions/auth_exception.dart';
+import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 class _FakeDiscoverContentUseCase extends DiscoverContentUseCase {
   _FakeDiscoverContentUseCase(this._entity);
@@ -78,11 +80,17 @@ void main() {
     totalResults: 1,
   );
 
+  late _FakeAuthRepository fakeAuthRepository;
+
   setUp(() async {
     await getIt.reset();
-    dotenv.testLoad(fileInput: 'PERSONAL_TMDB_API_KEY=dummy');
+    fakeAuthRepository = _FakeAuthRepository(
+      apiKey: 'dummy',
+      session: const AuthSession(sessionId: 'session'),
+    );
 
     getIt.registerSingleton<Talker>(TalkerFlutter.init());
+    getIt.registerSingleton<AuthRepository>(fakeAuthRepository);
     getIt.registerLazySingleton<DiscoverContentUseCase>(
       () => _FakeDiscoverContentUseCase(fakeEntity),
     );
@@ -105,4 +113,69 @@ void main() {
     expect(find.text('Trending'), findsOneWidget);
     expect(find.text('Sample Movie'), findsWidgets);
   });
+}
+class _FakeAuthRepository implements AuthRepository {
+  _FakeAuthRepository({String? apiKey, AuthSession? session})
+      : _apiKey = apiKey,
+        _session = session;
+
+  String? _apiKey;
+  AuthSession? _session;
+
+  @override
+  Future<void> clearApiKey() async {
+    _apiKey = null;
+  }
+
+  @override
+  Future<void> clearSession() async {
+    _session = null;
+  }
+
+  @override
+  Future<AuthSession> createSession({
+    required String apiKey,
+    required String username,
+    required String password,
+  }) async {
+    final session = AuthSession(sessionId: 'test-session', accountId: 1);
+    _session = session;
+    return session;
+  }
+
+  @override
+  Future<int?> fetchAccountId({
+    required String apiKey,
+    required String sessionId,
+  }) async {
+    return 1;
+  }
+
+  @override
+  Future<String?> getApiKey() async => _apiKey;
+
+  @override
+  Future<AuthSession?> getSession() async => _session;
+
+  @override
+  Future<String> requireApiKey() async {
+    final apiKey = _apiKey;
+    if (apiKey == null) {
+      throw AuthException('Missing API key');
+    }
+    return apiKey;
+  }
+
+  @override
+  Future<void> saveApiKey(String apiKey) async {
+    _apiKey = apiKey;
+  }
+
+  @override
+  Future<void> saveSession(AuthSession session) async {
+    _session = session;
+  }
+
+  @override
+  Future<bool> validateApiKey(String apiKey) async => true;
 }

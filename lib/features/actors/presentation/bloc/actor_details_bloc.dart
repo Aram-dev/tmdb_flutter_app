@@ -1,24 +1,25 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../../common/common.dart';
 import '../../domain/models/actor_details.dart';
 import '../../domain/usecases/usecases.dart';
+import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 part 'actor_details_event.dart';
 part 'actor_details_state.dart';
 
 class ActorDetailsBloc extends Bloc<ActorDetailsEvent, ActorDetailsState> {
-  ActorDetailsBloc(this.actorDetailsUseCase) : super(ActorDetailsInitial()) {
+  ActorDetailsBloc(this.actorDetailsUseCase, this.authRepository)
+      : super(ActorDetailsInitial()) {
     on<LoadActorDetails>(_onLoad);
   }
 
   final ActorDetailsUseCase actorDetailsUseCase;
-  String apiKey = dotenv.env['PERSONAL_TMDB_API_KEY'] ?? '';
+  final AuthRepository authRepository;
 
   Future<void> _onLoad(
     LoadActorDetails event,
@@ -26,6 +27,7 @@ class ActorDetailsBloc extends Bloc<ActorDetailsEvent, ActorDetailsState> {
   ) async {
     emit(ActorDetailsLoading());
     try {
+      final apiKey = await authRepository.requireApiKey();
       final details = await actorDetailsUseCase.getActorDetails(
         event.actorId,
         apiKey,

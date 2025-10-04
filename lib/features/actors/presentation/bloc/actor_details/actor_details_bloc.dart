@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -7,6 +6,7 @@ import '../../../../common/common.dart';
 import '../../../domain/models/actor_details.dart';
 import '../../../domain/models/actors_list_result.dart';
 import '../../../domain/usecases/details/actor_details_use_case.dart';
+import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
 
 part 'actor_details_event.dart';
 part 'actor_details_state.dart';
@@ -14,13 +14,14 @@ part 'actor_details_state.dart';
 class ActorDetailsBloc extends Bloc<UiEvent, UiState> {
   ActorDetailsBloc({
     required this.actorDetailsUseCase,
+    required this.authRepository,
     ActorsListResults? initialActor,
   }) : super(ActorDetailsInitial(initialActor: initialActor)) {
     on<FetchActorDetails>(_onFetch);
   }
 
   final ActorDetailsUseCase actorDetailsUseCase;
-  final String _apiKey = dotenv.env['PERSONAL_TMDB_API_KEY'] ?? '';
+  final AuthRepository authRepository;
 
   Future<void> _onFetch(
     FetchActorDetails event,
@@ -28,22 +29,13 @@ class ActorDetailsBloc extends Bloc<UiEvent, UiState> {
   ) async {
     final fallbackActor = event.initialActor ?? _resolveInitialActor();
 
-    if (_apiKey.isEmpty) {
-      emit(
-        ActorDetailsFailure(
-          exception: StateError('Missing TMDB API key'),
-          initialActor: fallbackActor,
-        ),
-      );
-      return;
-    }
-
     emit(ActorDetailsLoading(initialActor: fallbackActor));
 
     try {
+      final apiKey = await authRepository.requireApiKey();
       final details = await actorDetailsUseCase.getActorDetails(
         event.actorId,
-        _apiKey,
+        apiKey,
         'en-US',
       );
       emit(ActorDetailsLoaded(details: details));
