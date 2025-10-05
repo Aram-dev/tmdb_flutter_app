@@ -17,7 +17,7 @@ import '../../domain/usecases/usecases.dart';
 import '../bloc/movie_details/movie_details_bloc.dart';
 
 @RoutePage()
-class MovieDetailsScreen extends StatelessWidget {
+class MovieDetailsScreen extends StatefulWidget {
   const MovieDetailsScreen({
     super.key,
     required this.movie,
@@ -28,22 +28,28 @@ class MovieDetailsScreen extends StatelessWidget {
   final MovieDetailsBloc? blocOverride;
 
   @override
+  State<MovieDetailsScreen> createState() => _MovieDetailsScreenState();
+}
+
+class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
+  @override
   Widget build(BuildContext context) {
-    final movieId = movie.id;
+    final movieId = widget.movie.id;
     if (movieId == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(movie.title ?? 'Movie Details')),
+        appBar: AppBar(title: Text(widget.movie.title ?? 'Movie Details')),
         body: const Center(
           child: Text('Movie details are unavailable for this title.'),
         ),
       );
     }
 
-    final body = _MovieDetailsView(movie: movie, movieId: movieId);
+    final body = _MovieDetailsView(movie: widget.movie, movieId: movieId);
 
-    if (blocOverride != null) {
+    final overrideBloc = widget.blocOverride;
+    if (overrideBloc != null) {
       return BlocProvider<MovieDetailsBloc>.value(
-        value: blocOverride!,
+        value: overrideBloc,
         child: body,
       );
     }
