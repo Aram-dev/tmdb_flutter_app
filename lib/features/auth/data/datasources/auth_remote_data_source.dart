@@ -77,6 +77,35 @@ class AuthRemoteDataSource {
     return AccountResponse.fromJson(_mapResponse(response.data));
   }
 
+  Future<AuthTokens?> refreshTokens({required String refreshToken}) async {
+    try {
+      final response = await _dio.post(
+        '/authentication/token/refresh',
+        data: {
+          'refresh_token': refreshToken,
+        },
+      );
+      final data = _mapResponse(response.data);
+      final accessToken = data['access_token'] as String? ?? '';
+      final newRefreshToken = data['refresh_token'] as String? ?? '';
+
+      if (accessToken.isEmpty || newRefreshToken.isEmpty) {
+        return null;
+      }
+
+      return AuthTokens(
+        accessToken: accessToken,
+        refreshToken: newRefreshToken,
+      );
+    } on DioException catch (error) {
+      final status = error.response?.statusCode;
+      if (status == 401 || status == 403) {
+        return null;
+      }
+      rethrow;
+    }
+  }
+
   Options _withAuthorization(String apiKey) {
     return Options(
       headers: {
