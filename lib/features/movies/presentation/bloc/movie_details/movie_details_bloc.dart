@@ -1,14 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+import 'package:tmdb_flutter_app/features/movies/domain/usecases/usecases.dart';
 
-import '../../../common/common.dart';
-import '../../domain/models/movie_credits.dart';
-import '../../domain/models/movie_detail.dart';
-import '../../domain/models/movie_recommendations.dart';
-import '../../domain/models/movie_reviews.dart';
-import '../../domain/models/movie_watch_providers.dart';
-import '../../domain/usecases/usecases.dart';
+import '../../../../common/common.dart';
+import '../../../domain/models/movie_credits.dart';
+import '../../../domain/models/movie_detail.dart';
+import '../../../domain/models/movie_recommendations.dart';
+import '../../../domain/models/movie_reviews.dart';
+import '../../../domain/models/movie_watch_providers.dart';
 
 part 'movie_details_event.dart';
 part 'movie_details_state.dart';

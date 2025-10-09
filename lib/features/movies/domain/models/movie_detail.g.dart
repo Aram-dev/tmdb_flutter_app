@@ -22,7 +22,7 @@ MovieDetail _$MovieDetailFromJson(Map<String, dynamic> json) => MovieDetail(
       genres: (json['genres'] as List<dynamic>?)
               ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <Genre>[],
+          [],
       homepage: json['homepage'] as String?,
       originalLanguage: json['original_language'] as String?,
       popularity: (json['popularity'] as num?)?.toDouble(),

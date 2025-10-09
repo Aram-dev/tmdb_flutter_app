@@ -10,7 +10,7 @@ import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_reposito
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
 
-class _TestAdapter extends HttpClientAdapter {
+class _TestAdapter implements HttpClientAdapter {
   _TestAdapter(this.onFetch);
 
   final Future<ResponseBody> Function(

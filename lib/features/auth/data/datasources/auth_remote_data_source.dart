@@ -119,7 +119,7 @@ class AuthRemoteDataSource {
       return data;
     }
     if (data is Map) {
-      return Map<String, dynamic>.from(data as Map);
+      return Map<String, dynamic>.from(data);
     }
     throw DioException(
       requestOptions: RequestOptions(path: ''),

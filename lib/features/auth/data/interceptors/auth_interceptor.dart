@@ -23,6 +23,13 @@ class AuthInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     try {
+      // Inject TMDB API key from env define if provided
+      const envApiKey = String.fromEnvironment('TMDB_API_KEY');
+      if (envApiKey.isNotEmpty) {
+        options.queryParameters['api_key'] = envApiKey;
+      }
+
+      // Inject bearer token if available
       final token = await _authRepository.getAccessToken();
       if (token != null && token.isNotEmpty) {
         options.headers['Authorization'] = 'Bearer $token';

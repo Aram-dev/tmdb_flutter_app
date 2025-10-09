@@ -12,23 +12,23 @@ MovieWatchProviders _$MovieWatchProvidersFromJson(Map<String, dynamic> json) =>
       flatrate: (json['flatrate'] as List<dynamic>?)
               ?.map((e) => WatchProvider.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <WatchProvider>[],
+          [],
       rent: (json['rent'] as List<dynamic>?)
               ?.map((e) => WatchProvider.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <WatchProvider>[],
+          [],
       buy: (json['buy'] as List<dynamic>?)
               ?.map((e) => WatchProvider.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <WatchProvider>[],
+          [],
       ads: (json['ads'] as List<dynamic>?)
               ?.map((e) => WatchProvider.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <WatchProvider>[],
+          [],
       free: (json['free'] as List<dynamic>?)
               ?.map((e) => WatchProvider.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <WatchProvider>[],
+          [],
     );
 
 Map<String, dynamic> _$MovieWatchProvidersToJson(

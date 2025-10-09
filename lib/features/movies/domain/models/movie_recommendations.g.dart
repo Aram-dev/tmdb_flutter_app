@@ -14,9 +14,9 @@ MovieRecommendations _$MovieRecommendationsFromJson(
               ?.map((e) =>
                   MovieRecommendation.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <MovieRecommendation>[],
-      totalPages: (json['total_pages'] as num?)?.toInt(),
-      totalResults: (json['total_results'] as num?)?.toInt(),
+          [],
+      totalPages: (json['totalPages'] as num?)?.toInt(),
+      totalResults: (json['totalResults'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$MovieRecommendationsToJson(
@@ -24,6 +24,6 @@ Map<String, dynamic> _$MovieRecommendationsToJson(
     <String, dynamic>{
       'page': instance.page,
       'results': instance.results.map((e) => e.toJson()).toList(),
-      'total_pages': instance.totalPages,
-      'total_results': instance.totalResults,
+      'totalPages': instance.totalPages,
+      'totalResults': instance.totalResults,
     };

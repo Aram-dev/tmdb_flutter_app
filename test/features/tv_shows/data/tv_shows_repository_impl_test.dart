@@ -16,8 +16,8 @@ void main() {
   late CacheOptions baseCacheOptions;
 
   setUpAll(() {
-    registerFallbackValue<Options>(Options());
-    registerFallbackValue<Map<String, dynamic>>(<String, dynamic>{});
+    registerFallbackValue(Options());
+    registerFallbackValue(<String, dynamic>{});
   });
 
   setUp(() async {

@@ -12,9 +12,9 @@ MovieReviews _$MovieReviewsFromJson(Map<String, dynamic> json) => MovieReviews(
       results: (json['results'] as List<dynamic>?)
               ?.map((e) => MovieReview.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <MovieReview>[],
-      totalPages: (json['total_pages'] as num?)?.toInt(),
-      totalResults: (json['total_results'] as num?)?.toInt(),
+          [],
+      totalPages: (json['totalPages'] as num?)?.toInt(),
+      totalResults: (json['totalResults'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$MovieReviewsToJson(MovieReviews instance) =>
@@ -22,6 +22,6 @@ Map<String, dynamic> _$MovieReviewsToJson(MovieReviews instance) =>
       'id': instance.id,
       'page': instance.page,
       'results': instance.results.map((e) => e.toJson()).toList(),
-      'total_pages': instance.totalPages,
-      'total_results': instance.totalResults,
+      'totalPages': instance.totalPages,
+      'totalResults': instance.totalResults,
     };

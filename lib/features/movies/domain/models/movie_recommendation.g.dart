@@ -6,8 +6,7 @@ part of 'movie_recommendation.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-MovieRecommendation _$MovieRecommendationFromJson(
-        Map<String, dynamic> json) =>
+MovieRecommendation _$MovieRecommendationFromJson(Map<String, dynamic> json) =>
     MovieRecommendation(
       id: (json['id'] as num?)?.toInt(),
       title: json['title'] as String?,

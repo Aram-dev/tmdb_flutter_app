@@ -11,11 +11,11 @@ MovieCredits _$MovieCreditsFromJson(Map<String, dynamic> json) => MovieCredits(
       cast: (json['cast'] as List<dynamic>?)
               ?.map((e) => MovieCredit.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <MovieCredit>[],
+          [],
       crew: (json['crew'] as List<dynamic>?)
               ?.map((e) => MovieCredit.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <MovieCredit>[],
+          [],
     );
 
 Map<String, dynamic> _$MovieCreditsToJson(MovieCredits instance) =>

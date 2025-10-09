@@ -6,7 +6,8 @@ part of 'watch_provider.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-WatchProvider _$WatchProviderFromJson(Map<String, dynamic> json) => WatchProvider(
+WatchProvider _$WatchProviderFromJson(Map<String, dynamic> json) =>
+    WatchProvider(
       providerId: (json['provider_id'] as num?)?.toInt(),
       providerName: json['provider_name'] as String?,
       logoPath: json['logo_path'] as String?,

@@ -11,6 +11,7 @@ import 'package:tmdb_flutter_app/features/movies/domain/usecases/trending/trendi
 import 'package:tmdb_flutter_app/tmdb_flutter_app.dart';
 import 'package:tmdb_flutter_app/features/auth/domain/entities/auth_session.dart';
 import 'package:tmdb_flutter_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:tmdb_flutter_app/features/auth/domain/entities/auth_tokens.dart';
 
 class _FakeDiscoverContentUseCase extends DiscoverContentUseCase {
   _FakeDiscoverContentUseCase(this._entity);
@@ -69,6 +70,7 @@ void main() {
     video: false,
     voteAverage: 8.5,
     voteCount: 1000,
+    runtime: null,
   );
 
   const fakeEntity = MovieTvShowEntity(

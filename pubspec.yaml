@@ -45,19 +45,19 @@ dependencies:
   flutter_bloc: ^9.1.1
   hive_flutter: ^1.1.0
   path_provider: ^2.1.5
-  talker_flutter: ^5.0.0
+  talker_flutter: ^5.0.1
   json_annotation: ^4.9.0
   dio_smart_retry: ^7.0.1
   dio_http2_adapter: ^2.6.0
   connectivity_plus: ^6.1.4
-  talker_dio_logger: ^5.0.0
-  talker_bloc_logger: ^5.0.0
+  talker_dio_logger: ^5.0.1
+  talker_bloc_logger: ^5.0.1
   cached_network_image: ^3.4.1
 #  freezed_annotation: ^2.4.4
   dio_cache_interceptor: ^3.4.4
-  dio_cache_interceptor_hive_store: ^3.2.2
+  dio_cache_interceptor_hive_store: ^4.0.0
   internet_connection_checker: ^3.0.1
-  flutter_secure_storage: ^8.0.0
+  flutter_secure_storage: ^9.2.4
 
 dev_dependencies:
   flutter_test:
