@@ -126,36 +126,17 @@ class AuthRepositoryImpl implements AuthRepository {
     required String username,
     required String password,
   }) async {
-    final tokenResponse = await _remoteDataSource.createRequestToken(apiKey);
-    if (!tokenResponse.success || tokenResponse.requestToken.isEmpty) {
-      throw AuthException('Failed to create TMDB request token.');
-    }
-
-    final validatedToken = await _remoteDataSource.validateWithLogin(
+    final sessionId = await _createSessionId(
       apiKey: apiKey,
       username: username,
       password: password,
-      requestToken: tokenResponse.requestToken,
     );
-
-    if (!validatedToken.success || validatedToken.requestToken.isEmpty) {
-      throw AuthException('TMDB credentials are invalid.');
-    }
-
-    final sessionResponse = await _remoteDataSource.createSession(
-      apiKey: apiKey,
-      requestToken: validatedToken.requestToken,
-    );
-
-    if (!sessionResponse.success || sessionResponse.sessionId.isEmpty) {
-      throw AuthException('Failed to create TMDB session.');
-    }
 
     int? accountId;
     try {
       final account = await _remoteDataSource.fetchAccount(
         apiKey: apiKey,
-        sessionId: sessionResponse.sessionId,
+        sessionId: sessionId,
       );
       accountId = account.id;
     } on DioException catch (error) {
@@ -165,7 +146,7 @@ class AuthRepositoryImpl implements AuthRepository {
     }
 
     final session = AuthSession(
-      sessionId: sessionResponse.sessionId,
+      sessionId: sessionId,
       accountId: accountId,
     );
     await saveSession(session);
@@ -182,6 +163,39 @@ class AuthRepositoryImpl implements AuthRepository {
       sessionId: sessionId,
     );
     return account.id;
+  }
+
+  Future<String> _createSessionId({
+    required String apiKey,
+    required String username,
+    required String password,
+  }) async {
+    final requestToken = await _remoteDataSource.createRequestToken(apiKey);
+    if (!requestToken.success || requestToken.requestToken.isEmpty) {
+      throw AuthException('Failed to create TMDB request token.');
+    }
+
+    final validatedToken = await _remoteDataSource.validateWithLogin(
+      apiKey: apiKey,
+      username: username,
+      password: password,
+      requestToken: requestToken.requestToken,
+    );
+
+    if (!validatedToken.success || validatedToken.requestToken.isEmpty) {
+      throw AuthException('TMDB credentials are invalid.');
+    }
+
+    final sessionResponse = await _remoteDataSource.createSession(
+      apiKey: apiKey,
+      requestToken: validatedToken.requestToken,
+    );
+
+    if (!sessionResponse.success || sessionResponse.sessionId.isEmpty) {
+      throw AuthException('Failed to create TMDB session.');
+    }
+
+    return sessionResponse.sessionId;
   }
 
 }
